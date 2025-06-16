@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superendividamento - Plano de Pagamento</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 1100px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        h1 { color: #2d5c2f; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 4px; }
+        .row { display: flex; gap: 20px; }
+        .row > div { flex: 1; }
+        button { background: #2d5c2f; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #256024; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #e0f2e9; }
+        .login { float: right; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login">
+            <label for="perfil">Perfil de Usuário:</label>
+            <select id="perfil">
+                <option>Promotor de Justiça</option>
+                <option>Servidor</option>
+                <option>Terceirizado</option>
+                <option>Estagiário</option>
+                <option>Externo</option>
+            </select>
+        </div>
+        <h1>Plano de Pagamento - Superendividamento</h1>
+        <form id="formulario">
+            <div class="row">
+                <div class="form-group">
+                    <label for="renda">Renda Mensal do Consumidor (R$)</label>
+                    <input type="number" id="renda" step="0.01" min="0.01" required placeholder="Ex: 3000.00">
+                </div>
+                <div class="form-group">
+                    <label for="dataHomologacao">Data da Homologação Judicial</label>
+                    <input type="date" id="dataHomologacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="parcelas">Quantidade de Parcelas</label>
+                    <input type="number" id="parcelas" min="1" required placeholder="Ex: 36">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="indice">Índice de Correção Monetária</label>
+                    <select id="indice" required>
+                        <option value="SELIC">SELIC</option>
+                        <option value="INPC">INPC</option>
+                        <option value="IPCA">IPCA</option>
+                        <option value="IGP-M">IGP-M</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valorDivida">Valor da Dívida (R$)</label>
+                    <input type="number" id="valorDivida" step="0.01" min="0.01" required placeholder="Ex: 1000.00">
+                </div>
+                <div class="form-group">
+                    <label for="dataDivida">Data da Dívida</label>
+                    <input type="date" id="dataDivida" required>
+                </div>
+            </div>
+            <button type="submit">Gerar Plano</button>
+        </form>
+        <h2>Tabela Demonstrativa das Parcelas Futuras</h2>
+        <table id="tabelaParcelas">
+            <thead>
+                <tr>
+                    <th>Parcela</th>
+                    <th>Vencimento</th>
+                    <th>Valor (R$)</th>
+                    <th>% Comprometimento Renda</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="4">Preencha os dados e clique em Gerar Plano.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 
