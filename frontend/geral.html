@@ -235,14 +235,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     window.onload = function() {
-        document.querySelectorAll('input').forEach(function(input) {
-            if (input.id && localStorage.getItem(input.id)) {
-                input.value = localStorage.getItem(input.id);
+        document.querySelectorAll('input, select').forEach(function(el) {
+            if (el.id && localStorage.getItem(el.id)) {
+                if (el.tagName === 'SELECT') {
+                    el.value = localStorage.getItem(el.id);
+                } else {
+                    el.value = localStorage.getItem(el.id);
+                }
             }
-            input.oninput = function() {
-                if (input.id) localStorage.setItem(input.id, this.value);
+            el.onchange = function() {
+                if (el.id) localStorage.setItem(el.id, this.value);
+            };
+            el.oninput = function() {
+                if (el.id) localStorage.setItem(el.id, this.value);
             };
         });
+
         // Ativa o botão da página atual
         const page = window.location.pathname.split('/').pop();
         if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
@@ -252,10 +260,14 @@
 
         // Cálculo automático do saldo devedor
         function atualizarSaldoDevedor(prefix) {
-            const valorContratado = parseFloat(document.getElementById(prefix+'-valor-contratado').value) || 0;
-            const valorPago = parseFloat(document.getElementById(prefix+'-valor-pago').value) || 0;
-            const saldo = valorContratado - valorPago;
-            document.getElementById(prefix+'-saldo-devedor').value = saldo.toFixed(2);
+            const valorContratado = parseFloat(document.getElementById(prefix+'-valor-contratado').value);
+            const valorPago = parseFloat(document.getElementById(prefix+'-valor-pago').value);
+            let saldo = '';
+            if (!isNaN(valorContratado) && !isNaN(valorPago)) {
+                saldo = (valorContratado - valorPago).toFixed(2);
+            }
+            document.getElementById(prefix+'-saldo-devedor').value = saldo;
+            localStorage.setItem(prefix+'-saldo-devedor', saldo);
         }
         const linhas = [
             'consignado-1', 'consignado-2', 'consignado-3', 'consignado-4', 'consignado-5',
