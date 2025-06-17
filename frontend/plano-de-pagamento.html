@@ -217,74 +217,90 @@ function renderParcelasTable(qtdeParcelas) {
     // Bancos selecionados
     const bancosSelecionados = Array.from(document.querySelectorAll('.credor-text')).map(span => span.textContent);
     // Remove duplicados mantendo ordem
-    const bancosUnicos = bancosSelecionados.filter((b, i, arr) => arr.indexOf(b) === i);
+    const bancosUnicos = bancosSelecionados.filter((b, i, arr) => arr.indexOf(b) === i && b);
     // Cabeçalho
     let ths = '<th>Mês</th>';
     bancosUnicos.forEach(banco => ths += `<th>${banco}</th>`);
     ths += '<th>Total</th>';
     head.innerHTML = `<tr>${ths}</tr>`;
-    // Linhas
-    for (let mes = 1; mes <= qtdeParcelas; mes++) {
-        let tds = `<td>Mês ${mes}</td>`;
-        let somaLinha = 0;
+
+    // Pega valores principais
+    const receitaTotal = parseFloat(document.getElementById('receitaTotal').value) || 0;
+    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
+    const saldoInputs = document.querySelectorAll('.saldo-input');
+    const totalSaldoDevedor = Array.from(saldoInputs).reduce((acc, input) => acc + (parseFloat(input.value) || 0), 0);
+
+    if (qtdeParcelas > 0 && receitaTotal > 0 && pctComprometida > 0 && totalSaldoDevedor > 0 && bancosUnicos.length > 0) {
+        // Linhas
+        for (let mes = 1; mes <= qtdeParcelas; mes++) {
+            let tds = `<td>Mês ${mes}</td>`;
+            let somaLinha = 0;
+            bancosUnicos.forEach((banco, idx) => {
+                // Soma valor da parcela para cada banco
+                let valor = 0;
+                document.querySelectorAll('.credor-text').forEach((span, i) => {
+                    if (span.textContent === banco) {
+                        const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
+                        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
+                        const margem = receitaTotal * pctComprometida;
+                        valor += pctDivida * margem;
+                    }
+                });
+                valor = +(valor).toFixed(2);
+                tds += `<td>${formatBRL(valor)}</td>`;
+                somaLinha += valor;
+            });
+            somaLinha = +(somaLinha).toFixed(2);
+            tds += `<td>${formatBRL(somaLinha)}</td>`;
+            body.innerHTML += `<tr>${tds}</tr>`;
+        }
+        // Rodapé (total por banco)
+        let tfs = '<td>Total</td>';
         bancosUnicos.forEach((banco, idx) => {
-            // Soma valor da parcela para cada banco
-            let valor = 0;
-            document.querySelectorAll('.credor-text').forEach((span, i) => {
-                if (span.textContent === banco) {
-                    const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
-                    const totalSaldoDevedor = parseFloat(document.getElementById('total-saldo-devedor').textContent.replace(/[^\d,\.]/g, '').replace(',', '.')) || 0;
-                    const receitaTotal = parseFloat(document.getElementById('receitaTotal').value) || 0;
-                    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
-                    const margem = receitaTotal * pctComprometida;
-                    const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                    valor += pctDivida * margem;
-                }
-            });
-            tds += `<td>${formatBRL(valor)}</td>`;
-            somaLinha += valor;
+            let somaCol = 0;
+            for (let mes = 1; mes <= qtdeParcelas; mes++) {
+                document.querySelectorAll('.credor-text').forEach((span, i) => {
+                    if (span.textContent === banco) {
+                        const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
+                        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
+                        const margem = receitaTotal * pctComprometida;
+                        somaCol += pctDivida * margem;
+                    }
+                });
+            }
+            somaCol = +(somaCol).toFixed(2);
+            tfs += `<td>${formatBRL(somaCol)}</td>`;
         });
-        tds += `<td>${formatBRL(somaLinha)}</td>`;
-        body.innerHTML += `<tr>${tds}</tr>`;
+        // Total geral
+        let totalGeral = 0;
+        bancosUnicos.forEach((banco, idx) => {
+            for (let mes = 1; mes <= qtdeParcelas; mes++) {
+                document.querySelectorAll('.credor-text').forEach((span, i) => {
+                    if (span.textContent === banco) {
+                        const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
+                        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
+                        const margem = receitaTotal * pctComprometida;
+                        totalGeral += pctDivida * margem;
+                    }
+                });
+            }
+        });
+        totalGeral = +(totalGeral).toFixed(2);
+        tfs += `<td>${formatBRL(totalGeral)}</td>`;
+        foot.innerHTML = `<tr>${tfs}</tr>`;
+    } else {
+        // Se algum valor essencial estiver zerado, exibe tudo como R$ 0,00
+        for (let mes = 1; mes <= qtdeParcelas; mes++) {
+            let tds = `<td>Mês ${mes}</td>`;
+            bancosUnicos.forEach(() => tds += `<td>R$ 0,00</td>`);
+            tds += `<td>R$ 0,00</td>`;
+            body.innerHTML += `<tr>${tds}</tr>`;
+        }
+        let tfs = '<td>Total</td>';
+        bancosUnicos.forEach(() => tfs += `<td>R$ 0,00</td>`);
+        tfs += `<td>R$ 0,00</td>`;
+        foot.innerHTML = `<tr>${tfs}</tr>`;
     }
-    // Rodapé (total por banco)
-    let tfs = '<td>Total</td>';
-    bancosUnicos.forEach((banco, idx) => {
-        let somaCol = 0;
-        for (let mes = 1; mes <= qtdeParcelas; mes++) {
-            document.querySelectorAll('.credor-text').forEach((span, i) => {
-                if (span.textContent === banco) {
-                    const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
-                    const totalSaldoDevedor = parseFloat(document.getElementById('total-saldo-devedor').textContent.replace(/[^\d,\.]/g, '').replace(',', '.')) || 0;
-                    const receitaTotal = parseFloat(document.getElementById('receitaTotal').value) || 0;
-                    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
-                    const margem = receitaTotal * pctComprometida;
-                    const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                    somaCol += pctDivida * margem;
-                }
-            });
-        }
-        tfs += `<td>${formatBRL(somaCol)}</td>`;
-    });
-    // Total geral
-    let totalGeral = 0;
-    bancosUnicos.forEach((banco, idx) => {
-        for (let mes = 1; mes <= qtdeParcelas; mes++) {
-            document.querySelectorAll('.credor-text').forEach((span, i) => {
-                if (span.textContent === banco) {
-                    const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
-                    const totalSaldoDevedor = parseFloat(document.getElementById('total-saldo-devedor').textContent.replace(/[^\d,\.]/g, '').replace(',', '.')) || 0;
-                    const receitaTotal = parseFloat(document.getElementById('receitaTotal').value) || 0;
-                    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
-                    const margem = receitaTotal * pctComprometida;
-                    const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                    totalGeral += pctDivida * margem;
-                }
-            });
-        }
-    });
-    tfs += `<td>${formatBRL(totalGeral)}</td>`;
-    foot.innerHTML = `<tr>${tfs}</tr>`;
 }
 
 // Eventos
