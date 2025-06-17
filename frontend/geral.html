@@ -30,7 +30,12 @@
             .row { flex-direction: column; }
             .container { padding: 10px; }
         }
-        #custom-navbar { margin-bottom: 30px; }
+        #custom-navbar {
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
         .nav-btn {
             flex:1;
             background:#90ff90;
@@ -64,6 +69,7 @@
         <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
         <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
     </div>
+    <h1 style="color: #2d5c2f; margin-bottom: 30px;">Geral - Superendividamento</h1>
     <button type="button" class="btn btn-warning mb-3" onclick="limparCampos()">Limpar</button>
     <div class="container">
         <div class="row mb-2">

@@ -19,7 +19,12 @@
         @media (max-width: 900px) {
             .row { flex-direction: column; }
         }
-        #custom-navbar { margin-bottom: 30px; }
+        #custom-navbar {
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
         .nav-btn {
             flex:1;
             background:#90ff90;

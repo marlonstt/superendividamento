@@ -29,7 +29,12 @@
             .row { flex-direction: column; }
             .container { padding: 10px; }
         }
-        #custom-navbar { margin-bottom: 30px; }
+        #custom-navbar {
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
         .nav-btn {
             flex:1;
             background:#90ff90;
@@ -446,6 +451,19 @@ function limparCampos() {
   });
   calcularDividas();
 }
+
+// Sincronizar Meses para quitar e Qtde. de Parcelas
+const mesesQuitarInput = document.getElementById('mesesQuitar');
+const qtdeParcelasInput = document.getElementById('qtdeParcelas');
+
+mesesQuitarInput.addEventListener('input', function() {
+  qtdeParcelasInput.value = this.value;
+  qtdeParcelasInput.dispatchEvent(new Event('input'));
+});
+qtdeParcelasInput.addEventListener('input', function() {
+  mesesQuitarInput.value = this.value;
+  mesesQuitarInput.dispatchEvent(new Event('input'));
+});
 </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
