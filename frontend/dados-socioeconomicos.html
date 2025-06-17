@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados Socioeconômicos - Superendividamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f4f4; }
+        .container { max-width: 1200px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        h1 { color: #2d5c2f; margin-bottom: 30px; }
+        table { font-size: 0.98rem; }
+        th, td { vertical-align: middle !important; }
+        .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
+        .total-row { font-weight: bold; background: #f0f0f0; }
+        .existencial { color: #d00; font-weight: bold; }
+        .valor-final { color: #007a00; font-weight: bold; font-size: 1.2em; border: 2px solid #007a00; padding: 4px 12px; border-radius: 6px; background: #eaffea; }
+        .obs { font-size: 0.95em; color: #444; margin-top: 10px; }
+        @media (max-width: 900px) {
+            .row { flex-direction: column; }
+        }
+        #custom-navbar { margin-bottom: 30px; }
+        .nav-btn {
+            flex:1;
+            background:#90ff90;
+            border:none;
+            border-right:1px solid #fff;
+            font-size:1.2em;
+            padding:12px 0;
+            cursor:pointer;
+            transition: background 0.2s, font-weight 0.2s;
+        }
+        .nav-btn:last-child { border-right:none; }
+        .nav-btn.active {
+            background:#baffba;
+            font-weight:bold;
+            outline:2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="custom-navbar" style="display:flex; border:2px solid #000; background:#90ff90;">
+        <button onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+        <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
+        <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+        <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+    </div>
+    <div class="container">
+        <h1>Dados Socioeconômicos do Consumidor</h1>
+        <form id="socForm">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr><th colspan="3" class="text-center">Receitas (individual ou total familiar)</th></tr>
+                            <tr><th>TIPO</th><th>Evento</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="receitas-body">
+                            <tr><td>Salários ganhos/líquidos</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-salarios"></td></tr>
+                            <tr><td>Ganho mínimo como autônomo</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-ganho-minimo"></td></tr>
+                            <tr><td>Aposentadoria</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-aposentadoria"></td></tr>
+                            <tr><td>Pensão Previdenciária (pensão por morte)</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-pensao-previdenciaria"></td></tr>
+                            <tr><td>Aluguel</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-aluguel"></td></tr>
+                            <tr><td>Pensão Alimentícia (se descontada em folha de pagamento)</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-pensao-alimenticia"></td></tr>
+                            <tr><td>Renda temporária</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-renda-temporaria"></td></tr>
+                            <tr><td>Auxílio por incapacidade</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-auxilio-por-incapacidade"></td></tr>
+                            <tr><td>Auxilio acidente</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-auxilio-acidente"></td></tr>
+                            <tr><td>Auxílio reclusão</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-auxilio-reclusao"></td></tr>
+                            <tr><td>Salário Maternidade</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-salario-maternidade"></td></tr>
+                            <tr><td>Participações nos lucros ou comissões</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-participacoes-nos-lucros-ou-comissoes"></td></tr>
+                            <tr><td>13º salário</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-13-salario"></td></tr>
+                            <tr><td>Outros</td><td></td><td><input type="number" step="0.01" min="0" class="form-control receita" id="receita-outros"></td></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row"><td colspan="2">TOTAL MÊS:</td><td id="total-receitas" class="text-primary">R$ 0,00</td></tr>
+                        </tfoot>
+                    </table>
+                    <div class="obs">*Itens do mínimo existencial</div>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr><th colspan="3" class="text-center">Despesas (individual ou total familiar)</th></tr>
+                            <tr><th>TIPO</th><th>Evento</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="despesas-body">
+                            <tr><td>Energia elétrica + Gás*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-energia-eletrica-gas"></td></tr>
+                            <tr><td>Água*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-agua"></td></tr>
+                            <tr><td>Aluguel*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-aluguel"></td></tr>
+                            <tr><td>Condomínio*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-condominio"></td></tr>
+                            <tr><td>Plano de internet + Telefone*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-plano-internet-telefone"></td></tr>
+                            <tr><td>Previdência Social*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-previdencia-social"></td></tr>
+                            <tr><td>Alimentação*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-alimentacao"></td></tr>
+                            <tr><td>Pensão Alimentícia</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-pensao-alimenticia"></td></tr>
+                            <tr><td>Educação*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-educacao"></td></tr>
+                            <tr><td>Plano de saúde*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-plano-saude"></td></tr>
+                            <tr><td>Medicamentos</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-medicamentos"></td></tr>
+                            <tr><td>Tributos (IPTU, IPVA) *</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-tributos-iptu-ipva"></td></tr>
+                            <tr><td>INSS*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-inss"></td></tr>
+                            <tr><td>Transporte (combustível, ônibus, aplicativos, táxi) *</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-transporte"></td></tr>
+                            <tr><td>IRRF*</td><td></td><td><input type="number" step="0.01" min="0" class="form-control despesa" id="despesa-irrf"></td></tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row"><td colspan="2">TOTAL MÊS:</td><td id="total-despesas" class="existencial">R$ 0,00</td></tr>
+                        </tfoot>
+                    </table>
+                    <div class="obs">Obs.: os valores das Receitas e Despesas devem estar comprovados documentalmente no processo.</div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <span class="me-2">Valor mensal após despesas existenciais</span>
+                    <span id="valor-final" class="valor-final">R$ 0,00</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        function formatBRL(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+        function somaInputs(selector) {
+            let soma = 0;
+            document.querySelectorAll(selector).forEach(input => {
+                const val = parseFloat(input.value.replace(',', '.'));
+                if (!isNaN(val)) soma += val;
+            });
+            return soma;
+        }
+        function atualizarTotais() {
+            const totalReceitas = somaInputs('.receita');
+            const totalDespesas = somaInputs('.despesa');
+            document.getElementById('total-receitas').textContent = formatBRL(totalReceitas);
+            document.getElementById('total-despesas').textContent = formatBRL(totalDespesas);
+            document.getElementById('valor-final').textContent = formatBRL(totalReceitas - totalDespesas);
+        }
+        document.querySelectorAll('.receita, .despesa').forEach(input => {
+            input.addEventListener('input', atualizarTotais);
+        });
+        // Inicializa totais ao carregar
+        atualizarTotais();
+        // Ativa o botão da página atual
+        const page = window.location.pathname.split('/').pop();
+        if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
+        if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
+        if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+        if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
+        document.getElementById('valor-final').addEventListener('DOMSubtreeModified', function() {
+            localStorage.setItem('valor-final', this.textContent.replace(/[^\d\,\.]/g, '').replace(',', '.'));
+        });
+        window.onload = function() {
+            document.querySelectorAll('input').forEach(function(input) {
+                if (input.id && localStorage.getItem(input.id)) {
+                    input.value = localStorage.getItem(input.id);
+                }
+                input.oninput = function() {
+                    if (input.id) localStorage.setItem(input.id, this.value);
+                };
+            });
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

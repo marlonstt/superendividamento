@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geral - Superendividamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f4f4; }
+        .container { max-width: 1600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        h1 { color: #2d5c2f; margin-bottom: 30px; }
+        table { font-size: 0.98rem; }
+        th, td { vertical-align: middle !important; text-align: center; }
+        .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
+        .total-row { font-weight: bold; background: #f0f0f0; }
+        .subtotal-row { font-weight: bold; background: #e0e0e0; }
+        .bg-light-black { background: #222; color: #fff; }
+        .bg-light-blue { background: #eaf4ff; }
+        .bg-light-orange { background: #fff3e0; }
+        .bg-light-green { background: #eaffea; }
+        .bg-light-cyan { background: #e0f7fa; }
+        .bg-light-gray { background: #f8f9fa; }
+        .text-red { color: #d00; }
+        .scroll-x { overflow-x: auto; }
+        .input-sm { max-width: 90px; }
+        .input-xs { max-width: 60px; }
+        .input-md { max-width: 120px; }
+        .input-lg { max-width: 180px; }
+        @media (max-width: 900px) {
+            .row { flex-direction: column; }
+            .container { padding: 10px; }
+        }
+        #custom-navbar { margin-bottom: 30px; }
+        .nav-btn {
+            flex:1;
+            background:#90ff90;
+            border:none;
+            border-right:1px solid #fff;
+            font-size:1.2em;
+            padding:12px 0;
+            cursor:pointer;
+            transition: background 0.2s, font-weight 0.2s;
+        }
+        .nav-btn:last-child { border-right:none; }
+        .nav-btn.active {
+            background:#baffba;
+            font-weight:bold;
+            outline:2px solid #000;
+        }
+        .section-title { font-weight: bold; font-size: 1.1em; }
+        .bordered { border: 2px solid #000; border-radius: 6px; padding: 10px; margin-bottom: 20px; }
+        .text-end { text-align: right; }
+        .text-start { text-align: left; }
+        .text-center { text-align: center; }
+        .small-input { width: 100px; }
+        .table-title { font-weight: bold; font-size: 1.05em; background: #f5f5f5; }
+        .red-link { color: #d00; font-weight: bold; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div id="custom-navbar" style="display:flex; border:2px solid #000; background:#90ff90;">
+        <button onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+        <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
+        <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+        <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+    </div>
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label class="form-label">Consumidor</label>
+                <input type="text" class="form-control" placeholder="Nome do consumidor">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Processo n.</label>
+                <input type="text" class="form-control" id="numero-processo" placeholder="Número do processo" oninput="localStorage.setItem('numero-processo', this.value)">
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="#" class="red-link">Cartilha Superendividamento CNJ</a>
+            </div>
+        </div>
+        <div class="scroll-x">
+            <table class="table table-bordered mb-0">
+                <tr class="table-title bg-light-black">
+                    <td colspan="10">DÍVIDA</td>
+                </tr>
+                <tr class="table-title bg-light-black">
+                    <td colspan="10">CONSIGNADOS</td>
+                </tr>
+                <tr class="bg-light-gray">
+                    <th>Credores</th>
+                    <th>Contratos</th>
+                    <th>Valor contratado</th>
+                    <th>Valor pago</th>
+                    <th>Saldo devedor</th>
+                    <th>Juros</th>
+                    <th>Parcela Mensal</th>
+                    <th>Parcelas contratadas</th>
+                    <th>Parcelas restantes</th>
+                </tr>
+                <tr><td><input class="form-control" type="text" id="consignado-1-credores"></td><td><input class="form-control" type="text" id="consignado-1-contratos"></td><td><input class="form-control" type="text" id="consignado-1-valor-contratado"></td><td><input class="form-control" type="text" id="consignado-1-valor-pago"></td><td><input class="form-control" type="text" id="consignado-1-saldo-devedor"></td><td><input class="form-control" type="text" id="consignado-1-juros"></td><td><input class="form-control" type="text" id="consignado-1-parcela-mensal"></td><td><input class="form-control" type="text" id="consignado-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="consignado-1-parcelas-restantes"></td></tr>
+                <tr><td><input class="form-control" type="text" id="consignado-2-credores"></td><td><input class="form-control" type="text" id="consignado-2-contratos"></td><td><input class="form-control" type="text" id="consignado-2-valor-contratado"></td><td><input class="form-control" type="text" id="consignado-2-valor-pago"></td><td><input class="form-control" type="text" id="consignado-2-saldo-devedor"></td><td><input class="form-control" type="text" id="consignado-2-juros"></td><td><input class="form-control" type="text" id="consignado-2-parcela-mensal"></td><td><input class="form-control" type="text" id="consignado-2-parcelas-contratadas"></td><td><input class="form-control" type="text" id="consignado-2-parcelas-restantes"></td></tr>
+                <tr><td><input class="form-control" type="text" id="consignado-3-credores"></td><td><input class="form-control" type="text" id="consignado-3-contratos"></td><td><input class="form-control" type="text" id="consignado-3-valor-contratado"></td><td><input class="form-control" type="text" id="consignado-3-valor-pago"></td><td><input class="form-control" type="text" id="consignado-3-saldo-devedor"></td><td><input class="form-control" type="text" id="consignado-3-juros"></td><td><input class="form-control" type="text" id="consignado-3-parcela-mensal"></td><td><input class="form-control" type="text" id="consignado-3-parcelas-contratadas"></td><td><input class="form-control" type="text" id="consignado-3-parcelas-restantes"></td></tr>
+                <tr><td><input class="form-control" type="text" id="consignado-4-credores"></td><td><input class="form-control" type="text" id="consignado-4-contratos"></td><td><input class="form-control" type="text" id="consignado-4-valor-contratado"></td><td><input class="form-control" type="text" id="consignado-4-valor-pago"></td><td><input class="form-control" type="text" id="consignado-4-saldo-devedor"></td><td><input class="form-control" type="text" id="consignado-4-juros"></td><td><input class="form-control" type="text" id="consignado-4-parcela-mensal"></td><td><input class="form-control" type="text" id="consignado-4-parcelas-contratadas"></td><td><input class="form-control" type="text" id="consignado-4-parcelas-restantes"></td></tr>
+                <tr><td><input class="form-control" type="text" id="consignado-5-credores"></td><td><input class="form-control" type="text" id="consignado-5-contratos"></td><td><input class="form-control" type="text" id="consignado-5-valor-contratado"></td><td><input class="form-control" type="text" id="consignado-5-valor-pago"></td><td><input class="form-control" type="text" id="consignado-5-saldo-devedor"></td><td><input class="form-control" type="text" id="consignado-5-juros"></td><td><input class="form-control" type="text" id="consignado-5-parcela-mensal"></td><td><input class="form-control" type="text" id="consignado-5-parcelas-contratadas"></td><td><input class="form-control" type="text" id="consignado-5-parcelas-restantes"></td></tr>
+                <tr class="total-row">
+                    <td colspan="2">Total</td>
+                    <td><input class="form-control" type="text" id="consignadas-parcela" oninput="localStorage.setItem('consignadas-parcela', this.value)"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text" id="consignadas-saldo" oninput="localStorage.setItem('consignadas-saldo', this.value)"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text" id="consignadas-parcela" oninput="localStorage.setItem('consignadas-parcela', this.value)"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="table-title bg-light-blue">
+                    <td colspan="10">NÃO CONSIGNADOS</td>
+                </tr>
+                <tr class="bg-light-gray">
+                    <th>Credores</th>
+                    <th>Contratos</th>
+                    <th>Valor contratado</th>
+                    <th>Valor pago</th>
+                    <th>Saldo devedor</th>
+                    <th>Juros</th>
+                    <th>Parcela Mensal</th>
+                    <th>Parcelas contratadas</th>
+                    <th>Parcelas restantes</th>
+                </tr>
+                <tr><td><input class="form-control" type="text" id="nao-consignado-1-credores"></td><td><input class="form-control" type="text" id="nao-consignado-1-contratos"></td><td><input class="form-control" type="text" id="nao-consignado-1-valor-contratado"></td><td><input class="form-control" type="text" id="nao-consignado-1-valor-pago"></td><td><input class="form-control" type="text" id="nao-consignado-1-saldo-devedor"></td><td><input class="form-control" type="text" id="nao-consignado-1-juros"></td><td><input class="form-control" type="text" id="nao-consignado-1-parcela-mensal"></td><td><input class="form-control" type="text" id="nao-consignado-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="nao-consignado-1-parcelas-restantes"></td></tr>
+                <tr><td><input class="form-control" type="text" id="nao-consignado-2-credores"></td><td><input class="form-control" type="text" id="nao-consignado-2-contratos"></td><td><input class="form-control" type="text" id="nao-consignado-2-valor-contratado"></td><td><input class="form-control" type="text" id="nao-consignado-2-valor-pago"></td><td><input class="form-control" type="text" id="nao-consignado-2-saldo-devedor"></td><td><input class="form-control" type="text" id="nao-consignado-2-juros"></td><td><input class="form-control" type="text" id="nao-consignado-2-parcela-mensal"></td><td><input class="form-control" type="text" id="nao-consignado-2-parcelas-contratadas"></td><td><input class="form-control" type="text" id="nao-consignado-2-parcelas-restantes"></td></tr>
+                <tr class="total-row">
+                    <td colspan="2">Total</td>
+                    <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text" id="nao-consignadas-saldo" oninput="localStorage.setItem('nao-consignadas-saldo', this.value)"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="table-title bg-light-orange">
+                    <td colspan="10">SEM PARCELAS</td>
+                </tr>
+                <tr class="bg-light-gray">
+                    <th>Credores</th>
+                    <th>Contratos</th>
+                    <th>Valor contratado</th>
+                    <th>Valor pago</th>
+                    <th>Saldo devedor</th>
+                    <th>Juros</th>
+                    <th>Parcela Mensal</th>
+                    <th>Parcelas contratadas</th>
+                    <th>Parcelas restantes</th>
+                </tr>
+                <tr><td><input class="form-control" type="text" id="sem-parcela-1-credores"></td><td><input class="form-control" type="text" id="sem-parcela-1-contratos"></td><td><input class="form-control" type="text" id="sem-parcela-1-valor-contratado"></td><td><input class="form-control" type="text" id="sem-parcela-1-valor-pago"></td><td><input class="form-control" type="text" id="sem-parcela-1-saldo-devedor"></td><td><input class="form-control" type="text" id="sem-parcela-1-juros"></td><td><input class="form-control" type="text" id="sem-parcela-1-parcela-mensal"></td><td><input class="form-control" type="text" id="sem-parcela-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="sem-parcela-1-parcelas-restantes"></td></tr>
+                <tr class="total-row">
+                    <td colspan="2">Total</td>
+                    <td><input class="form-control" type="text" id="sem-parcelas-saldo" oninput="localStorage.setItem('sem-parcelas-saldo', this.value)"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="table-title bg-light-green">
+                    <td colspan="10">DÍVIDAS CONSOLIDADAS</td>
+                </tr>
+                <tr class="bg-light-gray">
+                    <th>Credores</th>
+                    <th>Contratos</th>
+                    <th>Valor contratado</th>
+                    <th>Valor pago</th>
+                    <th>Saldo devedor</th>
+                    <th>Juros</th>
+                    <th>Parcela Mensal</th>
+                    <th>Parcelas contratadas</th>
+                    <th>Parcelas restantes</th>
+                </tr>
+                <tr><td><input class="form-control" type="text" id="divida-consolidada-1-credores"></td><td><input class="form-control" type="text" id="divida-consolidada-1-contratos"></td><td><input class="form-control" type="text" id="divida-consolidada-1-valor-contratado"></td><td><input class="form-control" type="text" id="divida-consolidada-1-valor-pago"></td><td><input class="form-control" type="text" id="divida-consolidada-1-saldo-devedor"></td><td><input class="form-control" type="text" id="divida-consolidada-1-juros"></td><td><input class="form-control" type="text" id="divida-consolidada-1-parcela-mensal"></td><td><input class="form-control" type="text" id="divida-consolidada-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="divida-consolidada-1-parcelas-restantes"></td></tr>
+                <tr><td><input class="form-control" type="text" id="divida-consolidada-2-credores"></td><td><input class="form-control" type="text" id="divida-consolidada-2-contratos"></td><td><input class="form-control" type="text" id="divida-consolidada-2-valor-contratado"></td><td><input class="form-control" type="text" id="divida-consolidada-2-valor-pago"></td><td><input class="form-control" type="text" id="divida-consolidada-2-saldo-devedor"></td><td><input class="form-control" type="text" id="divida-consolidada-2-juros"></td><td><input class="form-control" type="text" id="divida-consolidada-2-parcela-mensal"></td><td><input class="form-control" type="text" id="divida-consolidada-2-parcelas-contratadas"></td><td><input class="form-control" type="text" id="divida-consolidada-2-parcelas-restantes"></td></tr>
+                <tr class="total-row">
+                    <td colspan="2">Total</td>
+                    <td><input class="form-control" type="text"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text"></td>
+                    <td></td>
+                    <td><input class="form-control" type="text"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 scroll-x">
+                <table class="table table-bordered mb-0">
+                    <tr class="table-title bg-light-cyan">
+                        <td colspan="5">RENDIMENTOS</td>
+                    </tr>
+                    <tr class="bg-light-gray">
+                        <th>Fonte Pagadora</th>
+                        <th>Valor Líquido</th>
+                        <th>Informação</th>
+                        <th>Data do Dado</th>
+                    </tr>
+                    <tr>
+                        <td><input class="form-control" type="text" id="rendimento-1-fonte-pagadora"></td>
+                        <td><input class="form-control" type="text" id="rendimento-1-valor-liquido"></td>
+                        <td><input class="form-control" type="text" id="rendimento-1-informacao"></td>
+                        <td><input class="form-control" type="text" id="rendimento-1-data-dado"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="form-control" type="text" id="rendimento-2-fonte-pagadora"></td>
+                        <td><input class="form-control" type="text" id="rendimento-2-valor-liquido"></td>
+                        <td><input class="form-control" type="text" id="rendimento-2-informacao"></td>
+                        <td><input class="form-control" type="text" id="rendimento-2-data-dado"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="form-control" type="text" id="rendimento-3-fonte-pagadora"></td>
+                        <td><input class="form-control" type="text" id="rendimento-3-valor-liquido"></td>
+                        <td><input class="form-control" type="text" id="rendimento-3-informacao"></td>
+                        <td><input class="form-control" type="text" id="rendimento-3-data-dado"></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Total</td>
+                        <td><input class="form-control" type="text" id="rendimento-total-valor-liquido"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    window.onload = function() {
+        document.querySelectorAll('input').forEach(function(input) {
+            if (input.id && localStorage.getItem(input.id)) {
+                input.value = localStorage.getItem(input.id);
+            }
+            input.oninput = function() {
+                if (input.id) localStorage.setItem(input.id, this.value);
+            };
+        });
+        // Ativa o botão da página atual
+        const page = window.location.pathname.split('/').pop();
+        if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
+        if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
+        if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+        if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
+    };
+    </script>
+</body>
+</html> 

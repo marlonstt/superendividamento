@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panorama Mensal Resumido - Superendividamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f4f4; }
+        .container { max-width: 1100px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        .titulo-topo { font-size: 1.1em; font-weight: bold; text-align: center; }
+        .panorama-title { color: #0074d9; font-weight: bold; font-size: 1.3em; text-align: center; margin: 20px 0 30px 0; }
+        .retangulo { border: 2px solid #bbb; border-radius: 10px; margin-bottom: 18px; background: #f8f9fa; padding: 18px 18px 10px 18px; position: relative; }
+        .retangulo-verde { background: #e6f9e6; border: 2px solid #7ed87e; }
+        .retangulo-icone { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 2.5em; float: left; margin-right: 18px; }
+        .retangulo-titulo { font-weight: bold; font-size: 1.1em; margin-bottom: 6px; }
+        .retangulo-valor { font-size: 2em; font-weight: bold; color: #007a00; }
+        .retangulo-valor-neg { color: #d00; }
+        .retangulo-valor-pct { font-size: 1.2em; font-weight: bold; color: #0074d9; }
+        .retangulo-label { font-size: 1em; color: #333; }
+        .retangulo-autos { position: absolute; right: 18px; top: 18px; background: #c6f5c6; border: 2px solid #7ed87e; border-radius: 6px; padding: 8px 18px; font-size: 1.1em; font-weight: bold; }
+        .retangulo-obs { font-size: 0.95em; color: #444; margin-top: 10px; }
+        .retangulo-icone-alarme { color: #ff9800; }
+        .retangulo-icone-dinheiro { color: #007a00; }
+        .retangulo-icone-folha { color: #0074d9; }
+        .retangulo-icone-cartao { color: #d00; }
+        .retangulo-icone-comprometido { color: #e91e63; }
+        .retangulo-icone-outros { color: #9c27b0; }
+        .retangulo-icone-emergencial { color: #ff9800; }
+        .retangulo-pct-limite { color: #2e7d32; font-size: 1.5em; font-weight: bold; }
+        .retangulo-valor-livre { color: #007a00; font-size: 1.3em; font-weight: bold; }
+        .retangulo-valor-neg { color: #d00; }
+        .retangulo-valor-porcento { color: #0074d9; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-neg { color: #d00; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-verde { color: #2e7d32; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-alarme { color: #ff9800; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-azul { color: #0074d9; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-cinza { color: #888; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-preto { color: #000; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-roxo { color: #9c27b0; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-rosa { color: #e91e63; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-vermelho { color: #d00; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-laranja { color: #ff9800; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-amarelo { color: #ffc107; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-azul-claro { color: #03a9f4; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-verde-claro { color: #8bc34a; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-cinza-claro { color: #bdbdbd; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-preto-claro { color: #333; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-roxo-claro { color: #ce93d8; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-rosa-claro { color: #f8bbd0; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-vermelho-claro { color: #ffcdd2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-laranja-claro { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-amarelo-claro { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-azul-claro2 { color: #b3e5fc; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-verde-claro2 { color: #dcedc8; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-cinza-claro2 { color: #f5f5f5; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-preto-claro2 { color: #757575; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-roxo-claro2 { color: #e1bee7; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-rosa-claro2 { color: #fce4ec; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-vermelho-claro2 { color: #ffcdd2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-laranja-claro2 { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-amarelo-claro2 { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-azul-claro3 { color: #b3e5fc; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-verde-claro3 { color: #dcedc8; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-cinza-claro3 { color: #f5f5f5; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-preto-claro3 { color: #757575; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-roxo-claro3 { color: #e1bee7; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-rosa-claro3 { color: #fce4ec; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-vermelho-claro3 { color: #ffcdd2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-laranja-claro3 { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-amarelo-claro3 { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-azul-claro4 { color: #b3e5fc; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-verde-claro4 { color: #dcedc8; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-cinza-claro4 { color: #f5f5f5; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-preto-claro4 { color: #757575; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-roxo-claro4 { color: #e1bee7; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-rosa-claro4 { color: #fce4ec; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-vermelho-claro4 { color: #ffcdd2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-laranja-claro4 { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento-amarelo-claro4 { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
+        #custom-navbar {
+            display: flex;
+            border: 2px solid #000;
+            background: #90ff90;
+            margin-bottom: 30px;
+        }
+        .nav-btn {
+            flex: 1;
+            background: #90ff90;
+            border: none;
+            border-right: 1px solid #fff;
+            font-size: 1.2em;
+            padding: 12px 0;
+            cursor: pointer;
+            transition: background 0.2s, font-weight 0.2s;
+        }
+        .nav-btn:last-child { border-right: none; }
+        .nav-btn.active {
+            background: #baffba;
+            font-weight: bold;
+            outline: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="custom-navbar">
+        <button onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+        <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
+        <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+        <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+    </div>
+    <div class="container">
+        <div class="titulo-topo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Bras%C3%A3o_do_estado_de_Santa_Catarina.svg/120px-Bras%C3%A3o_do_estado_de_Santa_Catarina.svg.png" style="height:60px; float:left; margin-right:10px;">
+            PODER JUDICIÁRIO DO ESTADO DE SANTA CATARINA<br>
+            CENTRO JUDICIÁRIO DE SOLUÇÃO DE CONFLITOS E CIDADANIA - CEJUSC<br>
+            SETOR DE CIDADANIA - REDE TEMÁTICA SUPERENDIVIDAMENTO
+        </div>
+        <div class="panorama-title">PANORAMA MENSAL RESUMIDO</div>
+        <!-- Retângulo 1: Total Rendimentos Mensais Líquidos -->
+        <div class="retangulo">
+            <div class="retangulo-icone retangulo-icone-dinheiro">💰</div>
+            <div class="retangulo-titulo">TOTAL RENDIMENTOS MENSAIS LÍQUIDOS APÓS DESPESAS EXISTENCIAIS</div>
+            <div class="retangulo-valor" id="valor-rendimentos">R$ 0,00</div>
+            <div class="retangulo-autos">Autos: <span id="valor-autos">-</span></div>
+        </div>
+        <!-- Retângulo 2: Consignadas -->
+        <div class="retangulo">
+            <div class="retangulo-icone retangulo-icone-folha">🧾</div>
+            <div class="retangulo-titulo">SOMA DAS PARCELA(S) CONSIGNADA(S) EM FOLHA:</div>
+            <div class="retangulo-valor-neg" id="valor-consignadas">-R$ 0,00</div>
+            <div class="retangulo-valor-porcento" id="pct-consignadas">0,00%</div>
+        </div>
+        <!-- Retângulo 3: Não Consignadas -->
+        <div class="retangulo">
+            <div class="retangulo-icone retangulo-icone-cartao">💳</div>
+            <div class="retangulo-titulo">SOMA DAS PARCELAS NÃO CONSIGNADAS EM FOLHA:</div>
+            <div class="retangulo-valor-neg" id="valor-nao-consignadas">-R$ 0,00</div>
+            <div class="retangulo-valor-porcento" id="pct-nao-consignadas">0,00%</div>
+        </div>
+        <!-- Retângulo 4: Comprometido -->
+        <div class="retangulo">
+            <div class="retangulo-icone retangulo-icone-comprometido">🎯</div>
+            <div class="retangulo-titulo">COMPROMETIDO:</div>
+            <div class="retangulo-label"><span id="valor-livre-mensal">R$ 0,00</span> : LIVRE MENSAL</div>
+            <div class="retangulo-valor-porcento" id="pct-comprometido">0,00% : RENDA COMPROMETIDA EM PARCELAS</div>
+        </div>
+        <!-- Retângulo 5: Outras Dívidas -->
+        <div class="retangulo">
+            <div class="retangulo-icone retangulo-icone-outros">📋</div>
+            <div class="retangulo-titulo">SOMA DAS OUTRAS DÍVIDAS SEM PARCELAS MENSAIS ATUAIS:</div>
+            <div class="retangulo-label">- <span id="valor-sem-parcelas">R$ 0,00</span> : TOTAL DAS DÍVIDAS SEM PARCELAS HOJE</div>
+            <div class="retangulo-label"><span id="valor-parcelamento-60">R$ 0,00</span> : PARCELAMENTO DESSAS DÍVIDAS EM 60 MESES</div>
+            <div class="retangulo-label">- <span id="valor-total-parcelas">R$ 0,00</span> : PARCELA MENSAL DE TODAS AS DÍVIDAS SOMADAS</div>
+            <div class="retangulo-label"><span id="valor-livre-mensal-consolidado">R$ 0,00</span> : LIVRE MENSAL CONSOLIDADO</div>
+            <div class="retangulo-valor-porcento" id="pct-comprometido-total">0,00% : RENDA COMPROMETIDA COM TODA DÍVIDA</div>
+        </div>
+        <!-- Retângulo 6: Emergencial -->
+        <div class="retangulo retangulo-verde">
+            <div class="retangulo-icone retangulo-icone-alarme">🚨</div>
+            <div class="retangulo-titulo">EMERGENCIAL ATÉ FASE DE MEDIAÇÃO E/OU INSTRUÇÃO:</div>
+            <div class="retangulo-pct-limite" id="pct-limite">0%</div>
+            <div class="retangulo-label"><span id="valor-renda-sem-consignados">R$ 0,00</span> : RENDA SEM OS DÉBITOS CONSIGNADOS</div>
+            <div class="retangulo-label"><span id="valor-consignacao-emergencial">R$ 0,00</span> : CONSIGNAÇÃO EMERGENCIAL</div>
+            <div class="retangulo-label"><span id="valor-livre-emergencial">R$ 0,00</span> : LIVRE PARA OUTRAS DESPESAS (EXISTENCIAIS E FORA DO PLANO)</div>
+        </div>
+        <div class="retangulo-obs">
+            <b>Para preenchimento deste formulário:</b><br>
+            1. Digitar percentual proposto de limite a comprometer e número dos autos. As demais células estão bloqueadas.<br>
+            2. Na aba "rendimentos" cada linha é uma fonte de pagamento de um mês normal/típico (INSS, Empregadores, previdência complementar, se recebe aluguéis de algum imóvel ou outro tipo de rendimento)<br>
+            3. Na aba "panorama mensal_consig" preencher nome de credor e valor de cada lançamento a ser somado<br>
+            4. Na aba "panorama mensal_não_consig" preencher nome de credor e de cada parcela da dívida não consignada<br>
+            5. Na aba "dívidas sem parcelas mensais" aquelas dívidas com parcela única, saldo de cheque especial, cartão e outros contratos com parcelas mensais, mas que precisam entrar na renegociação<br>
+            6. Atenção, aqui não são alimentados dados sobre as despesas existenciais, apenas dados de dívidas<br>
+            7. Este documento é parte do atendimento do setor de Cidadania, da Rede Temática Superendividamento do Poder Judiciário Catarinense (CEJ). Não faz juízos de valor, apenas procura aparilhar visualmente as contas do processo para o caso. Parte de informações indicadas pelos autos, podendo ser atualizado pelas partes e demais interessados, inclusive para fins de mediação e instrução.<br>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Função para formatar valores em BRL
+    function formatBRL(value) {
+        if (isNaN(value)) return 'R$ 0,00';
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+    function getValueFromLocalStorage(key, fallback=0) {
+        const v = localStorage.getItem(key);
+        return v ? parseFloat(v) : fallback;
+    }
+    function atualizarPanorama() {
+        // 1. Buscar valor final de dados-socioeconomicos.html (após despesas existenciais)
+        let valorRendimentos = getValueFromLocalStorage('valor-final', 0);
+        document.getElementById('valor-rendimentos').textContent = formatBRL(valorRendimentos);
+        // 2. Buscar número dos autos da página geral.html
+        document.getElementById('valor-autos').textContent = localStorage.getItem('numero-processo') || '-';
+        // 3. Buscar valores das parcelas consignadas e não consignadas
+        let valorConsignadas = getValueFromLocalStorage('consignadas-parcela', 0);
+        let valorNaoConsignadas = getValueFromLocalStorage('nao-consignadas-parcela', 0);
+        let valorRendimentosBase = valorRendimentos;
+        // Percentuais
+        let pctConsignadas = valorRendimentosBase ? (valorConsignadas / valorRendimentosBase) * 100 : 0;
+        let pctNaoConsignadas = valorRendimentosBase ? (valorNaoConsignadas / valorRendimentosBase) * 100 : 0;
+        document.getElementById('valor-consignadas').textContent = '-'+formatBRL(valorConsignadas);
+        document.getElementById('pct-consignadas').textContent = pctConsignadas.toFixed(2)+'%';
+        document.getElementById('valor-nao-consignadas').textContent = '-'+formatBRL(valorNaoConsignadas);
+        document.getElementById('pct-nao-consignadas').textContent = pctNaoConsignadas.toFixed(2)+'%';
+        // 4. Comprometido
+        let valorLivreMensal = valorRendimentosBase - valorConsignadas - valorNaoConsignadas;
+        let pctComprometido = pctConsignadas + pctNaoConsignadas;
+        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensal);
+        document.getElementById('pct-comprometido').textContent = pctComprometido.toFixed(2)+'% : RENDA COMPROMETIDA EM PARCELAS';
+        // 5. Outras dívidas sem parcelas
+        let valorSemParcelas = getValueFromLocalStorage('sem-parcelas-saldo', 0);
+        let valorParcelamento60 = valorSemParcelas / 60;
+        let valorTotalParcelas = valorConsignadas + valorNaoConsignadas + valorParcelamento60;
+        let valorLivreMensalConsolidado = valorRendimentosBase - valorTotalParcelas;
+        let pctComprometidoTotal = valorRendimentosBase ? (valorTotalParcelas / valorRendimentosBase) * 100 : 0;
+        document.getElementById('valor-sem-parcelas').textContent = formatBRL(valorSemParcelas);
+        document.getElementById('valor-parcelamento-60').textContent = formatBRL(valorParcelamento60);
+        document.getElementById('valor-total-parcelas').textContent = formatBRL(valorTotalParcelas);
+        document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidado);
+        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal.toFixed(2)+'% : RENDA COMPROMETIDA COM TODA DÍVIDA';
+        // 6. Emergencial
+        let pctLimite = getValueFromLocalStorage('plano-pct-limite', 0);
+        let valorRendaSemConsignados = valorRendimentosBase;
+        let valorConsignacaoEmergencial = -pctLimite * valorRendaSemConsignados;
+        let valorLivreEmergencial = valorRendaSemConsignados + valorConsignacaoEmergencial;
+        document.getElementById('pct-limite').textContent = (pctLimite*100).toFixed(0)+'%';
+        document.getElementById('valor-renda-sem-consignados').textContent = formatBRL(valorRendaSemConsignados);
+        document.getElementById('valor-consignacao-emergencial').textContent = formatBRL(valorConsignacaoEmergencial);
+        document.getElementById('valor-livre-emergencial').textContent = formatBRL(valorLivreEmergencial);
+    }
+    window.onload = atualizarPanorama;
+    // Ativa o botão da página atual
+    const page = window.location.pathname.split('/').pop();
+    if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
+    if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
+    if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+    if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
+    </script>
+</body>
+</html> 
