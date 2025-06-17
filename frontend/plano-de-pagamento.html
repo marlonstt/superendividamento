@@ -71,15 +71,15 @@
                     <tr>
                         <td><input type="number" step="0.01" min="0" max="1" id="comprometida" class="form-control input-xs" value="0.3"></td>
                         <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
-                        <td><input type="number" step="1" min="1" id="mesesQuitar" class="form-control input-xs" value="60"></td>
-                        <td><input type="number" step="1" min="1" id="qtdeParcelas" class="form-control input-xs" value="60"></td>
+                        <td><input type="number" step="1" min="1" id="mesesQuitar" class="form-control input-xs" value="0"></td>
+                        <td><input type="number" step="1" min="1" id="qtdeParcelas" class="form-control input-xs" value="0"></td>
                     </tr>
                 </table>
             </div>
             <div class="col-lg-4 d-flex align-items-center">
                 <div class="ms-3">
                     <label for="receitaTotal" class="form-label mb-0">Receita Total (R$):</label>
-                    <input type="number" step="0.01" min="0" id="receitaTotal" class="form-control input-md" value="1412.00">
+                    <input type="number" step="0.01" min="0" id="receitaTotal" class="form-control input-md" value="0">
                 </div>
             </div>
                     </div>
@@ -170,8 +170,8 @@ function calcularDividas() {
     const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
     const margem = receitaTotal * pctComprometida;
     document.getElementById('margem').value = formatBRL(margem);
-    const mesesQuitar = parseInt(document.getElementById('mesesQuitar').value) || 60;
-    const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 60;
+    const mesesQuitar = parseInt(document.getElementById('mesesQuitar').value) || 0;
+    const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
 
     // Saldo devedor
     let totalSaldoDevedor = 0;
