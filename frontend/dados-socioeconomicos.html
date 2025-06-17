@@ -133,22 +133,15 @@
             const totalDespesas = somaInputs('.despesa');
             document.getElementById('total-receitas').textContent = formatBRL(totalReceitas);
             document.getElementById('total-despesas').textContent = formatBRL(totalDespesas);
-            document.getElementById('valor-final').textContent = formatBRL(totalReceitas - totalDespesas);
+            const valorFinal = totalReceitas - totalDespesas;
+            document.getElementById('valor-final').textContent = formatBRL(valorFinal);
+            // Save the value to localStorage
+            localStorage.setItem('valor-final', valorFinal.toString());
         }
         document.querySelectorAll('.receita, .despesa').forEach(input => {
             input.addEventListener('input', atualizarTotais);
         });
         // Inicializa totais ao carregar
-        atualizarTotais();
-        // Ativa o botão da página atual
-        const page = window.location.pathname.split('/').pop();
-        if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
-        if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
-        if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
-        if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
-        document.getElementById('valor-final').addEventListener('DOMSubtreeModified', function() {
-            localStorage.setItem('valor-final', this.textContent.replace(/[^\d\,\.]/g, '').replace(',', '.'));
-        });
         window.onload = function() {
             document.querySelectorAll('input').forEach(function(input) {
                 if (input.id && localStorage.getItem(input.id)) {
@@ -158,12 +151,29 @@
                     if (input.id) localStorage.setItem(input.id, this.value);
                 };
             });
+            
+            // Restore valor-final from localStorage if it exists
+            const valorFinal = localStorage.getItem('valor-final');
+            if (valorFinal) {
+                document.getElementById('valor-final').textContent = formatBRL(parseFloat(valorFinal));
+            }
+            
+            // Calculate initial totals
+            atualizarTotais();
+            
+            // Ativa o botão da página atual
+            const page = window.location.pathname.split('/').pop();
+            if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
+            if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
+            if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+            if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
         };
         function limparCampos() {
             document.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(input) {
                 input.value = '';
                 if (input.id) localStorage.removeItem(input.id);
             });
+            localStorage.removeItem('valor-final');
             atualizarTotais();
         }
     </script>
