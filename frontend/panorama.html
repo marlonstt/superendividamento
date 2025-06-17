@@ -109,6 +109,7 @@
         <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
         <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
     </div>
+    <button type="button" class="btn btn-warning mb-3" onclick="limparCampos()">Limpar</button>
     <div class="container">
         <div class="titulo-topo">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Bras%C3%A3o_do_estado_de_Santa_Catarina.svg/120px-Bras%C3%A3o_do_estado_de_Santa_Catarina.svg.png" style="height:60px; float:left; margin-right:10px;">
@@ -185,6 +186,14 @@
     function getValueFromLocalStorage(key, fallback=0) {
         const v = localStorage.getItem(key);
         return v ? parseFloat(v) : fallback;
+    }
+    function limparCampos() {
+        document.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(input) {
+            input.value = '';
+            if (input.id) localStorage.removeItem(input.id);
+        });
+        // Atualizar campos visuais se necessário
+        location.reload();
     }
     function atualizarPanorama() {
         // 1. Buscar valor final de dados-socioeconomicos.html (após despesas existenciais)
