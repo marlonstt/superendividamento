@@ -20,39 +20,54 @@
             .row { flex-direction: column; }
         }
         #custom-navbar {
-            margin-bottom: 30px;
             position: sticky;
             top: 0;
             z-index: 1000;
+            display: flex;
+            background: linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);
+            box-shadow: 0 2px 8px #0002;
+            border-radius: 0 0 16px 16px;
+            padding: 0 16px;
+            margin-bottom: 30px;
+            border: none;
         }
         .nav-btn {
-            flex:1;
-            background:#90ff90;
-            border:none;
-            border-right:1px solid #fff;
-            font-size:1.2em;
-            padding:12px 0;
-            cursor:pointer;
-            transition: background 0.2s, font-weight 0.2s;
+            flex: 1;
+            background: transparent;
+            border: none;
+            font-size: 1.15em;
+            padding: 16px 0;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, font-weight 0.2s;
+            color: #2d5c2f;
+            border-bottom: 3px solid transparent;
+            border-radius: 0 0 12px 12px;
+            margin: 0 4px;
         }
-        .nav-btn:last-child { border-right:none; }
+        .nav-btn:focus,
+        .nav-btn:active,
+        .nav-btn:hover,
         .nav-btn.active {
-            background:#baffba;
-            font-weight:bold;
-            outline:2px solid #000;
+            background: #baffba;
+            color: #007a00;
+            font-weight: bold;
+            border-bottom: 3px solid #007a00;
+            outline: none;
         }
     </style>
 </head>
 <body>
-    <div id="custom-navbar" style="display:flex; border:2px solid #000; background:#90ff90;">
+    <div id="custom-navbar">
         <button onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
         <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
         <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
         <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
     </div>
     <div class="container">
-        <h1>Dados Socioeconômicos do Consumidor</h1>
-        <button type="button" class="btn btn-warning mb-3" onclick="limparCampos()">Limpar</button>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
+            <h1>Dados Socioeconômicos do Consumidor</h1>
+            <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
+        </div>
         <form id="socForm">
             <div class="row g-4">
                 <div class="col-md-6">

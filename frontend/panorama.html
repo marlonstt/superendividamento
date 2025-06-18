@@ -79,29 +79,39 @@
         .retangulo-valor-porcento-laranja-claro4 { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-amarelo-claro4 { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
         #custom-navbar {
-            display: flex;
-            border: 2px solid #000;
-            background: #90ff90;
-            margin-bottom: 30px;
             position: sticky;
             top: 0;
             z-index: 1000;
+            display: flex;
+            background: linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);
+            box-shadow: 0 2px 8px #0002;
+            border-radius: 0 0 16px 16px;
+            padding: 0 16px;
+            margin-bottom: 30px;
+            border: none;
         }
         .nav-btn {
             flex: 1;
-            background: #90ff90;
+            background: transparent;
             border: none;
-            border-right: 1px solid #fff;
-            font-size: 1.2em;
-            padding: 12px 0;
+            font-size: 1.15em;
+            padding: 16px 0;
             cursor: pointer;
-            transition: background 0.2s, font-weight 0.2s;
+            transition: background 0.2s, color 0.2s, font-weight 0.2s;
+            color: #2d5c2f;
+            border-bottom: 3px solid transparent;
+            border-radius: 0 0 12px 12px;
+            margin: 0 4px;
         }
-        .nav-btn:last-child { border-right: none; }
+        .nav-btn:focus,
+        .nav-btn:active,
+        .nav-btn:hover,
         .nav-btn.active {
             background: #baffba;
+            color: #007a00;
             font-weight: bold;
-            outline: 2px solid #000;
+            border-bottom: 3px solid #007a00;
+            outline: none;
         }
     </style>
 </head>
@@ -112,15 +122,10 @@
         <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
         <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
     </div>
-    <button type="button" class="btn btn-warning mb-3" onclick="limparCampos()">Limpar</button>
     <div class="container">
-        <div class="titulo-topo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Bras%C3%A3o_do_estado_de_Santa_Catarina.svg/120px-Bras%C3%A3o_do_estado_de_Santa_Catarina.svg.png" style="height:60px; float:left; margin-right:10px;">
-            PODER JUDICIÁRIO DO ESTADO DE SANTA CATARINA<br>
-            CENTRO JUDICIÁRIO DE SOLUÇÃO DE CONFLITOS E CIDADANIA - CEJUSC<br>
-            SETOR DE CIDADANIA - REDE TEMÁTICA SUPERENDIVIDAMENTO
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
+            <div class="panorama-title">PANORAMA MENSAL RESUMIDO</div>
         </div>
-        <div class="panorama-title">PANORAMA MENSAL RESUMIDO</div>
         <!-- Retângulo 1: Total Rendimentos Mensais Líquidos -->
         <div class="retangulo">
             <div class="retangulo-icone retangulo-icone-dinheiro">💰</div>
