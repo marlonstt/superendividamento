@@ -75,7 +75,7 @@
                         <th>Qtde. de Parcelas</th>
                     </tr>
                     <tr>
-                        <td><input type="number" step="0.01" min="0" max="1" id="comprometida" class="form-control input-sm" value="0.3"></td>
+                        <td><input type="number" step="0.1" min="0" max="100" id="comprometida" class="form-control input-sm" value="30"></td>
                         <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
                         <td><input type="number" step="1" min="1" id="mesesQuitar" class="form-control input-sm" value="0"></td>
                         <td><input type="number" step="1" min="1" id="qtdeParcelas" class="form-control input-sm" value="0"></td>
@@ -84,8 +84,8 @@
             </div>
             <div class="col-lg-4 d-flex align-items-center">
                 <div class="ms-3">
-                    <label for="receitaTotal" class="form-label mb-0">Receita Total (R$):</label>
-                    <input type="number" step="0.01" min="0" id="receitaTotal" class="form-control input-md" value="0">
+                    <label for="receitaTotal" class="form-label mb-0">Receita mensal após despesas (R$):</label>
+                    <span id="receitaTotal" class="form-control input-md" style="background:#e9ecef;display:block;min-height:38px;"></span>
                 </div>
             </div>
                     </div>
@@ -172,10 +172,17 @@ function renderDividasTable() {
 }
 
 function calcularDividas() {
-    const receitaTotal = parseFloat(document.getElementById('receitaTotal').value) || 0;
-    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
+    const receitaTotal = parseFloat(
+      (document.getElementById('receitaTotal').textContent || '0')
+        .replace(/[^\d,]/g, '') // remove tudo que não é dígito ou vírgula
+        .replace(/\./g, '')     // remove pontos de milhar
+        .replace(',', '.')      // troca vírgula decimal por ponto
+    ) || 0;
+    const pctComprometidaInput = parseFloat(document.getElementById('comprometida').value) || 0;
+    const pctComprometida = pctComprometidaInput / 100;
     const margem = receitaTotal * pctComprometida;
     document.getElementById('margem').value = formatBRL(margem);
+    console.log(receitaTotal, pctComprometida, margem);
     const mesesQuitar = parseInt(document.getElementById('mesesQuitar').value) || 0;
     const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
 
@@ -187,12 +194,16 @@ function calcularDividas() {
     });
     document.getElementById('total-saldo-devedor').textContent = formatBRL(totalSaldoDevedor);
 
+    // Nova lógica: Calcular valor da parcela total baseado no valor da dívida
+    const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
+
     // % Dívida, Valor da Parcela, Parcela Residual
     let totalValorParcela = 0;
     saldoInputs.forEach((input, i) => {
         const saldo = parseFloat(input.value) || 0;
         const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-        const valorParcela = pctDivida * margem;
+        // Valor da parcela proporcional ao valor da dívida
+        const valorParcela = pctDivida * valorParcelaTotal;
         // Parcela Residual
         let parcelaResidual = 0;
         if (qtdeParcelas <= 60) {
@@ -208,10 +219,10 @@ function calcularDividas() {
     document.getElementById('total-valor-parcela').textContent = formatBRL(totalValorParcela);
     // NÃO atualizar valor-pago nem pct-saldo-pago aqui!
 
-    renderParcelasTable(qtdeParcelas);
+    renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor);
 }
 
-function renderParcelasTable(qtdeParcelas) {
+function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor) {
     // Cabeçalho
     const head = document.getElementById('parcelas-head');
     const body = document.getElementById('parcelas-body');
@@ -230,12 +241,10 @@ function renderParcelasTable(qtdeParcelas) {
     head.innerHTML = `<tr>${ths}</tr>`;
 
     // Pega valores principais
-    const receitaTotal = parseFloat(document.getElementById('receitaTotal').value) || 0;
-    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
     const saldoInputs = document.querySelectorAll('.saldo-input');
-    const totalSaldoDevedor = Array.from(saldoInputs).reduce((acc, input) => acc + (parseFloat(input.value) || 0), 0);
+    const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
 
-    if (qtdeParcelas > 0 && receitaTotal > 0 && pctComprometida > 0 && totalSaldoDevedor > 0 && bancosUnicos.length > 0) {
+    if (qtdeParcelas > 0 && totalSaldoDevedor > 0 && bancosUnicos.length > 0) {
         // Linhas
         for (let mes = 1; mes <= qtdeParcelas; mes++) {
             let tds = `<td>Mês ${mes}</td>`;
@@ -247,8 +256,8 @@ function renderParcelasTable(qtdeParcelas) {
                     if (span.textContent === banco) {
                         const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
                         const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                        const margem = receitaTotal * pctComprometida;
-                        valor += pctDivida * margem;
+                        // Valor proporcional ao valor da dívida
+                        valor += pctDivida * valorParcelaTotal;
                     }
                 });
                 valor = +(valor).toFixed(2);
@@ -256,7 +265,7 @@ function renderParcelasTable(qtdeParcelas) {
                 somaLinha += valor;
             });
             somaLinha = +(somaLinha).toFixed(2);
-            tds += `<td>${formatBRL(somaLinha)}</td>`;
+            tds += `<td>Valor Mensal: ${formatBRL(somaLinha)}</td>`;
             body.innerHTML += `<tr>${tds}</tr>`;
         }
         // Rodapé (total por banco)
@@ -268,8 +277,7 @@ function renderParcelasTable(qtdeParcelas) {
                     if (span.textContent === banco) {
                         const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
                         const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                        const margem = receitaTotal * pctComprometida;
-                        somaCol += pctDivida * margem;
+                        somaCol += pctDivida * valorParcelaTotal;
                     }
                 });
             }
@@ -284,14 +292,13 @@ function renderParcelasTable(qtdeParcelas) {
                     if (span.textContent === banco) {
                         const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
                         const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                        const margem = receitaTotal * pctComprometida;
-                        totalGeral += pctDivida * margem;
+                        totalGeral += pctDivida * valorParcelaTotal;
                     }
                 });
             }
         });
         totalGeral = +(totalGeral).toFixed(2);
-        tfs += `<td>${formatBRL(totalGeral)}</td>`;
+        tfs += `<td>Total Empréstimos: ${formatBRL(totalGeral)}</td>`;
         foot.innerHTML = `<tr>${tfs}</tr>`;
     } else {
         // Se algum valor essencial estiver zerado, exibe tudo como R$ 0,00
@@ -326,6 +333,7 @@ if(page.includes('panorama')) document.getElementById('btn-panorama').classList.
 
 document.getElementById('comprometida').addEventListener('input', function() {
     localStorage.setItem('plano-pct-limite', this.value);
+    calcularDividas();
 });
 
 window.onload = function() {
@@ -402,7 +410,9 @@ window.onload = function() {
   // Preenche receita total da página dados-socioeconomicos
   const receitaTotal = localStorage.getItem('valor-final');
   if (receitaTotal) {
-    document.getElementById('receitaTotal').value = receitaTotal;
+    document.getElementById('receitaTotal').textContent = formatBRL(parseFloat(receitaTotal));
+  } else {
+    document.getElementById('receitaTotal').textContent = formatBRL(0);
   }
 
   // Calcula valores iniciais
