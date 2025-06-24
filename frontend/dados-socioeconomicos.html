@@ -160,7 +160,8 @@
             document.getElementById('total-despesas').textContent = formatBRL(totalDespesas);
             const valorFinal = totalReceitas - totalDespesas;
             document.getElementById('valor-final').textContent = formatBRL(valorFinal);
-            // Save the value to localStorage
+            // Salvar no localStorage tanto o valor formatado quanto o valor numérico
+            localStorage.setItem('valor-final-formatado', formatBRL(valorFinal));
             localStorage.setItem('valor-final', valorFinal.toString());
         }
         document.querySelectorAll('.receita, .despesa').forEach(input => {
@@ -176,12 +177,6 @@
                     if (input.id) localStorage.setItem(input.id, this.value);
                 };
             });
-            
-            // Restore valor-final from localStorage if it exists
-            const valorFinal = localStorage.getItem('valor-final');
-            if (valorFinal) {
-                document.getElementById('valor-final').textContent = formatBRL(parseFloat(valorFinal));
-            }
             
             // Calculate initial totals
             atualizarTotais();

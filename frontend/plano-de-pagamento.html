@@ -136,15 +136,16 @@
             <div class="col-lg-8">
                 <table class="table table-bordered mb-0">
                     <tr>
-                        <th>% Comprometida</th>
+                        <th>Renda Comprometida</th>
                         <th>Margem</th>
-                        <th>Meses para quitar</th>
                         <th>Qtde. de Parcelas</th>
                     </tr>
                     <tr>
-                        <td><input type="number" step="0.1" min="0" max="100" id="comprometida" class="form-control input-sm" value="30"></td>
+                        <td style="position: relative;">
+                            <input type="number" step="0.1" min="0" max="100" id="comprometida" class="form-control input-sm" value="30" style="padding-right: 20px;">
+                            <span style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%);">%</span>
+                        </td>
                         <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
-                        <td><input type="number" step="1" min="2" max="60" id="mesesQuitar" class="form-control input-sm" value="2"></td>
                         <td style="display:flex; align-items:center; gap:8px;">
                             <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2">
                         </td>
@@ -176,12 +177,12 @@
                         <tr>
                             <th>Credor</th>
                             <th>Informação</th>
+                            <th>Valor total pago</th>
+                            <th>% do saldo pago</th>
                             <th>Saldo Devedor</th>
                             <th>% Dívida</th>
                             <th>Valor da Parcela</th>
                             <th>Parcela Residual</th>
-                            <th>Valor total pago</th>
-                            <th>% do saldo pago</th>
                         </tr>
                     </thead>
                     <tbody id="dividas-body">
@@ -190,11 +191,11 @@
                     <tfoot>
                         <tr class="subtotal-row">
                             <td colspan="2">Total/Subtotal</td>
+                            <td id="total-valor-pago">R$ 0,00</td>
+                            <td></td>
                             <td id="total-saldo-devedor">R$ 0,00</td>
                             <td id="total-pct-divida">100%</td>
                             <td id="total-valor-parcela">R$ 0,00</td>
-                            <td></td>
-                            <td id="total-valor-pago">R$ 0,00</td>
                             <td></td>
                         </tr>
                     </tfoot>
@@ -235,49 +236,279 @@ function formatBRL(value) {
 function renderDividasTable() {
     const tbody = document.getElementById('dividas-body');
     tbody.innerHTML = '';
-    for (let i = 0; i < numDividas; i++) {
-        tbody.innerHTML += `
-        <tr>
-            <td><span class="credor-text" style="display: inline-block; width: 100%; padding: 0.375rem 0.75rem;"></span></td>
-            <td><input type="text" class="form-control info-input" value="${infoPadrao[i]}"></td>
-            <td><input type="number" step="0.01" min="0" class="form-control saldo-input" value="0"></td>
-            <td class="pct-divida">0%</td>
-            <td class="valor-parcela">R$ 0,00</td>
-            <td class="parcela-residual">R$ 0,00</td>
-            <td class="valor-pago">R$ 0,00</td>
-            <td class="pct-saldo-pago">-</td>
-        </tr>`;
+    let linhasPreenchidas = 0;
+
+    // Recuperar dados dos consignados
+    const linhasConsignados = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
+    
+    // Recuperar dados dos não consignados
+    const naoConsignadosData = [];
+    for (let i = 1; i <= 2; i++) {
+        const credor = localStorage.getItem(`nao-consignado-${i}-credores`);
+        const contratos = localStorage.getItem(`nao-consignado-${i}-contratos`);
+        const valorPago = localStorage.getItem(`nao-consignado-${i}-valor-pago`);
+        const saldoDevedor = localStorage.getItem(`nao-consignado-${i}-saldo-devedor`);
+        if (credor || contratos || saldoDevedor) {
+            naoConsignadosData.push({
+                credor,
+                contratos,
+                valorPago: parseFloat(valorPago) || 0,
+                saldoDevedor: parseFloat(saldoDevedor) || 0
+            });
+        }
+    }
+
+    // Recuperar dados sem parcelas
+    const semParcelasData = [];
+    for (let i = 1; i <= 1; i++) {
+        const credor = localStorage.getItem(`sem-parcela-${i}-credores`);
+        const contratos = localStorage.getItem(`sem-parcela-${i}-contratos`);
+        const valorPago = localStorage.getItem(`sem-parcela-${i}-valor-pago`);
+        const saldoDevedor = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
+        if (credor || contratos || saldoDevedor) {
+            semParcelasData.push({
+                credor,
+                contratos,
+                valorPago: parseFloat(valorPago) || 0,
+                saldoDevedor: parseFloat(saldoDevedor) || 0
+            });
+        }
+    }
+
+    // Recuperar dívidas consolidadas
+    const dividasConsolidadasData = [];
+    for (let i = 1; i <= 2; i++) {
+        const credor = localStorage.getItem(`divida-consolidada-${i}-credores`);
+        const contratos = localStorage.getItem(`divida-consolidada-${i}-contratos`);
+        const valorPago = localStorage.getItem(`divida-consolidada-${i}-valor-pago`);
+        const saldoDevedor = localStorage.getItem(`divida-consolidada-${i}-saldo-devedor`);
+        if (credor || contratos || saldoDevedor) {
+            dividasConsolidadasData.push({
+                credor,
+                contratos,
+                valorPago: parseFloat(valorPago) || 0,
+                saldoDevedor: parseFloat(saldoDevedor) || 0
+            });
+        }
+    }
+    
+    // Processar linhas de consignados
+    linhasConsignados.forEach((linha, i) => {
+        if (linha.credor || linha.saldoDevedor || linha.contratos) {
+            linhasPreenchidas++;
+            const valorPago = parseFloat(linha.valorPago) || 0;
+            const saldoDevedor = parseFloat(linha.saldoDevedor) || 0;
+            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${linha.credor || ''}</td>
+                    <td>${linha.contratos || ''}</td>
+                    <td>${formatBRL(valorPago)}</td>
+                    <td>${pctPago}%</td>
+                    <td>${formatBRL(saldoDevedor)}</td>
+                    <td class="pct-divida">0%</td>
+                    <td class="valor-parcela">R$ 0,00</td>
+                    <td class="parcela-residual">R$ 0,00</td>
+                </tr>
+            `;
+        }
+    });
+
+    // Processar linhas de não consignados
+    naoConsignadosData.forEach(linha => {
+        if (linha.credor || linha.saldoDevedor || linha.contratos) {
+            linhasPreenchidas++;
+            const valorPago = linha.valorPago || 0;
+            const saldoDevedor = linha.saldoDevedor || 0;
+            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${linha.credor || ''}</td>
+                    <td>${linha.contratos || ''}</td>
+                    <td>${formatBRL(valorPago)}</td>
+                    <td>${pctPago}%</td>
+                    <td>${formatBRL(saldoDevedor)}</td>
+                    <td class="pct-divida">0%</td>
+                    <td class="valor-parcela">R$ 0,00</td>
+                    <td class="parcela-residual">R$ 0,00</td>
+                </tr>
+            `;
+        }
+    });
+
+    // Processar linhas sem parcelas
+    semParcelasData.forEach(linha => {
+        if (linha.credor || linha.saldoDevedor || linha.contratos) {
+            linhasPreenchidas++;
+            const valorPago = linha.valorPago || 0;
+            const saldoDevedor = linha.saldoDevedor || 0;
+            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${linha.credor || ''}</td>
+                    <td>${linha.contratos || ''}</td>
+                    <td>${formatBRL(valorPago)}</td>
+                    <td>${pctPago}%</td>
+                    <td>${formatBRL(saldoDevedor)}</td>
+                    <td class="pct-divida">0%</td>
+                    <td class="valor-parcela">R$ 0,00</td>
+                    <td class="parcela-residual">R$ 0,00</td>
+                </tr>
+            `;
+        }
+    });
+
+    // Processar dívidas consolidadas
+    dividasConsolidadasData.forEach(linha => {
+        if (linha.credor || linha.saldoDevedor || linha.contratos) {
+            linhasPreenchidas++;
+            const valorPago = linha.valorPago || 0;
+            const saldoDevedor = linha.saldoDevedor || 0;
+            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
+            tbody.innerHTML += `
+                <tr>
+                    <td>${linha.credor || ''}</td>
+                    <td>${linha.contratos || ''}</td>
+                    <td>${formatBRL(valorPago)}</td>
+                    <td>${pctPago}%</td>
+                    <td>${formatBRL(saldoDevedor)}</td>
+                    <td class="pct-divida">0%</td>
+                    <td class="valor-parcela">R$ 0,00</td>
+                    <td class="parcela-residual">R$ 0,00</td>
+                </tr>
+            `;
+        }
+    });
+
+    atualizarTotais();
+}
+
+function atualizarTotais() {
+    let totalValorPago = 0;
+    let totalSaldoDevedor = 0;
+
+    // Somar valores dos consignados
+    const linhasConsignados = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
+    linhasConsignados.forEach(linha => {
+        totalValorPago += parseFloat(linha.valorPago) || 0;
+        totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+    });
+
+    // Somar valores dos não consignados
+    for (let i = 1; i <= 2; i++) {
+        const valorPago = parseFloat(localStorage.getItem(`nao-consignado-${i}-valor-pago`)) || 0;
+        const saldoDevedor = parseFloat(localStorage.getItem(`nao-consignado-${i}-saldo-devedor`)) || 0;
+        totalValorPago += valorPago;
+        totalSaldoDevedor += saldoDevedor;
+    }
+
+    // Somar valores sem parcelas
+    for (let i = 1; i <= 1; i++) {
+        const valorPago = parseFloat(localStorage.getItem(`sem-parcela-${i}-valor-pago`)) || 0;
+        const saldoDevedor = parseFloat(localStorage.getItem(`sem-parcela-${i}-saldo-devedor`)) || 0;
+        totalValorPago += valorPago;
+        totalSaldoDevedor += saldoDevedor;
+    }
+
+    // Somar dívidas consolidadas
+    for (let i = 1; i <= 2; i++) {
+        const valorPago = parseFloat(localStorage.getItem(`divida-consolidada-${i}-valor-pago`)) || 0;
+        const saldoDevedor = parseFloat(localStorage.getItem(`divida-consolidada-${i}-saldo-devedor`)) || 0;
+        totalValorPago += valorPago;
+        totalSaldoDevedor += saldoDevedor;
+    }
+
+    document.getElementById('total-valor-pago').textContent = formatBRL(totalValorPago);
+    document.getElementById('total-saldo-devedor').textContent = formatBRL(totalSaldoDevedor);
+
+    // Atualizar percentuais e valores das parcelas
+    const rows = document.querySelectorAll('#dividas-body tr');
+    rows.forEach(row => {
+        const saldoDevedorCell = row.cells[4];
+        const saldoDevedor = parseFloat(saldoDevedorCell.textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
+        row.querySelector('.pct-divida').textContent = pctDivida.toFixed(2) + '%';
+    });
+
+    calcularParcelas();
+}
+
+function atualizarReceitaTotal() {
+    const valorFinal = parseFloat(localStorage.getItem('valor-final')) || 0;
+    const elementoReceita = document.getElementById('receitaTotal');
+    if (elementoReceita) {
+        elementoReceita.textContent = valorFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 }
 
 function calcularDividas() {
-    const receitaTotal = parseFloat(
-      (document.getElementById('receitaTotal').textContent || '0')
-        .replace(/[^\d,]/g, '')
-        .replace(/\./g, '')
-        .replace(',', '.')
-    ) || 0;
-    const pctComprometidaInput = parseFloat(document.getElementById('comprometida').value) || 0;
-    const pctComprometida = pctComprometidaInput / 100;
-    const margem = receitaTotal * pctComprometida;
+    const receitaTotal = parseFloat(localStorage.getItem('valor-final')) || 0;
+    document.getElementById('receitaTotal').textContent = formatBRL(receitaTotal);
+
+    const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
+    const margem = receitaTotal * (pctComprometida / 100);
     document.getElementById('margem').value = formatBRL(margem);
-    const mesesQuitarInput = document.getElementById('mesesQuitar');
-    const qtdeParcelasInput = document.getElementById('qtdeParcelas');
-    const condicaoEspecial = document.getElementById('condicaoEspecial').checked;
-    const maxParcelas = condicaoEspecial ? 120 : 60;
-    let mesesQuitar = parseInt(mesesQuitarInput.value) || 2;
-    let qtdeParcelas = parseInt(qtdeParcelasInput.value) || 2;
-    if (qtdeParcelas < 2) qtdeParcelas = 2;
-    if (qtdeParcelas > maxParcelas) qtdeParcelas = maxParcelas;
-    if (mesesQuitar < 2) mesesQuitar = 2;
-    if (mesesQuitar > maxParcelas) mesesQuitar = maxParcelas;
-    // Saldo devedor
+
+    const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
+    const maxParcelas = document.getElementById('condicaoEspecial').checked ? 120 : 60;
+
+    let alertMsg = '';
+    if (qtdeParcelas > maxParcelas) {
+        alertMsg = `ATENÇÃO: A quantidade de parcelas não pode ser maior que ${maxParcelas}!`;
+        document.getElementById('qtdeParcelas').value = maxParcelas;
+    }
+
+    // Calcular saldo devedor total e valores pagos
+    const rows = document.querySelectorAll('#dividas-body tr');
     let totalSaldoDevedor = 0;
-    const saldoInputs = document.querySelectorAll('.saldo-input');
-    saldoInputs.forEach(input => {
-        totalSaldoDevedor += parseFloat(input.value) || 0;
+    let totalValorPago = 0;
+
+    rows.forEach(row => {
+        const valorPago = parseFloat(row.cells[2].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        totalValorPago += valorPago;
+        totalSaldoDevedor += saldoDevedor;
     });
+
+    document.getElementById('total-valor-pago').textContent = formatBRL(totalValorPago);
     document.getElementById('total-saldo-devedor').textContent = formatBRL(totalSaldoDevedor);
+
+    // Calcular valor total mensal das parcelas
+    const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
+    let totalValorParcela = 0;
+
+    // Atualizar cada linha
+    rows.forEach(row => {
+        const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
+        const valorParcela = (pctDivida * valorParcelaTotal) / 100;
+        
+        // Atualizar percentual da dívida
+        row.querySelector('.pct-divida').textContent = pctDivida.toFixed(2) + '%';
+        
+        // Atualizar valor da parcela
+        const valorParcelaCell = row.querySelector('.valor-parcela');
+        if (valorParcela > 0) {
+            valorParcelaCell.textContent = `${qtdeParcelas}x de ${formatBRL(valorParcela)}`;
+        } else {
+            valorParcelaCell.textContent = 'R$ 0,00';
+        }
+        
+        // Calcular e atualizar parcela residual
+        let parcelaResidual = 0;
+        if (qtdeParcelas < maxParcelas) {
+            parcelaResidual = (maxParcelas - qtdeParcelas) * valorParcela;
+        }
+        row.querySelector('.parcela-residual').textContent = formatBRL(parcelaResidual);
+        
+        totalValorParcela += valorParcela;
+    });
+
+    // Atualizar totais
+    document.getElementById('total-pct-divida').textContent = '100%';
+    const totalValorParcelaFormatado = totalValorParcela > 0 ? `${qtdeParcelas}x de ${formatBRL(totalValorParcela)}` : 'R$ 0,00';
+    document.getElementById('total-valor-parcela').textContent = totalValorParcelaFormatado;
+
     // Cálculo do valor mínimo de parcelas para caber na margem
     let minParcelas = 2;
     if (margem > 0) {
@@ -285,38 +516,22 @@ function calcularDividas() {
         if (minParcelas < 2) minParcelas = 2;
         if (minParcelas > maxParcelas) minParcelas = maxParcelas;
     }
+
     // Se a quantidade de parcelas for menor que o mínimo, ajustar e alertar
-    let alertMsg = '';
     if (qtdeParcelas < minParcelas) {
-        qtdeParcelas = minParcelas;
-        mesesQuitar = minParcelas;
-        qtdeParcelasInput.value = minParcelas;
-        mesesQuitarInput.value = minParcelas;
+        document.getElementById('qtdeParcelas').value = minParcelas;
         alertMsg = `O número de parcelas foi ajustado para ${minParcelas} para que a parcela mensal caiba na margem disponível.`;
+        calcularDividas(); // Recalcular com o novo valor
+        return;
     }
+
     // Se nem mesmo o máximo permitido for suficiente
     if ((totalSaldoDevedor / maxParcelas) > margem) {
         alertMsg = `Não é possível pagar o valor total das dívidas (${formatBRL(totalSaldoDevedor)}) com a margem disponível (${formatBRL(margem)}) mesmo em ${maxParcelas}x. Reduza o valor das dívidas ou aumente a margem.`;
     }
-    // Valor total mensal das parcelas = totalSaldoDevedor / qtdeParcelas (garante que soma das parcelas = total das dívidas)
-    const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
-    let totalValorParcela = 0;
-    saldoInputs.forEach((input, i) => {
-        const saldo = parseFloat(input.value) || 0;
-        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-        const valorParcela = pctDivida * valorParcelaTotal;
-        let parcelaResidual = 0;
-        if (qtdeParcelas <= 60) {
-            parcelaResidual = (mesesQuitar - qtdeParcelas) * valorParcela;
-        }
-        document.querySelectorAll('.pct-divida')[i].textContent = (pctDivida*100).toFixed(2) + '%';
-        document.querySelectorAll('.valor-parcela')[i].textContent = formatBRL(valorParcela);
-        document.querySelectorAll('.parcela-residual')[i].textContent = formatBRL(parcelaResidual);
-        totalValorParcela += valorParcela;
-    });
-    document.getElementById('total-pct-divida').textContent = '100%';
-    document.getElementById('total-valor-parcela').textContent = formatBRL(totalValorParcela);
+
     renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal);
+
     // Exibir alerta se necessário
     const alertaDiv = document.getElementById('alerta-margem') || (() => {
         const d = document.createElement('div');
@@ -333,99 +548,117 @@ function calcularDividas() {
 }
 
 function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal) {
-    // Cabeçalho
     const head = document.getElementById('parcelas-head');
     const body = document.getElementById('parcelas-body');
     const foot = document.getElementById('parcelas-foot');
     head.innerHTML = '';
     body.innerHTML = '';
     foot.innerHTML = '';
-    // Cada dívida é uma coluna
-    const credorTexts = Array.from(document.querySelectorAll('.credor-text'));
-    const saldoInputs = Array.from(document.querySelectorAll('.saldo-input'));
-    // Monta cabeçalho: nome do banco + número da dívida apenas se repetido
-    let ths = '<th>Mês</th>';
-    const bancoCount = {};
-    credorTexts.forEach((span, i) => {
-        if (span.textContent) {
-            const banco = span.textContent;
-            bancoCount[banco] = (bancoCount[banco] || 0) + 1;
-            if (bancoCount[banco] === 1) {
-                ths += `<th>${banco}</th>`;
-            } else {
-                ths += `<th>${banco} #${bancoCount[banco]}</th>`;
-            }
+
+    // Get all rows from the first table
+    const rows = Array.from(document.querySelectorAll('#dividas-body tr'));
+    if (rows.length === 0) return;
+
+    // Build header
+    let ths = '<tr><th>Mês</th>';
+    rows.forEach(row => {
+        const credor = row.cells[0].textContent.trim();
+        if (credor) {
+            ths += `<th>${credor}</th>`;
         }
     });
-    ths += '<th>Total</th>';
-    head.innerHTML = `<tr>${ths}</tr>`;
-    // Linhas de parcelas
+    ths += '<th>Total</th></tr>';
+    head.innerHTML = ths;
+
+    // Build body rows
     if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
         for (let mes = 1; mes <= qtdeParcelas; mes++) {
             let tds = `<td>Mês ${mes}</td>`;
             let somaLinha = 0;
-            credorTexts.forEach((span, i) => {
-                if (span.textContent) {
-                    const saldo = parseFloat(saldoInputs[i].value) || 0;
-                    const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                    const valor = +(pctDivida * valorParcelaTotal).toFixed(2);
-                    tds += `<td>${formatBRL(valor)}</td>`;
-                    somaLinha += valor;
-                }
+
+            rows.forEach(row => {
+                const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
+                const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
+                tds += `<td>${formatBRL(valorParcela)}</td>`;
+                somaLinha += valorParcela;
             });
+
             somaLinha = +(somaLinha).toFixed(2);
-            tds += `<td>Valor Mensal: ${formatBRL(somaLinha)}</td>`;
+            tds += `<td>${formatBRL(somaLinha)}</td>`;
             body.innerHTML += `<tr>${tds}</tr>`;
         }
-        // Rodapé (total por dívida)
-        let tfs = '<td>Total</td>';
-        credorTexts.forEach((span, i) => {
-            if (span.textContent) {
-                const saldo = parseFloat(saldoInputs[i].value) || 0;
-                const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                const somaCol = +(pctDivida * valorParcelaTotal * qtdeParcelas).toFixed(2);
-                tfs += `<td>${formatBRL(somaCol)}</td>`;
-            }
-        });
-        // Total geral
+
+        // Build footer (totals)
+        let tfs = '<tr><td>Total</td>';
         let totalGeral = 0;
-        credorTexts.forEach((span, i) => {
-            if (span.textContent) {
-                const saldo = parseFloat(saldoInputs[i].value) || 0;
-                const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                totalGeral += pctDivida * valorParcelaTotal * qtdeParcelas;
-            }
+
+        rows.forEach(row => {
+            const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
+            const totalColuna = +(pctDivida * valorParcelaTotal * qtdeParcelas).toFixed(2);
+            tfs += `<td>${formatBRL(totalColuna)}</td>`;
+            totalGeral += totalColuna;
         });
+
         totalGeral = +(totalGeral).toFixed(2);
-        tfs += `<td>Total Empréstimos: ${formatBRL(totalGeral)}</td>`;
-        foot.innerHTML = `<tr>${tfs}</tr>`;
-    } else {
-        // Se algum valor essencial estiver zerado, exibe tudo como R$ 0,00
-        for (let mes = 1; mes <= qtdeParcelas; mes++) {
-            let tds = `<td>Mês ${mes}</td>`;
-            credorTexts.forEach((span) => {
-                if (span.textContent) {
-                    tds += `<td>R$ 0,00</td>`;
-                }
-            });
-            tds += `<td>R$ 0,00</td>`;
-            body.innerHTML += `<tr>${tds}</tr>`;
-        }
-        let tfs = '<td>Total</td>';
-        credorTexts.forEach((span) => {
-            if (span.textContent) {
-                tfs += `<td>R$ 0,00</td>`;
-            }
-        });
-        tfs += `<td>R$ 0,00</td>`;
-        foot.innerHTML = `<tr>${tfs}</tr>`;
+        tfs += `<td>${formatBRL(totalGeral)}</td></tr>`;
+        foot.innerHTML = tfs;
     }
+}
+
+function calcularParcelas() {
+    const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
+    const maxParcelas = document.getElementById('condicaoEspecial').checked ? 120 : 60;
+    const rows = document.querySelectorAll('#dividas-body tr');
+    let totalSaldoDevedor = 0;
+    let totalValorParcela = 0;
+
+    // Primeiro loop: calcular o total do saldo devedor
+    rows.forEach(row => {
+        const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        totalSaldoDevedor += saldoDevedor;
+    });
+
+    // Calcula o valor total mensal das parcelas
+    const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
+
+    // Segundo loop: atualizar cada linha
+    rows.forEach(row => {
+        const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
+        const valorParcela = (pctDivida * valorParcelaTotal) / 100;
+        
+        // Atualiza o percentual da dívida
+        row.querySelector('.pct-divida').textContent = pctDivida.toFixed(2) + '%';
+        
+        // Atualiza o valor da parcela
+        const valorParcelaCell = row.querySelector('.valor-parcela');
+        if (valorParcela > 0) {
+            valorParcelaCell.textContent = `${qtdeParcelas}x de ${formatBRL(valorParcela)}`;
+        } else {
+            valorParcelaCell.textContent = 'R$ 0,00';
+        }
+        
+        // Calcula e atualiza a parcela residual
+        let parcelaResidual = 0;
+        if (qtdeParcelas < maxParcelas) {
+            parcelaResidual = (maxParcelas - qtdeParcelas) * valorParcela;
+        }
+        row.querySelector('.parcela-residual').textContent = formatBRL(parcelaResidual);
+        
+        totalValorParcela += valorParcela;
+    });
+
+    // Atualiza o total das parcelas
+    const totalValorParcelaFormatado = totalValorParcela > 0 ? `${qtdeParcelas}x de ${formatBRL(totalValorParcela)}` : 'R$ 0,00';
+    document.getElementById('total-valor-parcela').textContent = totalValorParcelaFormatado;
 }
 
 // Eventos
 renderDividasTable();
 calcularDividas();
-['receitaTotal','comprometida','mesesQuitar','qtdeParcelas'].forEach(id => {
+['receitaTotal','comprometida','qtdeParcelas'].forEach(id => {
     document.getElementById(id).addEventListener('input', calcularDividas);
 });
 document.getElementById('dividas-body').addEventListener('input', calcularDividas);
@@ -438,143 +671,129 @@ if(page.includes('geral')) document.getElementById('btn-geral').classList.add('a
 if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
 if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
 
-document.getElementById('comprometida').addEventListener('input', function() {
-    localStorage.setItem('plano-pct-limite', this.value);
-    calcularDividas();
-});
-
-['mesesQuitar','qtdeParcelas'].forEach(id => {
-    document.getElementById(id).addEventListener('input', function(e) {
-        const otherId = id === 'mesesQuitar' ? 'qtdeParcelas' : 'mesesQuitar';
-        let maxVal = document.getElementById('condicaoEspecial').checked ? 120 : 60;
-        let v = parseInt(this.value) || 2;
-        if (v < 2) v = 2;
-        if (v > maxVal) v = maxVal;
-        this.value = v;
-        document.getElementById(otherId).value = v;
-        // Salva ambos os valores no localStorage
-        localStorage.setItem('plano-mesesQuitar', v);
-        localStorage.setItem('plano-qtdeParcelas', v);
+document.addEventListener('DOMContentLoaded', function() {
+    atualizarReceitaTotal();
+    // Carregar dados salvos
+    carregarDadosImpressao();
+    renderDividasTable();
+    
+    // Event listeners para campos de entrada
+    document.getElementById('comprometida').addEventListener('input', function() {
+        if (parseFloat(this.value) > 100) {
+            this.value = 100;
+        }
+        localStorage.setItem('plano-pct-limite', this.value);
         calcularDividas();
     });
-});
 
-// Atualiza o atributo max dos inputs quando o checkbox muda
-const condicaoEspecial = document.getElementById('condicaoEspecial');
-condicaoEspecial.addEventListener('change', function() {
-    const maxVal = this.checked ? 120 : 60;
-    document.getElementById('mesesQuitar').max = maxVal;
-    document.getElementById('qtdeParcelas').max = maxVal;
-    // Se o valor atual for maior que o novo máximo, ajusta
-    ['mesesQuitar','qtdeParcelas'].forEach(id => {
-        let v = parseInt(document.getElementById(id).value) || 2;
-        if (v > maxVal) {
-            document.getElementById(id).value = maxVal;
-            localStorage.setItem('plano-' + id, maxVal);
-        }
+    document.getElementById('qtdeParcelas').addEventListener('input', function() {
+        localStorage.setItem('plano-qtde-parcelas', this.value);
+        calcularDividas();
     });
+
+    document.getElementById('condicaoEspecial').addEventListener('change', function() {
+        localStorage.setItem('plano-condicao-especial', this.checked);
+        if (this.checked) {
+            document.getElementById('qtdeParcelas').max = 120;
+        } else {
+            document.getElementById('qtdeParcelas').max = 60;
+            if (document.getElementById('qtdeParcelas').value > 60) {
+                document.getElementById('qtdeParcelas').value = 60;
+                localStorage.setItem('plano-qtde-parcelas', '60');
+            }
+        }
+        calcularDividas();
+    });
+
+    // Carregar valores salvos
+    const pctLimite = localStorage.getItem('plano-pct-limite');
+    if (pctLimite) document.getElementById('comprometida').value = pctLimite;
+
+    const qtdeParcelas = localStorage.getItem('plano-qtde-parcelas');
+    if (qtdeParcelas) document.getElementById('qtdeParcelas').value = qtdeParcelas;
+
+    const condicaoEspecial = localStorage.getItem('plano-condicao-especial');
+    if (condicaoEspecial) {
+        document.getElementById('condicaoEspecial').checked = condicaoEspecial === 'true';
+        if (condicaoEspecial === 'true') {
+            document.getElementById('qtdeParcelas').max = 120;
+        }
+    }
+
+    // Configurar observadores para mudanças nas outras tabelas
+    const observeInputChanges = (prefix, count) => {
+        for (let i = 1; i <= count; i++) {
+            ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
+                const input = document.getElementById(`${prefix}-${i}-${field}`);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        localStorage.setItem(`${prefix}-${i}-${field}`, this.value);
+                        renderDividasTable();
+                    });
+                }
+            });
+        }
+    };
+
+    // Configurar observadores para cada tipo de dívida
+    observeInputChanges('nao-consignado', 2);
+    observeInputChanges('sem-parcela', 1);
+    observeInputChanges('divida-consolidada', 2);
+
+    // Forçar atualização dos cálculos
     calcularDividas();
 });
 
-window.onload = function() {
-  // Primeiro renderiza a tabela
-  renderDividasTable();
-
-  // Preenche dados da página geral
-  const saldoInputs = document.querySelectorAll('.saldo-input');
-  const infoInputs = document.querySelectorAll('.info-input');
-  const credorTexts = document.querySelectorAll('.credor-text');
-
-  // Função auxiliar para preencher dados de uma dívida
-  function preencherDivida(prefix, index, offset = 0) {
-    const credor = localStorage.getItem(`${prefix}-${index}-credores`);
-    const saldo = localStorage.getItem(`${prefix}-${index}-saldo-devedor`);
-    const contrato = localStorage.getItem(`${prefix}-${index}-contratos`);
-    const valorPago = localStorage.getItem(`${prefix}-${index}-valor-pago`);
-    const valorContratado = localStorage.getItem(`${prefix}-${index}-valor-contratado`);
-    const idx = index - 1 + offset;
-    if (credorTexts[idx]) {
-      credorTexts[idx].textContent = credor || '';
+// Atualizar quando o valor mudar em outra página
+window.addEventListener('storage', function(e) {
+    if (e.key === 'valor-final') {
+        atualizarReceitaTotal();
     }
-    if (saldoInputs[idx]) {
-      saldoInputs[idx].value = (saldo !== null && saldo !== undefined && saldo !== '') ? saldo : '';
+    calcularDividas();
+});
+
+function limparCampos() {
+    if (confirm('Tem certeza que deseja limpar todos os dados?')) {
+        // Limpar dados dos consignados
+        localStorage.removeItem('linhas-consignados');
+        
+        // Limpar dados dos não consignados
+        for (let i = 1; i <= 2; i++) {
+            ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
+                localStorage.removeItem(`nao-consignado-${i}-${field}`);
+            });
+        }
+        
+        // Limpar dados sem parcelas
+        for (let i = 1; i <= 1; i++) {
+            ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
+                localStorage.removeItem(`sem-parcela-${i}-${field}`);
+            });
+        }
+        
+        // Limpar dívidas consolidadas
+        for (let i = 1; i <= 2; i++) {
+            ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
+                localStorage.removeItem(`divida-consolidada-${i}-${field}`);
+            });
+        }
+        
+        // Limpar configurações do plano
+        localStorage.removeItem('plano-pct-limite');
+        localStorage.removeItem('plano-qtde-parcelas');
+        localStorage.removeItem('plano-condicao-especial');
+        
+        // Recarregar a página
+        location.reload();
     }
-    if (infoInputs[idx]) {
-      infoInputs[idx].value = contrato || '';
-    }
-    // Valor total pago = valor pago digitado na página Geral (linha = linha)
-    const valorPagoCell = document.querySelectorAll('.valor-pago')[idx];
-    let valorPagoBruto = localStorage.getItem(`${prefix}-${index}-valor-pago`);
-    let valorPagoFormatado = 'R$ 0,00';
-    if (valorPagoBruto !== null && valorPagoBruto !== undefined && valorPagoBruto !== '' && !isNaN(valorPagoBruto)) {
-      valorPagoFormatado = formatBRL(Number(valorPagoBruto));
-    }
-    if (valorPagoCell) {
-      valorPagoCell.textContent = valorPagoFormatado;
-    }
-    // % do saldo pago = (valor pago / valor contratado) * 100
-    const pctSaldoPagoCell = document.querySelectorAll('.pct-saldo-pago')[idx];
-    const valorPagoNum = parseFloat(valorPago);
-    const valorContratadoNum = parseFloat(valorContratado);
-    if (pctSaldoPagoCell) {
-      if (!isNaN(valorPagoNum) && valorPagoNum > 0 && !isNaN(valorContratadoNum) && valorContratadoNum > 0) {
-        const pct = (valorPagoNum / valorContratadoNum) * 100;
-        pctSaldoPagoCell.textContent = pct.toFixed(2) + '%';
-      } else if (!isNaN(valorContratadoNum) && valorContratadoNum === 0 && !isNaN(valorPagoNum) && valorPagoNum > 0) {
-        pctSaldoPagoCell.textContent = '100.00%';
-      } else if (!isNaN(valorContratadoNum) && valorContratadoNum > 0 && (!valorPago || valorPago === '0')) {
-        pctSaldoPagoCell.textContent = '0.00%';
-      } else {
-        pctSaldoPagoCell.textContent = '-';
-      }
-    }
-  }
+}
 
-  // Preenche consignados
-  for (let i = 1; i <= 5; i++) {
-    preencherDivida('consignado', i);
-  }
-  // Preenche não consignados
-  for (let i = 1; i <= 2; i++) {
-    preencherDivida('nao-consignado', i, 5);
-  }
-  // Preenche sem parcelas
-  for (let i = 1; i <= 1; i++) {
-    preencherDivida('sem-parcela', i, 7);
-  }
-  // Preenche dívidas consolidadas
-  for (let i = 1; i <= 2; i++) {
-    preencherDivida('divida-consolidada', i, 8);
-  }
-
-  // Preenche receita total da página dados-socioeconomicos
-  const receitaTotal = localStorage.getItem('valor-final');
-  if (receitaTotal) {
-    document.getElementById('receitaTotal').textContent = formatBRL(parseFloat(receitaTotal));
-  } else {
-    document.getElementById('receitaTotal').textContent = formatBRL(0);
-  }
-
-  // Calcula valores iniciais
-  calcularDividas();
-
-  // Restaurar mesesQuitar e qtdeParcelas do localStorage, se existirem
-  const mesesQuitarSalvo = localStorage.getItem('plano-mesesQuitar');
-  const qtdeParcelasSalvo = localStorage.getItem('plano-qtdeParcelas');
-  if (mesesQuitarSalvo !== null) document.getElementById('mesesQuitar').value = mesesQuitarSalvo;
-  if (qtdeParcelasSalvo !== null) document.getElementById('qtdeParcelas').value = qtdeParcelasSalvo;
-
-  // Restaurar % Comprometida do localStorage, se existir
-  const pctComprometidaSalvo = localStorage.getItem('plano-pct-limite');
-  if (pctComprometidaSalvo !== null) document.getElementById('comprometida').value = pctComprometidaSalvo;
-
-  // Recalcular tudo após restaurar os valores salvos
-  calcularDividas();
-
-  // Preencher dados do consumidor e processo para impressão
-  document.getElementById('impressao-nome-consumidor').textContent = localStorage.getItem('nome-consumidor') || '';
-  document.getElementById('impressao-numero-processo').textContent = localStorage.getItem('numero-processo') || '';
-};
+function carregarDadosImpressao() {
+    const nomeConsumidor = localStorage.getItem('nome-consumidor') || '';
+    const numeroProcesso = localStorage.getItem('numero-processo') || '';
+    document.getElementById('impressao-nome-consumidor').textContent = nomeConsumidor;
+    document.getElementById('impressao-numero-processo').textContent = numeroProcesso;
+}
 </script>
 </body>
 </html>
