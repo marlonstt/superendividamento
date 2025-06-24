@@ -9,8 +9,8 @@
         body { background: #f4f4f4; }
         .container { max-width: 1600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
         h1 { color: #2d5c2f; margin-bottom: 30px; }
-        table { font-size: 0.98rem; }
-        th, td { vertical-align: middle !important; text-align: center; }
+        table { font-size: 0.88rem; }
+        th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; text-align: center; }
         .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
         .total-row { font-weight: bold; background: #f0f0f0; }
         .subtotal-row { font-weight: bold; background: #e0e0e0; }
@@ -26,6 +26,11 @@
         .input-xs { max-width: 60px; }
         .input-md { max-width: 120px; }
         .input-lg { max-width: 180px; }
+        .form-control.input-sm, .form-control.input-md, .form-control.input-lg, .form-control.input-xs {
+            min-height: 28px;
+            font-size: 0.92em;
+            padding: 2px 6px;
+        }
         @media (max-width: 900px) {
             .row { flex-direction: column; }
             .container { padding: 10px; }
@@ -38,16 +43,16 @@
             background: linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);
             box-shadow: 0 2px 8px #0002;
             border-radius: 0 0 16px 16px;
-            padding: 0 16px;
-            margin-bottom: 30px;
+            padding: 6px 8px;
+            margin-bottom: 18px;
             border: none;
         }
         .nav-btn {
             flex: 1;
             background: transparent;
             border: none;
-            font-size: 1.15em;
-            padding: 16px 0;
+            font-size: 1em;
+            padding: 10px 0;
             cursor: pointer;
             transition: background 0.2s, color 0.2s, font-weight 0.2s;
             color: #2d5c2f;
@@ -66,13 +71,14 @@
             outline: none;
         }
         .section-title { font-weight: bold; font-size: 1.1em; }
-        .bordered { border: 2px solid #000; border-radius: 6px; padding: 10px; margin-bottom: 20px; }
+        .bordered { border: 2px solid #000; border-radius: 6px; padding: 10px; margin-bottom: 30px; }
         .text-end { text-align: right; }
         .text-start { text-align: left; }
         .text-center { text-align: center; }
         .small-input { width: 100px; }
         .table-title { font-weight: bold; font-size: 1.05em; background: #f5f5f5; }
         .red-link { color: #d00; font-weight: bold; text-decoration: none; }
+        .table-section { margin-bottom: 30px; }
     </style>
 </head>
 <body>
@@ -100,7 +106,7 @@
                 <a href="#" class="red-link">Cartilha Superendividamento CNJ</a>
             </div>
         </div>
-        <div class="scroll-x">
+        <div class="scroll-x table-section">
             <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-black">
                     <td colspan="10">DÍVIDA</td>
@@ -134,6 +140,10 @@
                     <td></td>
                     <td></td>
                 </tr>
+            </table>
+        </div>
+        <div class="scroll-x table-section">
+            <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-blue">
                     <td colspan="10">NÃO CONSIGNADOS</td>
                 </tr>
@@ -160,6 +170,10 @@
                     <td></td>
                     <td></td>
                 </tr>
+            </table>
+        </div>
+        <div class="scroll-x table-section">
+            <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-orange">
                     <td colspan="10">SEM PARCELAS</td>
                 </tr>
@@ -185,6 +199,10 @@
                     <td></td>
                     <td></td>
                 </tr>
+            </table>
+        </div>
+        <div class="scroll-x table-section">
+            <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-green">
                     <td colspan="10">DÍVIDAS CONSOLIDADAS</td>
                 </tr>
@@ -213,7 +231,7 @@
                 </tr>
             </table>
         </div>
-        <div class="row mt-4">
+        <div class="row mt-4 table-section">
             <div class="col-12 scroll-x">
                 <table class="table table-bordered mb-0">
                     <tr class="table-title bg-light-cyan">
@@ -276,7 +294,7 @@
         const page = window.location.pathname.split('/').pop();
         if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
         if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
-        if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+        if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
         if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
 
         // Cálculo automático do saldo devedor

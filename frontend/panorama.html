@@ -86,16 +86,16 @@
             background: linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);
             box-shadow: 0 2px 8px #0002;
             border-radius: 0 0 16px 16px;
-            padding: 0 16px;
-            margin-bottom: 30px;
+            padding: 6px 8px;
+            margin-bottom: 18px;
             border: none;
         }
         .nav-btn {
             flex: 1;
             background: transparent;
             border: none;
-            font-size: 1.15em;
-            padding: 16px 0;
+            font-size: 1em;
+            padding: 10px 0;
             cursor: pointer;
             transition: background 0.2s, color 0.2s, font-weight 0.2s;
             color: #2d5c2f;
@@ -112,6 +112,13 @@
             font-weight: bold;
             border-bottom: 3px solid #007a00;
             outline: none;
+        }
+        table { font-size: 0.88rem; }
+        th, td { padding: 0.3em 0.5em !important; }
+        .form-control.input-sm, .form-control.input-md, .form-control.input-lg, .form-control.input-xs {
+            min-height: 28px;
+            font-size: 0.92em;
+            padding: 2px 6px;
         }
     </style>
 </head>
@@ -210,38 +217,56 @@
         // 2. Buscar número dos autos da página geral.html
         document.getElementById('valor-autos').textContent = localStorage.getItem('numero-processo') || '-';
         // 3. Buscar valores das parcelas consignadas e não consignadas
-        let valorConsignadas = getValueFromLocalStorage('consignadas-parcela', 0);
-        let valorNaoConsignadas = getValueFromLocalStorage('nao-consignadas-parcela', 0);
-        let valorRendimentosBase = valorRendimentos;
-        // Percentuais
-        let pctConsignadas = valorRendimentosBase ? (valorConsignadas / valorRendimentosBase) * 100 : 0;
-        let pctNaoConsignadas = valorRendimentosBase ? (valorNaoConsignadas / valorRendimentosBase) * 100 : 0;
-        document.getElementById('valor-consignadas').textContent = '-'+formatBRL(valorConsignadas);
-        document.getElementById('pct-consignadas').textContent = pctConsignadas.toFixed(2)+'%';
-        document.getElementById('valor-nao-consignadas').textContent = '-'+formatBRL(valorNaoConsignadas);
-        document.getElementById('pct-nao-consignadas').textContent = pctNaoConsignadas.toFixed(2)+'%';
-        // 4. Comprometido
-        let valorLivreMensal = valorRendimentosBase - valorConsignadas - valorNaoConsignadas;
-        let pctComprometido = pctConsignadas + pctNaoConsignadas;
-        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensal);
-        document.getElementById('pct-comprometido').textContent = pctComprometido.toFixed(2)+'% : RENDA COMPROMETIDA EM PARCELAS';
-        // 5. Outras dívidas sem parcelas
-        let valorSemParcelas = getValueFromLocalStorage('sem-parcelas-saldo', 0);
+        // SOMA das parcelas consignadas conforme tabela dos consignados
+        let valorConsignadas = 0;
+        for (let i = 1; i <= 5; i++) {
+            let v = localStorage.getItem(`consignado-${i}-parcela-mensal`);
+            if (v) {
+                // Aceita tanto número quanto string com vírgula/ponto
+                v = v.replace(/\./g, '').replace(',', '.');
+                let num = parseFloat(v);
+                if (!isNaN(num)) valorConsignadas += num;
+            }
+        }
+        // Para não consignadas, soma os campos individuais
+        let valorNaoConsignadas = 0;
+        for (let i = 1; i <= 2; i++) {
+            let v = localStorage.getItem(`nao-consignado-${i}-parcela-mensal`);
+            if (v) {
+                v = v.replace(/\./g, '').replace(',', '.');
+                let num = parseFloat(v);
+                if (!isNaN(num)) valorNaoConsignadas += num;
+            }
+        }
+        // Soma das dívidas sem parcelas (saldo devedor)
+        let valorSemParcelas = 0;
+        for (let i = 1; i <= 1; i++) { // Se houver mais linhas, aumentar o limite
+            let v = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
+            if (v) {
+                v = v.replace(/\./g, '').replace(',', '.');
+                let num = parseFloat(v);
+                if (!isNaN(num)) valorSemParcelas += num;
+            }
+        }
         let valorParcelamento60 = valorSemParcelas / 60;
         let valorTotalParcelas = valorConsignadas + valorNaoConsignadas + valorParcelamento60;
-        let valorLivreMensalConsolidado = valorRendimentosBase - valorTotalParcelas;
-        let pctComprometidoTotal = valorRendimentosBase ? (valorTotalParcelas / valorRendimentosBase) * 100 : 0;
+        let valorLivreMensalConsolidado = valorRendimentos - valorTotalParcelas;
+        let pctComprometidoTotal = valorRendimentos ? (valorTotalParcelas / valorRendimentos) * 100 : 0;
+        document.getElementById('valor-consignadas').textContent = '-' + formatBRL(valorConsignadas);
+        document.getElementById('pct-consignadas').textContent = (valorRendimentos ? (valorConsignadas / valorRendimentos) * 100 : 0).toFixed(2) + '%';
+        document.getElementById('valor-nao-consignadas').textContent = '-' + formatBRL(valorNaoConsignadas);
+        document.getElementById('pct-nao-consignadas').textContent = (valorRendimentos ? (valorNaoConsignadas / valorRendimentos) * 100 : 0).toFixed(2) + '%';
         document.getElementById('valor-sem-parcelas').textContent = formatBRL(valorSemParcelas);
         document.getElementById('valor-parcelamento-60').textContent = formatBRL(valorParcelamento60);
         document.getElementById('valor-total-parcelas').textContent = formatBRL(valorTotalParcelas);
         document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidado);
-        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal.toFixed(2)+'% : RENDA COMPROMETIDA COM TODA DÍVIDA';
+        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
         // 6. Emergencial
         let pctLimite = getValueFromLocalStorage('plano-pct-limite', 0);
-        let valorRendaSemConsignados = valorRendimentosBase;
+        let valorRendaSemConsignados = valorRendimentos;
         let valorConsignacaoEmergencial = -pctLimite * valorRendaSemConsignados;
         let valorLivreEmergencial = valorRendaSemConsignados + valorConsignacaoEmergencial;
-        document.getElementById('pct-limite').textContent = (pctLimite*100).toFixed(0)+'%';
+        document.getElementById('pct-limite').textContent = (pctLimite * 100).toFixed(0) + '%';
         document.getElementById('valor-renda-sem-consignados').textContent = formatBRL(valorRendaSemConsignados);
         document.getElementById('valor-consignacao-emergencial').textContent = formatBRL(valorConsignacaoEmergencial);
         document.getElementById('valor-livre-emergencial').textContent = formatBRL(valorLivreEmergencial);
@@ -251,7 +276,7 @@
     const page = window.location.pathname.split('/').pop();
     if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
     if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
-    if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+    if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
     if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
     </script>
 </body>

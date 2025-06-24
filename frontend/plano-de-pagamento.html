@@ -9,8 +9,8 @@
         body { background: #f4f4f4; }
         .container { max-width: 1400px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
         h1 { color: #2d5c2f; margin-bottom: 30px; }
-        table { font-size: 0.98rem; }
-        th, td { vertical-align: middle !important; }
+        table { font-size: 0.88rem; }
+        th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; }
         .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
         .total-row { font-weight: bold; background: #f0f0f0; }
         .subtotal-row { font-weight: bold; background: #e0e0e0; }
@@ -37,16 +37,16 @@
             background: linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);
             box-shadow: 0 2px 8px #0002;
             border-radius: 0 0 16px 16px;
-            padding: 0 16px;
-            margin-bottom: 30px;
+            padding: 6px 8px;
+            margin-bottom: 18px;
             border: none;
         }
         .nav-btn {
             flex: 1;
             background: transparent;
             border: none;
-            font-size: 1.15em;
-            padding: 16px 0;
+            font-size: 1em;
+            padding: 10px 0;
             cursor: pointer;
             transition: background 0.2s, color 0.2s, font-weight 0.2s;
             color: #2d5c2f;
@@ -64,19 +64,71 @@
             border-bottom: 3px solid #007a00;
             outline: none;
         }
+        @media print {
+            #custom-navbar, .btn, .mb-3, .form-check, .form-switch {
+                display: none !important;
+            }
+            body, .container {
+                background: #fff !important;
+                color: #000 !important;
+                box-shadow: none !important;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            th, td {
+                color: #000 !important;
+                background: #fff !important;
+                border-color: #333 !important;
+            }
+            input, select, textarea {
+                border: none !important;
+                background: transparent !important;
+                color: #000 !important;
+                box-shadow: none !important;
+                outline: none !important;
+                pointer-events: none !important;
+                appearance: none !important;
+                -webkit-appearance: none !important;
+                font-size: inherit !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: auto !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                height: auto !important;
+            }
+            input[type="number"], input[type="text"] {
+                text-align: left !important;
+            }
+            #dados-impressao { display: block !important; }
+        }
+        @page { size: A4 landscape; }
+        .form-control.input-sm, .form-control.input-md, .form-control.input-lg, .form-control.input-xs {
+            min-height: 28px;
+            font-size: 0.92em;
+            padding: 2px 6px;
+        }
     </style>
 </head>
 <body>
 <div id="custom-navbar">
-  <button onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
-  <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
-  <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
-  <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+  <button type="button" onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+  <button type="button" onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
+  <button type="button" onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+  <button type="button" onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
 </div>
 <div class="container">
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
         <h1>Plano de Pagamento</h1>
-        <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
+        <div style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-success mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="window.print()">Imprimir</button>
+            <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
+        </div>
+    </div>
+    <div id="dados-impressao" style="display:none; margin-bottom: 18px;">
+      <div style="font-size:1.15em; font-weight:bold;">Consumidor: <span id="impressao-nome-consumidor"></span></div>
+      <div style="font-size:1.15em; font-weight:bold;">Processo n.º: <span id="impressao-numero-processo"></span></div>
     </div>
     <!-- Tabela de Parâmetros do Plano -->
     <form id="planoForm">
@@ -92,8 +144,20 @@
                     <tr>
                         <td><input type="number" step="0.1" min="0" max="100" id="comprometida" class="form-control input-sm" value="30"></td>
                         <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
-                        <td><input type="number" step="1" min="2" id="mesesQuitar" class="form-control input-sm" value="2"></td>
-                        <td><input type="number" step="1" min="2" id="qtdeParcelas" class="form-control input-sm" value="2"></td>
+                        <td><input type="number" step="1" min="2" max="60" id="mesesQuitar" class="form-control input-sm" value="2"></td>
+                        <td style="display:flex; align-items:center; gap:8px;">
+                            <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div style="display:flex; flex-direction:column; align-items:flex-start; margin-top:8px;">
+                                <label for="condicaoEspecial" style="font-weight:bold;">Condição especial de parcelamento? (Até 120x)</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="condicaoEspecial" style="width: 48px; height: 24px;">
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -189,22 +253,24 @@ function renderDividasTable() {
 function calcularDividas() {
     const receitaTotal = parseFloat(
       (document.getElementById('receitaTotal').textContent || '0')
-        .replace(/[^\d,]/g, '') // remove tudo que não é dígito ou vírgula
-        .replace(/\./g, '')     // remove pontos de milhar
-        .replace(',', '.')      // troca vírgula decimal por ponto
+        .replace(/[^\d,]/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.')
     ) || 0;
     const pctComprometidaInput = parseFloat(document.getElementById('comprometida').value) || 0;
     const pctComprometida = pctComprometidaInput / 100;
     const margem = receitaTotal * pctComprometida;
     document.getElementById('margem').value = formatBRL(margem);
-    console.log(receitaTotal, pctComprometida, margem);
-    const mesesQuitar = parseInt(document.getElementById('mesesQuitar').value) || 0;
-    let qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
-    if (qtdeParcelas < 2) {
-        qtdeParcelas = 2;
-        document.getElementById('qtdeParcelas').value = 2;
-    }
-
+    const mesesQuitarInput = document.getElementById('mesesQuitar');
+    const qtdeParcelasInput = document.getElementById('qtdeParcelas');
+    const condicaoEspecial = document.getElementById('condicaoEspecial').checked;
+    const maxParcelas = condicaoEspecial ? 120 : 60;
+    let mesesQuitar = parseInt(mesesQuitarInput.value) || 2;
+    let qtdeParcelas = parseInt(qtdeParcelasInput.value) || 2;
+    if (qtdeParcelas < 2) qtdeParcelas = 2;
+    if (qtdeParcelas > maxParcelas) qtdeParcelas = maxParcelas;
+    if (mesesQuitar < 2) mesesQuitar = 2;
+    if (mesesQuitar > maxParcelas) mesesQuitar = maxParcelas;
     // Saldo devedor
     let totalSaldoDevedor = 0;
     const saldoInputs = document.querySelectorAll('.saldo-input');
@@ -212,23 +278,37 @@ function calcularDividas() {
         totalSaldoDevedor += parseFloat(input.value) || 0;
     });
     document.getElementById('total-saldo-devedor').textContent = formatBRL(totalSaldoDevedor);
-
-    // Nova lógica: Calcular valor da parcela total baseado no valor da dívida
+    // Cálculo do valor mínimo de parcelas para caber na margem
+    let minParcelas = 2;
+    if (margem > 0) {
+        minParcelas = Math.ceil(totalSaldoDevedor / margem);
+        if (minParcelas < 2) minParcelas = 2;
+        if (minParcelas > maxParcelas) minParcelas = maxParcelas;
+    }
+    // Se a quantidade de parcelas for menor que o mínimo, ajustar e alertar
+    let alertMsg = '';
+    if (qtdeParcelas < minParcelas) {
+        qtdeParcelas = minParcelas;
+        mesesQuitar = minParcelas;
+        qtdeParcelasInput.value = minParcelas;
+        mesesQuitarInput.value = minParcelas;
+        alertMsg = `O número de parcelas foi ajustado para ${minParcelas} para que a parcela mensal caiba na margem disponível.`;
+    }
+    // Se nem mesmo o máximo permitido for suficiente
+    if ((totalSaldoDevedor / maxParcelas) > margem) {
+        alertMsg = `Não é possível pagar o valor total das dívidas (${formatBRL(totalSaldoDevedor)}) com a margem disponível (${formatBRL(margem)}) mesmo em ${maxParcelas}x. Reduza o valor das dívidas ou aumente a margem.`;
+    }
+    // Valor total mensal das parcelas = totalSaldoDevedor / qtdeParcelas (garante que soma das parcelas = total das dívidas)
     const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
-
-    // % Dívida, Valor da Parcela, Parcela Residual
     let totalValorParcela = 0;
     saldoInputs.forEach((input, i) => {
         const saldo = parseFloat(input.value) || 0;
         const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-        // Valor da parcela proporcional ao valor da dívida
         const valorParcela = pctDivida * valorParcelaTotal;
-        // Parcela Residual
         let parcelaResidual = 0;
         if (qtdeParcelas <= 60) {
             parcelaResidual = (mesesQuitar - qtdeParcelas) * valorParcela;
         }
-        // Atualiza células
         document.querySelectorAll('.pct-divida')[i].textContent = (pctDivida*100).toFixed(2) + '%';
         document.querySelectorAll('.valor-parcela')[i].textContent = formatBRL(valorParcela);
         document.querySelectorAll('.parcela-residual')[i].textContent = formatBRL(parcelaResidual);
@@ -236,12 +316,23 @@ function calcularDividas() {
     });
     document.getElementById('total-pct-divida').textContent = '100%';
     document.getElementById('total-valor-parcela').textContent = formatBRL(totalValorParcela);
-    // NÃO atualizar valor-pago nem pct-saldo-pago aqui!
-
-    renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor);
+    renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal);
+    // Exibir alerta se necessário
+    const alertaDiv = document.getElementById('alerta-margem') || (() => {
+        const d = document.createElement('div');
+        d.id = 'alerta-margem';
+        d.style.margin = '16px 0';
+        d.style.fontWeight = 'bold';
+        d.style.color = '#d00';
+        d.style.fontSize = '1.1em';
+        document.querySelector('.container').insertBefore(d, document.querySelector('.container').children[1]);
+        return d;
+    })();
+    alertaDiv.textContent = alertMsg;
+    if (!alertMsg) alertaDiv.style.display = 'none'; else alertaDiv.style.display = '';
 }
 
-function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor) {
+function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal) {
     // Cabeçalho
     const head = document.getElementById('parcelas-head');
     const body = document.getElementById('parcelas-body');
@@ -249,71 +340,60 @@ function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem
     head.innerHTML = '';
     body.innerHTML = '';
     foot.innerHTML = '';
-    // Bancos selecionados
-    const bancosSelecionados = Array.from(document.querySelectorAll('.credor-text')).map(span => span.textContent);
-    // Remove duplicados mantendo ordem
-    const bancosUnicos = bancosSelecionados.filter((b, i, arr) => arr.indexOf(b) === i && b);
-    // Cabeçalho
+    // Cada dívida é uma coluna
+    const credorTexts = Array.from(document.querySelectorAll('.credor-text'));
+    const saldoInputs = Array.from(document.querySelectorAll('.saldo-input'));
+    // Monta cabeçalho: nome do banco + número da dívida apenas se repetido
     let ths = '<th>Mês</th>';
-    bancosUnicos.forEach(banco => ths += `<th>${banco}</th>`);
+    const bancoCount = {};
+    credorTexts.forEach((span, i) => {
+        if (span.textContent) {
+            const banco = span.textContent;
+            bancoCount[banco] = (bancoCount[banco] || 0) + 1;
+            if (bancoCount[banco] === 1) {
+                ths += `<th>${banco}</th>`;
+            } else {
+                ths += `<th>${banco} #${bancoCount[banco]}</th>`;
+            }
+        }
+    });
     ths += '<th>Total</th>';
     head.innerHTML = `<tr>${ths}</tr>`;
-
-    // Pega valores principais
-    const saldoInputs = document.querySelectorAll('.saldo-input');
-    const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
-
-    if (qtdeParcelas > 0 && totalSaldoDevedor > 0 && bancosUnicos.length > 0) {
-        // Linhas
+    // Linhas de parcelas
+    if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
         for (let mes = 1; mes <= qtdeParcelas; mes++) {
             let tds = `<td>Mês ${mes}</td>`;
             let somaLinha = 0;
-            bancosUnicos.forEach((banco, idx) => {
-                // Soma valor da parcela para cada banco
-                let valor = 0;
-                document.querySelectorAll('.credor-text').forEach((span, i) => {
-                    if (span.textContent === banco) {
-                        const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
-                        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                        // Valor proporcional ao valor da dívida
-                        valor += pctDivida * valorParcelaTotal;
-                    }
-                });
-                valor = +(valor).toFixed(2);
-                tds += `<td>${formatBRL(valor)}</td>`;
-                somaLinha += valor;
+            credorTexts.forEach((span, i) => {
+                if (span.textContent) {
+                    const saldo = parseFloat(saldoInputs[i].value) || 0;
+                    const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
+                    const valor = +(pctDivida * valorParcelaTotal).toFixed(2);
+                    tds += `<td>${formatBRL(valor)}</td>`;
+                    somaLinha += valor;
+                }
             });
             somaLinha = +(somaLinha).toFixed(2);
             tds += `<td>Valor Mensal: ${formatBRL(somaLinha)}</td>`;
             body.innerHTML += `<tr>${tds}</tr>`;
         }
-        // Rodapé (total por banco)
+        // Rodapé (total por dívida)
         let tfs = '<td>Total</td>';
-        bancosUnicos.forEach((banco, idx) => {
-            let somaCol = 0;
-            for (let mes = 1; mes <= qtdeParcelas; mes++) {
-                document.querySelectorAll('.credor-text').forEach((span, i) => {
-                    if (span.textContent === banco) {
-                        const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
-                        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                        somaCol += pctDivida * valorParcelaTotal;
-                    }
-                });
+        credorTexts.forEach((span, i) => {
+            if (span.textContent) {
+                const saldo = parseFloat(saldoInputs[i].value) || 0;
+                const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
+                const somaCol = +(pctDivida * valorParcelaTotal * qtdeParcelas).toFixed(2);
+                tfs += `<td>${formatBRL(somaCol)}</td>`;
             }
-            somaCol = +(somaCol).toFixed(2);
-            tfs += `<td>${formatBRL(somaCol)}</td>`;
         });
         // Total geral
         let totalGeral = 0;
-        bancosUnicos.forEach((banco, idx) => {
-            for (let mes = 1; mes <= qtdeParcelas; mes++) {
-                document.querySelectorAll('.credor-text').forEach((span, i) => {
-                    if (span.textContent === banco) {
-                        const saldo = parseFloat(document.querySelectorAll('.saldo-input')[i].value) || 0;
-                        const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
-                        totalGeral += pctDivida * valorParcelaTotal;
-                    }
-                });
+        credorTexts.forEach((span, i) => {
+            if (span.textContent) {
+                const saldo = parseFloat(saldoInputs[i].value) || 0;
+                const pctDivida = totalSaldoDevedor > 0 ? saldo / totalSaldoDevedor : 0;
+                totalGeral += pctDivida * valorParcelaTotal * qtdeParcelas;
             }
         });
         totalGeral = +(totalGeral).toFixed(2);
@@ -323,12 +403,20 @@ function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem
         // Se algum valor essencial estiver zerado, exibe tudo como R$ 0,00
         for (let mes = 1; mes <= qtdeParcelas; mes++) {
             let tds = `<td>Mês ${mes}</td>`;
-            bancosUnicos.forEach(() => tds += `<td>R$ 0,00</td>`);
+            credorTexts.forEach((span) => {
+                if (span.textContent) {
+                    tds += `<td>R$ 0,00</td>`;
+                }
+            });
             tds += `<td>R$ 0,00</td>`;
             body.innerHTML += `<tr>${tds}</tr>`;
         }
         let tfs = '<td>Total</td>';
-        bancosUnicos.forEach(() => tfs += `<td>R$ 0,00</td>`);
+        credorTexts.forEach((span) => {
+            if (span.textContent) {
+                tfs += `<td>R$ 0,00</td>`;
+            }
+        });
         tfs += `<td>R$ 0,00</td>`;
         foot.innerHTML = `<tr>${tfs}</tr>`;
     }
@@ -347,11 +435,44 @@ document.getElementById('dividas-body').addEventListener('change', calcularDivid
 const page = window.location.pathname.split('/').pop();
 if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
 if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
-if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
+if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
 if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
 
 document.getElementById('comprometida').addEventListener('input', function() {
     localStorage.setItem('plano-pct-limite', this.value);
+    calcularDividas();
+});
+
+['mesesQuitar','qtdeParcelas'].forEach(id => {
+    document.getElementById(id).addEventListener('input', function(e) {
+        const otherId = id === 'mesesQuitar' ? 'qtdeParcelas' : 'mesesQuitar';
+        let maxVal = document.getElementById('condicaoEspecial').checked ? 120 : 60;
+        let v = parseInt(this.value) || 2;
+        if (v < 2) v = 2;
+        if (v > maxVal) v = maxVal;
+        this.value = v;
+        document.getElementById(otherId).value = v;
+        // Salva ambos os valores no localStorage
+        localStorage.setItem('plano-mesesQuitar', v);
+        localStorage.setItem('plano-qtdeParcelas', v);
+        calcularDividas();
+    });
+});
+
+// Atualiza o atributo max dos inputs quando o checkbox muda
+const condicaoEspecial = document.getElementById('condicaoEspecial');
+condicaoEspecial.addEventListener('change', function() {
+    const maxVal = this.checked ? 120 : 60;
+    document.getElementById('mesesQuitar').max = maxVal;
+    document.getElementById('qtdeParcelas').max = maxVal;
+    // Se o valor atual for maior que o novo máximo, ajusta
+    ['mesesQuitar','qtdeParcelas'].forEach(id => {
+        let v = parseInt(document.getElementById(id).value) || 2;
+        if (v > maxVal) {
+            document.getElementById(id).value = maxVal;
+            localStorage.setItem('plano-' + id, maxVal);
+        }
+    });
     calcularDividas();
 });
 
@@ -437,95 +558,23 @@ window.onload = function() {
   // Calcula valores iniciais
   calcularDividas();
 
-  // Ativa o botão da página atual
-  const page = window.location.pathname.split('/').pop();
-  if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
-  if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
-  if(page.includes('plano')) document.getElementById('btn-plano').classList.add('active');
-  if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
+  // Restaurar mesesQuitar e qtdeParcelas do localStorage, se existirem
+  const mesesQuitarSalvo = localStorage.getItem('plano-mesesQuitar');
+  const qtdeParcelasSalvo = localStorage.getItem('plano-qtdeParcelas');
+  if (mesesQuitarSalvo !== null) document.getElementById('mesesQuitar').value = mesesQuitarSalvo;
+  if (qtdeParcelasSalvo !== null) document.getElementById('qtdeParcelas').value = qtdeParcelasSalvo;
+
+  // Restaurar % Comprometida do localStorage, se existir
+  const pctComprometidaSalvo = localStorage.getItem('plano-pct-limite');
+  if (pctComprometidaSalvo !== null) document.getElementById('comprometida').value = pctComprometidaSalvo;
+
+  // Recalcular tudo após restaurar os valores salvos
+  calcularDividas();
+
+  // Preencher dados do consumidor e processo para impressão
+  document.getElementById('impressao-nome-consumidor').textContent = localStorage.getItem('nome-consumidor') || '';
+  document.getElementById('impressao-numero-processo').textContent = localStorage.getItem('numero-processo') || '';
 };
-
-// Adiciona eventos para atualizar o plano quando os dados mudarem
-document.getElementById('dividas-body').addEventListener('input', function() {
-  // Salva os valores no localStorage quando mudarem
-  const saldoInputs = document.querySelectorAll('.saldo-input');
-  const credorTexts = document.querySelectorAll('.credor-text');
-  const infoInputs = document.querySelectorAll('.info-input');
-
-  saldoInputs.forEach((input, index) => {
-    if (input.value) {
-      localStorage.setItem(`divida-${index+1}-saldo`, input.value);
-    }
-  });
-
-  credorTexts.forEach((span, index) => {
-    if (span.textContent) {
-      localStorage.setItem(`divida-${index+1}-credor`, span.textContent);
-    }
-  });
-
-  infoInputs.forEach((input, index) => {
-    if (input.value) {
-      localStorage.setItem(`divida-${index+1}-info`, input.value);
-    }
-  });
-
-  calcularDividas();
-});
-
-function limparCampos() {
-  document.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(input) {
-    input.value = '';
-    if (input.id) localStorage.removeItem(input.id);
-  });
-  calcularDividas();
-}
-
-// Sincronizar Meses para quitar e Qtde. de Parcelas
-const mesesQuitarInput = document.getElementById('mesesQuitar');
-const qtdeParcelasInput = document.getElementById('qtdeParcelas');
-
-mesesQuitarInput.addEventListener('input', function() {
-  qtdeParcelasInput.value = this.value;
-  qtdeParcelasInput.dispatchEvent(new Event('input'));
-});
-qtdeParcelasInput.addEventListener('input', function() {
-  mesesQuitarInput.value = this.value;
-  mesesQuitarInput.dispatchEvent(new Event('input'));
-});
-
-document.getElementById('qtdeParcelas').addEventListener('keydown', function(e) {
-    // Permitir: setas, tab, backspace, delete, home, end
-    const allowedKeys = [
-        'ArrowUp', 'ArrowDown', 'Tab', 'Backspace', 'Delete', 'Home', 'End', 'ArrowLeft', 'ArrowRight'
-    ];
-    if (
-        allowedKeys.includes(e.key)
-    ) {
-        return; // Permite
-    }
-    // Bloquear números e ponto/virgula
-    if ((e.key >= '0' && e.key <= '9') || e.key === '.' || e.key === ',') {
-        e.preventDefault();
-    }
-});
-
-document.getElementById('mesesQuitar').addEventListener('keydown', function(e) {
-    // Permitir: setas, tab, backspace, delete, home, end
-    const allowedKeys = [
-        'ArrowUp', 'ArrowDown', 'Tab', 'Backspace', 'Delete', 'Home', 'End', 'ArrowLeft', 'ArrowRight'
-    ];
-    if (
-        allowedKeys.includes(e.key)
-    ) {
-        return; // Permite
-    }
-    // Bloquear números e ponto/virgula
-    if ((e.key >= '0' && e.key <= '9') || e.key === '.' || e.key === ',') {
-        e.preventDefault();
-    }
-});
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>
