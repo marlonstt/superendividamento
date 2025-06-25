@@ -6,40 +6,51 @@
 superendividamento/
 │
 ├── frontend/
-│   ├── dados-socioeconomicos.html
+│   ├── index.html
 │   ├── geral.html
 │   ├── plano-de-pagamento.html
 │   ├── panorama.html
 │   └── README.md
 │
+├── HISTORICO_DO_PROJETO.md
 └── README.md
 ```
 
-## Funcionalidades Implementadas
+## Análise Detalhada dos Arquivos
 
-### 1. Organização do Projeto
-- Projeto atualmente focado apenas no frontend, com páginas HTML independentes.
-- Estrutura de navegação entre páginas: Dados Socioeconômicos, Geral, Plano de Pagamento, Panorama.
+### 1. `frontend/index.html` — **Dados Socioeconômicos**
+- **Função:** Página inicial para preenchimento dos dados socioeconômicos do consumidor.
+- **Estrutura:** Tabelas para receitas e despesas, cálculo automático do valor mensal disponível, campos com IDs únicos e persistência automática no localStorage. Botão para limpar campos. Navegação superior para as demais páginas.
 
-### 2. Frontend (HTML + JS)
-- Cada página HTML possui tabelas e campos para preenchimento manual dos dados.
-- Todos os campos editáveis possuem IDs únicos, permitindo persistência dos dados.
-- Os dados digitados em qualquer campo são automaticamente salvos no localStorage do navegador.
-- Ao navegar entre as páginas, os dados inseridos são mantidos e restaurados automaticamente.
-- Layout das páginas segue fielmente os modelos fornecidos (planilhas/imagens), com navegação superior consistente.
-- Barra de navegação customizada, responsiva e destacando a página ativa.
-- Remoção de arquivos não utilizados: `app.js`, `index.html` e qualquer JS externo não referenciado.
+### 2. `frontend/geral.html` — **Visão Geral das Dívidas**
+- **Função:** Consolida e detalha as dívidas do consumidor, separando em consignados, não consignados e dívidas sem parcelas.
+- **Estrutura:** Tabelas para cada tipo de dívida, cálculo de totais, campos editáveis com persistência automática, botão para limpar, link para cartilha do CNJ. Navegação superior.
 
-#### Fluxo de Uso
-1. Usuário preenche os dados nas tabelas de qualquer página.
-2. Os valores são salvos automaticamente no localStorage.
-3. Ao retornar para a página, os campos são preenchidos com os dados previamente inseridos.
-4. Navegação entre páginas é feita pela barra superior, sem perda de dados.
+### 3. `frontend/plano-de-pagamento.html` — **Plano de Pagamento**
+- **Função:** Permite simular e montar um plano de pagamento para as dívidas do consumidor.
+- **Estrutura:** Formulário para parâmetros do plano, tabela para distribuição das dívidas, cálculo automático, botões para imprimir e limpar, dados do consumidor para impressão, persistência automática. Navegação superior.
 
-## Observações
-- O projeto não possui mais backend ou integração com API/Java/Spring Boot.
-- Toda a lógica de persistência é feita no navegador, sem necessidade de servidor.
-- O histórico anterior referente ao backend, endpoints e integrações foi removido por não estar mais no contexto da aplicação.
+### 4. `frontend/panorama.html` — **Panorama Mensal Resumido**
+- **Função:** Apresenta um resumo visual e consolidado da situação financeira mensal do consumidor.
+- **Estrutura:** Cards exibindo totais de rendimentos, dívidas, valores livres, simulação de parcelamento, instruções detalhadas. Valores atualizados dinamicamente. Navegação superior.
+
+### 5. `frontend/README.md`
+- **Função:** Descreve que o diretório contém o código da interface web (frontend) da aplicação.
+
+### 6. `README.md` (raiz do projeto)
+- **Função:** Apresenta a estrutura geral do projeto, contextualiza o objetivo da ferramenta, lista benefícios e ressalta que o backend não está mais presente.
+
+### 7. `HISTORICO_DO_PROJETO.md`
+- **Função:** Documenta a evolução do projeto, estrutura, funcionalidades e observações importantes. Destaca que toda a lógica está no frontend, com persistência local e sem backend.
+
+---
+
+## Resumo Geral
+- O projeto é uma ferramenta 100% frontend, composta por páginas HTML independentes, mas integradas por uma barra de navegação comum.
+- Cada página aborda um aspecto do processo de superendividamento: dados socioeconômicos, detalhamento de dívidas, simulação de plano de pagamento e panorama financeiro.
+- Todos os dados são persistidos no navegador via localStorage, permitindo navegação entre páginas sem perda de informações.
+- O layout é responsivo, utiliza Bootstrap e segue modelos visuais fornecidos.
+- Não há mais backend ou integração com APIs externas.
 
 ---
 
