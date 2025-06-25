@@ -25,6 +25,7 @@
         .text-blue { color: #0057b7; }
         .text-red { color: #d00; }
         .scroll-x { overflow-x: auto; }
+        .bg-medium-gray { background: #dee2e6 !important; }
         @media (max-width: 900px) {
             .row { flex-direction: column; }
             .container { padding: 10px; }
@@ -139,6 +140,7 @@
                         <th>Renda Comprometida</th>
                         <th>Margem</th>
                         <th>Qtde. de Parcelas</th>
+                        <th>Taxa de Juros Mensal (%)</th>
                     </tr>
                     <tr>
                         <td style="position: relative;">
@@ -148,6 +150,9 @@
                         <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
                         <td style="display:flex; align-items:center; gap:8px;">
                             <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" min="0" max="100" id="taxaJurosMensal" class="form-control input-sm" value="1" style="padding-right: 20px;">
                         </td>
                     </tr>
                     <tr>
@@ -179,9 +184,9 @@
                             <th>Informação</th>
                             <th>Valor total pago</th>
                             <th>% do saldo pago</th>
-                            <th>Saldo Devedor</th>
+                            <th class="bg-medium-gray">Saldo Devedor</th>
                             <th>% Dívida</th>
-                            <th>Valor da Parcela</th>
+                            <th class="bg-medium-gray">Valor da Parcela</th>
                             <th>Parcela Residual</th>
                         </tr>
                     </thead>
@@ -193,10 +198,10 @@
                             <td colspan="2">Total/Subtotal</td>
                             <td id="total-valor-pago">R$ 0,00</td>
                             <td></td>
-                            <td id="total-saldo-devedor">R$ 0,00</td>
+                            <td id="total-saldo-devedor" class="bg-medium-gray">R$ 0,00</td>
                             <td id="total-pct-divida">100%</td>
-                            <td id="total-valor-parcela">R$ 0,00</td>
-                            <td></td>
+                            <td id="total-valor-parcela" class="bg-medium-gray">R$ 0,00</td>
+                            <td id="total-parcela-residual">R$ 0,00</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -386,6 +391,7 @@ function renderDividasTable() {
 function atualizarTotais() {
     let totalValorPago = 0;
     let totalSaldoDevedor = 0;
+    let totalParcelaResidual = 0;
 
     // Somar valores dos consignados
     const linhasConsignados = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
@@ -462,6 +468,8 @@ function calcularDividas() {
     const rows = document.querySelectorAll('#dividas-body tr');
     let totalSaldoDevedor = 0;
     let totalValorPago = 0;
+    let totalValorParcela = 0;
+    let totalParcelaResidual = 0;
 
     rows.forEach(row => {
         const valorPago = parseFloat(row.cells[2].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
@@ -475,7 +483,6 @@ function calcularDividas() {
 
     // Calcular valor total mensal das parcelas
     const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
-    let totalValorParcela = 0;
 
     // Atualizar cada linha
     rows.forEach(row => {
@@ -496,10 +503,19 @@ function calcularDividas() {
         
         // Calcular e atualizar parcela residual
         let parcelaResidual = 0;
-        if (qtdeParcelas < maxParcelas) {
-            parcelaResidual = (maxParcelas - qtdeParcelas) * valorParcela;
+        const taxaJurosMensal = parseFloat(document.getElementById('taxaJurosMensal').value) / 100 || 0; // Converte para decimal
+        
+        if (qtdeParcelas <= 60) { // Só calcula residual se estiver dentro do limite padrão
+            if (taxaJurosMensal === 0) {
+                parcelaResidual = valorParcela;
+            } else {
+                // Aplica os juros sobre o valor da parcela
+                parcelaResidual = valorParcela * (1 + taxaJurosMensal);
+            }
         }
+        
         row.querySelector('.parcela-residual').textContent = formatBRL(parcelaResidual);
+        totalParcelaResidual += parcelaResidual;
         
         totalValorParcela += valorParcela;
     });
@@ -508,6 +524,7 @@ function calcularDividas() {
     document.getElementById('total-pct-divida').textContent = '100%';
     const totalValorParcelaFormatado = totalValorParcela > 0 ? `${qtdeParcelas}x de ${formatBRL(totalValorParcela)}` : 'R$ 0,00';
     document.getElementById('total-valor-parcela').textContent = totalValorParcelaFormatado;
+    document.getElementById('total-parcela-residual').textContent = formatBRL(totalParcelaResidual);
 
     // Cálculo do valor mínimo de parcelas para caber na margem
     let minParcelas = 2;
@@ -530,6 +547,7 @@ function calcularDividas() {
         alertMsg = `Não é possível pagar o valor total das dívidas (${formatBRL(totalSaldoDevedor)}) com a margem disponível (${formatBRL(margem)}) mesmo em ${maxParcelas}x. Reduza o valor das dívidas ou aumente a margem.`;
     }
 
+    // Renderizar a tabela de parcelas
     renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal);
 
     // Exibir alerta se necessário
@@ -572,19 +590,34 @@ function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem
 
     // Build body rows
     if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
-        for (let mes = 1; mes <= qtdeParcelas; mes++) {
-            let tds = `<td>Mês ${mes}</td>`;
-            let somaLinha = 0;
+        // Primeiro mês como exemplo para pegar o valor total mensal
+        let tds = `<td>Mês 1</td>`;
+        let somaLinha = 0;
 
+        rows.forEach(row => {
+            const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
+            const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
+            tds += `<td>${formatBRL(valorParcela)}</td>`;
+            somaLinha += valorParcela;
+        });
+
+        // Salvar o valor total mensal no localStorage (soma de todas as parcelas de um mês)
+        somaLinha = +(somaLinha).toFixed(2);
+        localStorage.setItem('plano-valor-total-parcela', somaLinha.toString());
+
+        tds += `<td>${formatBRL(somaLinha)}</td>`;
+        body.innerHTML += `<tr>${tds}</tr>`;
+
+        // Gerar as linhas restantes
+        for (let mes = 2; mes <= qtdeParcelas; mes++) {
+            tds = `<td>Mês ${mes}</td>`;
             rows.forEach(row => {
                 const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                 const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
                 const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
                 tds += `<td>${formatBRL(valorParcela)}</td>`;
-                somaLinha += valorParcela;
             });
-
-            somaLinha = +(somaLinha).toFixed(2);
             tds += `<td>${formatBRL(somaLinha)}</td>`;
             body.innerHTML += `<tr>${tds}</tr>`;
         }
@@ -604,6 +637,9 @@ function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem
         totalGeral = +(totalGeral).toFixed(2);
         tfs += `<td>${formatBRL(totalGeral)}</td></tr>`;
         foot.innerHTML = tfs;
+    } else {
+        // Se não houver parcelas, zerar o valor no localStorage
+        localStorage.setItem('plano-valor-total-parcela', '0');
     }
 }
 
@@ -628,24 +664,6 @@ function calcularParcelas() {
         const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
         const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
         const valorParcela = (pctDivida * valorParcelaTotal) / 100;
-        
-        // Atualiza o percentual da dívida
-        row.querySelector('.pct-divida').textContent = pctDivida.toFixed(2) + '%';
-        
-        // Atualiza o valor da parcela
-        const valorParcelaCell = row.querySelector('.valor-parcela');
-        if (valorParcela > 0) {
-            valorParcelaCell.textContent = `${qtdeParcelas}x de ${formatBRL(valorParcela)}`;
-        } else {
-            valorParcelaCell.textContent = 'R$ 0,00';
-        }
-        
-        // Calcula e atualiza a parcela residual
-        let parcelaResidual = 0;
-        if (qtdeParcelas < maxParcelas) {
-            parcelaResidual = (maxParcelas - qtdeParcelas) * valorParcela;
-        }
-        row.querySelector('.parcela-residual').textContent = formatBRL(parcelaResidual);
         
         totalValorParcela += valorParcela;
     });
@@ -794,6 +812,14 @@ function carregarDadosImpressao() {
     document.getElementById('impressao-nome-consumidor').textContent = nomeConsumidor;
     document.getElementById('impressao-numero-processo').textContent = numeroProcesso;
 }
+
+// Adicionar event listener para o novo campo de taxa de juros
+document.getElementById('taxaJurosMensal').addEventListener('input', function() {
+    if (parseFloat(this.value) > 100) {
+        this.value = 100;
+    }
+    calcularDividas();
+});
 </script>
 </body>
 </html>
