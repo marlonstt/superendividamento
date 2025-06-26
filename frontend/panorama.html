@@ -30,7 +30,7 @@
         .retangulo-pct-limite { color: #2e7d32; font-size: 1.5em; font-weight: bold; }
         .retangulo-valor-livre { color: #007a00; font-size: 1.3em; font-weight: bold; }
         .retangulo-valor-neg { color: #d00; }
-        .retangulo-valor-porcento { color: #0074d9; font-size: 1.1em; font-weight: bold; }
+        .retangulo-valor-porcento { font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-neg { color: #d00; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-verde { color: #2e7d32; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-alarme { color: #ff9800; font-size: 1.1em; font-weight: bold; }
@@ -124,7 +124,7 @@
 </head>
 <body>
     <div id="custom-navbar">
-        <button onclick="window.location.href='dados-socioeconomicos.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+        <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
         <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
         <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
         <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
@@ -158,8 +158,8 @@
         <div class="retangulo">
             <div class="retangulo-icone retangulo-icone-comprometido">🎯</div>
             <div class="retangulo-titulo">COMPROMETIDO:</div>
-            <div class="retangulo-label"><span id="valor-livre-mensal">R$ 0,00</span> : LIVRE MENSAL</div>
             <div class="retangulo-valor-porcento" id="pct-comprometido">0,00% : RENDA COMPROMETIDA EM PARCELAS</div>
+            <div class="retangulo-label"><span id="valor-livre-mensal">R$ 0,00</span> : LIVRE MENSAL</div>
         </div>
         <!-- Retângulo 5: Outras Dívidas -->
         <div class="retangulo">
@@ -198,6 +198,23 @@
         if (isNaN(value)) return 'R$ 0,00';
         return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+
+    function getValorTotalParcelas() {
+        // Buscar o valor total das parcelas do plano de pagamento (soma de todas as parcelas de um mês)
+        let valorTotalParcelaPlano = 0;
+        
+        // Tentar buscar do localStorage
+        const totalParcelaStr = localStorage.getItem('plano-valor-total-parcela');
+        if (totalParcelaStr) {
+            const valor = parseFloat(totalParcelaStr);
+            if (!isNaN(valor)) {
+                valorTotalParcelaPlano = valor;
+            }
+        }
+        
+        return valorTotalParcelaPlano;
+    }
+
     function getValueFromLocalStorage(key, fallback=0) {
         const v = localStorage.getItem(key);
         return v ? parseFloat(v) : fallback;
@@ -214,64 +231,96 @@
         // 1. Buscar valor final de dados-socioeconomicos.html (após despesas existenciais)
         let valorRendimentos = getValueFromLocalStorage('valor-final', 0);
         document.getElementById('valor-rendimentos').textContent = formatBRL(valorRendimentos);
+
         // 2. Buscar número dos autos da página geral.html
         document.getElementById('valor-autos').textContent = localStorage.getItem('numero-processo') || '-';
-        // 3. Buscar valores das parcelas consignadas e não consignadas
-        // SOMA das parcelas consignadas conforme tabela dos consignados
+
+        // 3. Calcular soma das parcelas consignadas
         let valorConsignadas = 0;
-        for (let i = 1; i <= 5; i++) {
-            let v = localStorage.getItem(`consignado-${i}-parcela-mensal`);
-            if (v) {
-                // Aceita tanto número quanto string com vírgula/ponto
-                v = v.replace(/\./g, '').replace(',', '.');
-                let num = parseFloat(v);
-                if (!isNaN(num)) valorConsignadas += num;
-            }
-        }
-        // Para não consignadas, soma os campos individuais
-        let valorNaoConsignadas = 0;
-        for (let i = 1; i <= 2; i++) {
-            let v = localStorage.getItem(`nao-consignado-${i}-parcela-mensal`);
-            if (v) {
-                v = v.replace(/\./g, '').replace(',', '.');
-                let num = parseFloat(v);
-                if (!isNaN(num)) valorNaoConsignadas += num;
-            }
-        }
-        // Soma das dívidas sem parcelas (saldo devedor)
-        let valorSemParcelas = 0;
-        for (let i = 1; i <= 1; i++) { // Se houver mais linhas, aumentar o limite
-            let v = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
-            if (v) {
-                v = v.replace(/\./g, '').replace(',', '.');
-                let num = parseFloat(v);
-                if (!isNaN(num)) valorSemParcelas += num;
-            }
-        }
-        let valorParcelamento60 = valorSemParcelas / 60;
-        let valorTotalParcelas = valorConsignadas + valorNaoConsignadas + valorParcelamento60;
-        let valorLivreMensalConsolidado = valorRendimentos - valorTotalParcelas;
-        let pctComprometidoTotal = valorRendimentos ? (valorTotalParcelas / valorRendimentos) * 100 : 0;
+        const linhasConsignados = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
+        linhasConsignados.forEach(linha => {
+            const parcelaMensal = parseFloat(linha.parcelaMensal?.replace(/\./g, '').replace(',', '.')) || 0;
+            valorConsignadas += parcelaMensal;
+        });
+
+        // Atualizar valor e porcentagem das consignadas
         document.getElementById('valor-consignadas').textContent = '-' + formatBRL(valorConsignadas);
-        document.getElementById('pct-consignadas').textContent = (valorRendimentos ? (valorConsignadas / valorRendimentos) * 100 : 0).toFixed(2) + '%';
+        const pctConsignadas = valorRendimentos > 0 ? (valorConsignadas / valorRendimentos) * 100 : 0;
+        document.getElementById('pct-consignadas').textContent = pctConsignadas.toFixed(2) + '%';
+
+        // 4. Calcular soma das parcelas não consignadas
+        let valorNaoConsignadas = 0;
+        let valorTotalParcelaPlano = getValorTotalParcelas(); // Busca o valor total das parcelas do plano
+        
+        // Usar o valor do plano de pagamento se disponível
+        if (valorTotalParcelaPlano > 0) {
+            valorNaoConsignadas = valorTotalParcelaPlano - valorConsignadas;
+        } else {
+            // Fallback para o cálculo antigo se não houver plano
+            for (let i = 1; i <= 2; i++) {
+                const parcelaMensal = localStorage.getItem(`nao-consignado-${i}-parcela-mensal`);
+                if (parcelaMensal) {
+                    const valor = parseFloat(parcelaMensal.replace(/\./g, '').replace(',', '.'));
+                    if (!isNaN(valor)) valorNaoConsignadas += valor;
+                }
+            }
+        }
+
+        // Atualizar valor e porcentagem das não consignadas
         document.getElementById('valor-nao-consignadas').textContent = '-' + formatBRL(valorNaoConsignadas);
-        document.getElementById('pct-nao-consignadas').textContent = (valorRendimentos ? (valorNaoConsignadas / valorRendimentos) * 100 : 0).toFixed(2) + '%';
+        const pctNaoConsignadas = valorRendimentos > 0 ? (valorNaoConsignadas / valorRendimentos) * 100 : 0;
+        document.getElementById('pct-nao-consignadas').textContent = pctNaoConsignadas.toFixed(2) + '%';
+
+        // 5. Comprometido
+        let pctComprometida = getValueFromLocalStorage('plano-pct-limite', 0);
+        let margem = valorRendimentos * (pctComprometida / 100);
+        let valorLivreMensal = valorRendimentos - (valorConsignadas + valorNaoConsignadas);
+        
+        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensal);
+        const pctComprometidoTotal = valorRendimentos > 0 ? ((valorConsignadas + valorNaoConsignadas) / valorRendimentos) * 100 : 0;
+        document.getElementById('pct-comprometido').textContent = `${pctComprometidoTotal.toFixed(2)}% : RENDA COMPROMETIDA EM PARCELAS`;
+
+        // 6. Outras Dívidas
+        let valorSemParcelas = 0;
+        for (let i = 1; i <= 1; i++) {
+            const saldoDevedor = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
+            if (saldoDevedor) {
+                const valor = parseFloat(saldoDevedor.replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(valor)) valorSemParcelas += valor;
+            }
+        }
+
+        let valorParcelamento60 = valorSemParcelas / 60;
+        let valorTotalParcelas = valorConsignadas + valorNaoConsignadas;
+        let valorLivreMensalConsolidado = valorRendimentos - valorTotalParcelas;
+        let pctComprometidoTotal2 = valorRendimentos > 0 ? (valorTotalParcelas / valorRendimentos) * 100 : 0;
+
         document.getElementById('valor-sem-parcelas').textContent = formatBRL(valorSemParcelas);
         document.getElementById('valor-parcelamento-60').textContent = formatBRL(valorParcelamento60);
-        document.getElementById('valor-total-parcelas').textContent = formatBRL(valorTotalParcelas);
+        document.getElementById('valor-total-parcelas').textContent = '-' + formatBRL(valorTotalParcelas);
         document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidado);
-        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
-        // 6. Emergencial
-        let pctLimite = getValueFromLocalStorage('plano-pct-limite', 0);
+        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal2.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
+
+        // 7. Emergencial
+        let pctLimite = getValueFromLocalStorage('plano-pct-limite', 30); // Default para 30%
         let valorRendaSemConsignados = valorRendimentos;
-        let valorConsignacaoEmergencial = -pctLimite * valorRendaSemConsignados;
+        let valorConsignacaoEmergencial = -(pctLimite / 100) * valorRendaSemConsignados;
         let valorLivreEmergencial = valorRendaSemConsignados + valorConsignacaoEmergencial;
-        document.getElementById('pct-limite').textContent = (pctLimite * 100).toFixed(0) + '%';
+
+        document.getElementById('pct-limite').textContent = pctLimite + '%';
         document.getElementById('valor-renda-sem-consignados').textContent = formatBRL(valorRendaSemConsignados);
         document.getElementById('valor-consignacao-emergencial').textContent = formatBRL(valorConsignacaoEmergencial);
         document.getElementById('valor-livre-emergencial').textContent = formatBRL(valorLivreEmergencial);
     }
     window.onload = atualizarPanorama;
+
+    // Atualizar quando houver mudanças no localStorage
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'valor-final' || e.key === 'plano-pct-limite' || e.key === 'plano-qtde-parcelas') {
+            atualizarPanorama();
+        }
+    });
+
     // Ativa o botão da página atual
     const page = window.location.pathname.split('/').pop();
     if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
