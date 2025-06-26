@@ -256,145 +256,41 @@ function renderDividasTable() {
 
     // Recuperar dados dos consignados
     const linhasConsignados = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
-    
     // Recuperar dados dos não consignados
-    const naoConsignadosData = [];
-    for (let i = 1; i <= 2; i++) {
-        const credor = localStorage.getItem(`nao-consignado-${i}-credores`);
-        const contratos = localStorage.getItem(`nao-consignado-${i}-contratos`);
-        const valorPago = localStorage.getItem(`nao-consignado-${i}-valor-pago`);
-        const saldoDevedor = localStorage.getItem(`nao-consignado-${i}-saldo-devedor`);
-        if (credor || contratos || saldoDevedor) {
-            naoConsignadosData.push({
-                credor,
-                contratos,
-                valorPago: parseFloat(valorPago) || 0,
-                saldoDevedor: parseFloat(saldoDevedor) || 0
-            });
-        }
-    }
-
+    const linhasNaoConsignados = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
     // Recuperar dados sem parcelas
-    const semParcelasData = [];
-    for (let i = 1; i <= 1; i++) {
-        const credor = localStorage.getItem(`sem-parcela-${i}-credores`);
-        const contratos = localStorage.getItem(`sem-parcela-${i}-contratos`);
-        const valorPago = localStorage.getItem(`sem-parcela-${i}-valor-pago`);
-        const saldoDevedor = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
-        if (credor || contratos || saldoDevedor) {
-            semParcelasData.push({
-                credor,
-                contratos,
-                valorPago: parseFloat(valorPago) || 0,
-                saldoDevedor: parseFloat(saldoDevedor) || 0
-            });
-        }
-    }
-
+    const linhasSemParcelas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
     // Recuperar dívidas consolidadas
-    const dividasConsolidadasData = [];
-    for (let i = 1; i <= 2; i++) {
-        const credor = localStorage.getItem(`divida-consolidada-${i}-credores`);
-        const contratos = localStorage.getItem(`divida-consolidada-${i}-contratos`);
-        const valorPago = localStorage.getItem(`divida-consolidada-${i}-valor-pago`);
-        const saldoDevedor = localStorage.getItem(`divida-consolidada-${i}-saldo-devedor`);
-        if (credor || contratos || saldoDevedor) {
-            dividasConsolidadasData.push({
-                credor,
-                contratos,
-                valorPago: parseFloat(valorPago) || 0,
-                saldoDevedor: parseFloat(saldoDevedor) || 0
-            });
-        }
+    const linhasDividasConsolidadas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+
+    // Função para processar e exibir linhas de qualquer tabela dinâmica
+    function processarLinhas(linhas) {
+        linhas.forEach((linha) => {
+            if ((linha.credor && linha.credor !== '') || (linha.saldoDevedor && linha.saldoDevedor !== '') || (linha.contratos && linha.contratos !== '')) {
+                linhasPreenchidas++;
+                const valorPago = parseFloat(linha.valorPago) || 0;
+                const saldoDevedor = parseFloat(linha.saldoDevedor) || 0;
+                const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${linha.credor || ''}</td>
+                        <td>${linha.contratos || ''}</td>
+                        <td>${formatBRL(valorPago)}</td>
+                        <td>${pctPago}%</td>
+                        <td>${formatBRL(saldoDevedor)}</td>
+                        <td class="pct-divida">0%</td>
+                        <td class="valor-parcela">R$ 0,00</td>
+                        <td class="parcela-residual">R$ 0,00</td>
+                    </tr>
+                `;
+            }
+        });
     }
-    
-    // Processar linhas de consignados
-    linhasConsignados.forEach((linha, i) => {
-        if (linha.credor || linha.saldoDevedor || linha.contratos) {
-            linhasPreenchidas++;
-            const valorPago = parseFloat(linha.valorPago) || 0;
-            const saldoDevedor = parseFloat(linha.saldoDevedor) || 0;
-            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${linha.credor || ''}</td>
-                    <td>${linha.contratos || ''}</td>
-                    <td>${formatBRL(valorPago)}</td>
-                    <td>${pctPago}%</td>
-                    <td>${formatBRL(saldoDevedor)}</td>
-                    <td class="pct-divida">0%</td>
-                    <td class="valor-parcela">R$ 0,00</td>
-                    <td class="parcela-residual">R$ 0,00</td>
-                </tr>
-            `;
-        }
-    });
 
-    // Processar linhas de não consignados
-    naoConsignadosData.forEach(linha => {
-        if (linha.credor || linha.saldoDevedor || linha.contratos) {
-            linhasPreenchidas++;
-            const valorPago = linha.valorPago || 0;
-            const saldoDevedor = linha.saldoDevedor || 0;
-            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${linha.credor || ''}</td>
-                    <td>${linha.contratos || ''}</td>
-                    <td>${formatBRL(valorPago)}</td>
-                    <td>${pctPago}%</td>
-                    <td>${formatBRL(saldoDevedor)}</td>
-                    <td class="pct-divida">0%</td>
-                    <td class="valor-parcela">R$ 0,00</td>
-                    <td class="parcela-residual">R$ 0,00</td>
-                </tr>
-            `;
-        }
-    });
-
-    // Processar linhas sem parcelas
-    semParcelasData.forEach(linha => {
-        if (linha.credor || linha.saldoDevedor || linha.contratos) {
-            linhasPreenchidas++;
-            const valorPago = linha.valorPago || 0;
-            const saldoDevedor = linha.saldoDevedor || 0;
-            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${linha.credor || ''}</td>
-                    <td>${linha.contratos || ''}</td>
-                    <td>${formatBRL(valorPago)}</td>
-                    <td>${pctPago}%</td>
-                    <td>${formatBRL(saldoDevedor)}</td>
-                    <td class="pct-divida">0%</td>
-                    <td class="valor-parcela">R$ 0,00</td>
-                    <td class="parcela-residual">R$ 0,00</td>
-                </tr>
-            `;
-        }
-    });
-
-    // Processar dívidas consolidadas
-    dividasConsolidadasData.forEach(linha => {
-        if (linha.credor || linha.saldoDevedor || linha.contratos) {
-            linhasPreenchidas++;
-            const valorPago = linha.valorPago || 0;
-            const saldoDevedor = linha.saldoDevedor || 0;
-            const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
-            tbody.innerHTML += `
-                <tr>
-                    <td>${linha.credor || ''}</td>
-                    <td>${linha.contratos || ''}</td>
-                    <td>${formatBRL(valorPago)}</td>
-                    <td>${pctPago}%</td>
-                    <td>${formatBRL(saldoDevedor)}</td>
-                    <td class="pct-divida">0%</td>
-                    <td class="valor-parcela">R$ 0,00</td>
-                    <td class="parcela-residual">R$ 0,00</td>
-                </tr>
-            `;
-        }
-    });
+    processarLinhas(linhasConsignados);
+    processarLinhas(linhasNaoConsignados);
+    processarLinhas(linhasSemParcelas);
+    processarLinhas(linhasDividasConsolidadas);
 
     atualizarTotais();
 }
@@ -410,30 +306,24 @@ function atualizarTotais() {
         totalValorPago += parseFloat(linha.valorPago) || 0;
         totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
     });
-
     // Somar valores dos não consignados
-    for (let i = 1; i <= 2; i++) {
-        const valorPago = parseFloat(localStorage.getItem(`nao-consignado-${i}-valor-pago`)) || 0;
-        const saldoDevedor = parseFloat(localStorage.getItem(`nao-consignado-${i}-saldo-devedor`)) || 0;
-        totalValorPago += valorPago;
-        totalSaldoDevedor += saldoDevedor;
-    }
-
+    const linhasNaoConsignados = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+    linhasNaoConsignados.forEach(linha => {
+        totalValorPago += parseFloat(linha.valorPago) || 0;
+        totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+    });
     // Somar valores sem parcelas
-    for (let i = 1; i <= 1; i++) {
-        const valorPago = parseFloat(localStorage.getItem(`sem-parcela-${i}-valor-pago`)) || 0;
-        const saldoDevedor = parseFloat(localStorage.getItem(`sem-parcela-${i}-saldo-devedor`)) || 0;
-        totalValorPago += valorPago;
-        totalSaldoDevedor += saldoDevedor;
-    }
-
+    const linhasSemParcelas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+    linhasSemParcelas.forEach(linha => {
+        totalValorPago += parseFloat(linha.valorPago) || 0;
+        totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+    });
     // Somar dívidas consolidadas
-    for (let i = 1; i <= 2; i++) {
-        const valorPago = parseFloat(localStorage.getItem(`divida-consolidada-${i}-valor-pago`)) || 0;
-        const saldoDevedor = parseFloat(localStorage.getItem(`divida-consolidada-${i}-saldo-devedor`)) || 0;
-        totalValorPago += valorPago;
-        totalSaldoDevedor += saldoDevedor;
-    }
+    const linhasDividasConsolidadas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+    linhasDividasConsolidadas.forEach(linha => {
+        totalValorPago += parseFloat(linha.valorPago) || 0;
+        totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+    });
 
     document.getElementById('total-valor-pago').textContent = formatBRL(totalValorPago);
     document.getElementById('total-saldo-devedor').textContent = formatBRL(totalSaldoDevedor);
@@ -442,7 +332,7 @@ function atualizarTotais() {
     const rows = document.querySelectorAll('#dividas-body tr');
     rows.forEach(row => {
         const saldoDevedorCell = row.cells[4];
-        const saldoDevedor = parseFloat(saldoDevedorCell.textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        const saldoDevedor = parseFloat(saldoDevedorCell.textContent.replace(/[^\\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
         const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
         row.querySelector('.pct-divida').textContent = pctDivida.toFixed(2) + '%';
     });

@@ -99,7 +99,7 @@
                 <input type="text" class="form-control" id="nome-consumidor" placeholder="Nome do consumidor">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Processo n.</label>
+                <label class="form-label">Número do Processo</label>
                 <input type="text" class="form-control" id="numero-processo" placeholder="Número do processo" oninput="localStorage.setItem('numero-processo', this.value)">
             </div>
             <div class="col-md-4 text-end">
@@ -160,18 +160,21 @@
                     <th>Parcelas contratadas</th>
                     <th>Parcelas restantes</th>
                 </tr>
-                <tr><td><select class="form-select credor-select" id="nao-consignado-1-credores"><option value="">Selecione</option><option value="Itaú">Itaú</option><option value="Bradesco">Bradesco</option><option value="BMG RMG">BMG RMG</option><option value="Agibank">Agibank</option><option value="Banco do Brasil">Banco do Brasil</option><option value="Santander">Santander</option><option value="Mercantil do Brasil">Mercantil do Brasil</option><option value="Sicob">Sicob</option></select></td><td><input class="form-control" type="text" id="nao-consignado-1-contratos"></td><td><input class="form-control" type="number" id="nao-consignado-1-valor-contratado"></td><td><input class="form-control" type="number" id="nao-consignado-1-valor-pago"></td><td><input class="form-control" type="number" id="nao-consignado-1-saldo-devedor" readonly></td><td><input class="form-control" type="text" id="nao-consignado-1-juros"></td><td><input class="form-control" type="text" id="nao-consignado-1-parcela-mensal"></td><td><input class="form-control" type="text" id="nao-consignado-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="nao-consignado-1-parcelas-restantes"></td></tr>
-                <tr><td><select class="form-select credor-select" id="nao-consignado-2-credores"><option value="">Selecione</option><option value="Itaú">Itaú</option><option value="Bradesco">Bradesco</option><option value="BMG RMG">BMG RMG</option><option value="Agibank">Agibank</option><option value="Banco do Brasil">Banco do Brasil</option><option value="Santander">Santander</option><option value="Mercantil do Brasil">Mercantil do Brasil</option><option value="Sicob">Sicob</option></select></td><td><input class="form-control" type="text" id="nao-consignado-2-contratos"></td><td><input class="form-control" type="text" id="nao-consignado-2-valor-contratado"></td><td><input class="form-control" type="text" id="nao-consignado-2-valor-pago"></td><td><input class="form-control" type="text" id="nao-consignado-2-saldo-devedor"></td><td><input class="form-control" type="text" id="nao-consignado-2-juros"></td><td><input class="form-control" type="text" id="nao-consignado-2-parcela-mensal"></td><td><input class="form-control" type="text" id="nao-consignado-2-parcelas-contratadas"></td><td><input class="form-control" type="text" id="nao-consignado-2-parcelas-restantes"></td></tr>
-                <tr class="total-row">
-                    <td colspan="2">Total</td>
-                    <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
-                    <td></td>
-                    <td><input class="form-control" type="text" id="nao-consignadas-saldo" oninput="localStorage.setItem('nao-consignadas-saldo', this.value)"></td>
-                    <td></td>
-                    <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <tbody id="tbody-nao-consignados">
+                    <!-- Linhas geradas dinamicamente -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2">Total</td>
+                        <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
+                        <td></td>
+                        <td><input class="form-control" type="text" id="nao-consignadas-saldo" oninput="localStorage.setItem('nao-consignadas-saldo', this.value)"></td>
+                        <td></td>
+                        <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="scroll-x table-section">
@@ -190,17 +193,21 @@
                     <th>Parcelas contratadas</th>
                     <th>Parcelas restantes</th>
                 </tr>
-                <tr><td><select class="form-select credor-select" id="sem-parcela-1-credores"><option value="">Selecione</option><option value="Itaú">Itaú</option><option value="Bradesco">Bradesco</option><option value="BMG RMG">BMG RMG</option><option value="Agibank">Agibank</option><option value="Banco do Brasil">Banco do Brasil</option><option value="Santander">Santander</option><option value="Mercantil do Brasil">Mercantil do Brasil</option><option value="Sicob">Sicob</option></select></td><td><input class="form-control" type="text" id="sem-parcela-1-contratos"></td><td><input class="form-control" type="number" id="sem-parcela-1-valor-contratado"></td><td><input class="form-control" type="number" id="sem-parcela-1-valor-pago"></td><td><input class="form-control" type="number" id="sem-parcela-1-saldo-devedor" readonly></td><td><input class="form-control" type="text" id="sem-parcela-1-juros"></td><td><input class="form-control" type="text" id="sem-parcela-1-parcela-mensal"></td><td><input class="form-control" type="text" id="sem-parcela-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="sem-parcela-1-parcelas-restantes"></td></tr>
-                <tr class="total-row">
-                    <td colspan="2">Total</td>
-                    <td><input class="form-control" type="text" id="sem-parcelas-saldo" oninput="localStorage.setItem('sem-parcelas-saldo', this.value)"></td>
-                    <td></td>
-                    <td><input class="form-control" type="text"></td>
-                    <td></td>
-                    <td><input class="form-control" type="text"></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <tbody id="tbody-sem-parcelas">
+                    <!-- Linhas geradas dinamicamente -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2">Total</td>
+                        <td><input class="form-control" type="text" id="sem-parcelas-saldo" oninput="localStorage.setItem('sem-parcelas-saldo', this.value)"></td>
+                        <td></td>
+                        <td><input class="form-control" type="text"></td>
+                        <td></td>
+                        <td><input class="form-control" type="text"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="scroll-x table-section">
@@ -219,18 +226,21 @@
                     <th>Parcelas contratadas</th>
                     <th>Parcelas restantes</th>
                 </tr>
-                <tr><td><select class="form-select credor-select" id="divida-consolidada-1-credores"><option value="">Selecione</option><option value="Itaú">Itaú</option><option value="Bradesco">Bradesco</option><option value="BMG RMG">BMG RMG</option><option value="Agibank">Agibank</option><option value="Banco do Brasil">Banco do Brasil</option><option value="Santander">Santander</option><option value="Mercantil do Brasil">Mercantil do Brasil</option><option value="Sicob">Sicob</option></select></td><td><input class="form-control" type="text" id="divida-consolidada-1-contratos"></td><td><input class="form-control" type="number" id="divida-consolidada-1-valor-contratado"></td><td><input class="form-control" type="number" id="divida-consolidada-1-valor-pago"></td><td><input class="form-control" type="number" id="divida-consolidada-1-saldo-devedor" readonly></td><td><input class="form-control" type="text" id="divida-consolidada-1-juros"></td><td><input class="form-control" type="text" id="divida-consolidada-1-parcela-mensal"></td><td><input class="form-control" type="text" id="divida-consolidada-1-parcelas-contratadas"></td><td><input class="form-control" type="text" id="divida-consolidada-1-parcelas-restantes"></td></tr>
-                <tr><td><select class="form-select credor-select" id="divida-consolidada-2-credores"><option value="">Selecione</option><option value="Itaú">Itaú</option><option value="Bradesco">Bradesco</option><option value="BMG RMG">BMG RMG</option><option value="Agibank">Agibank</option><option value="Banco do Brasil">Banco do Brasil</option><option value="Santander">Santander</option><option value="Mercantil do Brasil">Mercantil do Brasil</option><option value="Sicob">Sicob</option></select></td><td><input class="form-control" type="text" id="divida-consolidada-2-contratos"></td><td><input class="form-control" type="text" id="divida-consolidada-2-valor-contratado"></td><td><input class="form-control" type="text" id="divida-consolidada-2-valor-pago"></td><td><input class="form-control" type="text" id="divida-consolidada-2-saldo-devedor"></td><td><input class="form-control" type="text" id="divida-consolidada-2-juros"></td><td><input class="form-control" type="text" id="divida-consolidada-2-parcela-mensal"></td><td><input class="form-control" type="text" id="divida-consolidada-2-parcelas-contratadas"></td><td><input class="form-control" type="text" id="divida-consolidada-2-parcelas-restantes"></td></tr>
-                <tr class="total-row">
-                    <td colspan="2">Total</td>
-                    <td><input class="form-control" type="text"></td>
-                    <td></td>
-                    <td><input class="form-control" type="text"></td>
-                    <td></td>
-                    <td><input class="form-control" type="text"></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <tbody id="tbody-dividas-consolidadas">
+                    <!-- Linhas geradas dinamicamente -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2">Total</td>
+                        <td><input class="form-control" type="text"></td>
+                        <td></td>
+                        <td><input class="form-control" type="text"></td>
+                        <td></td>
+                        <td><input class="form-control" type="text"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="row mt-4 table-section">
@@ -281,6 +291,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         renderTabelaConsignados();
+        renderTabelaNaoConsignados();
+        renderTabelaSemParcelas();
+        renderTabelaDividasConsolidadas();
     });
 
     window.onload = function() {
@@ -475,6 +488,230 @@
     }
 
     function criarLinhaConsignado(dados = {}) {
+        return `<tr>
+            <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
+            <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
+            <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
+            <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
+        </tr>`;
+    }
+
+    // --- NÃO CONSIGNADOS ---
+    function atualizarListenersNaoConsignados() {
+        const tbody = document.getElementById('tbody-nao-consignados');
+        const trs = tbody.querySelectorAll('tr');
+        trs.forEach((tr, idx) => {
+            const selects = tr.querySelectorAll('select');
+            const inputs = tr.querySelectorAll('input');
+            // Listener para dropdown do credor
+            if (selects[0]) {
+                selects[0].addEventListener('change', function() {
+                    const linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+                    if (!linhas[idx]) linhas[idx] = {};
+                    linhas[idx].credor = this.value;
+                    localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
+                    renderTabelaNaoConsignados();
+                });
+            }
+            // Listeners para inputs
+            inputs.forEach((input, i) => {
+                input.addEventListener('input', function() {
+                    const linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+                    if (!linhas[idx]) linhas[idx] = {};
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campo = campos[i];
+                    if (campo) {
+                        linhas[idx][campo] = this.value;
+                        // Se for valor contratado ou valor pago, recalcular saldo devedor
+                        if (campo === 'valorContratado' || campo === 'valorPago') {
+                            const valorContratado = parseFloat(linhas[idx].valorContratado) || 0;
+                            const valorPago = parseFloat(linhas[idx].valorPago) || 0;
+                            linhas[idx].saldoDevedor = (valorContratado - valorPago).toFixed(2);
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            if (saldoInput) {
+                                saldoInput.value = linhas[idx].saldoDevedor;
+                            }
+                        }
+                        localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
+                    }
+                });
+            });
+        });
+    }
+
+    function renderTabelaNaoConsignados() {
+        const tbody = document.getElementById('tbody-nao-consignados');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+        // Remove linhas totalmente vazias exceto a última
+        linhas = linhas.filter((linha, idx) => {
+            if (idx === linhas.length - 1) return true;
+            return Object.values(linha).some(v => v && v !== '');
+        });
+        // Garante sempre uma linha vazia ao final
+        if (!linhas.length || Object.values(linhas[linhas.length-1] || {}).some(v => v && v !== '')) {
+            linhas.push({});
+        }
+        linhas.forEach((linha, idx) => {
+            tbody.innerHTML += criarLinhaNaoConsignado(linha);
+        });
+        localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
+        atualizarListenersNaoConsignados();
+    }
+
+    function criarLinhaNaoConsignado(dados = {}) {
+        return `<tr>
+            <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
+            <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
+            <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
+            <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
+        </tr>`;
+    }
+
+    // --- SEM PARCELAS ---
+    function atualizarListenersSemParcelas() {
+        const tbody = document.getElementById('tbody-sem-parcelas');
+        const trs = tbody.querySelectorAll('tr');
+        trs.forEach((tr, idx) => {
+            const selects = tr.querySelectorAll('select');
+            const inputs = tr.querySelectorAll('input');
+            if (selects[0]) {
+                selects[0].addEventListener('change', function() {
+                    const linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+                    if (!linhas[idx]) linhas[idx] = {};
+                    linhas[idx].credor = this.value;
+                    localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
+                    renderTabelaSemParcelas();
+                });
+            }
+            inputs.forEach((input, i) => {
+                input.addEventListener('input', function() {
+                    const linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+                    if (!linhas[idx]) linhas[idx] = {};
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campo = campos[i];
+                    if (campo) {
+                        linhas[idx][campo] = this.value;
+                        if (campo === 'valorContratado' || campo === 'valorPago') {
+                            const valorContratado = parseFloat(linhas[idx].valorContratado) || 0;
+                            const valorPago = parseFloat(linhas[idx].valorPago) || 0;
+                            linhas[idx].saldoDevedor = (valorContratado - valorPago).toFixed(2);
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            if (saldoInput) {
+                                saldoInput.value = linhas[idx].saldoDevedor;
+                            }
+                        }
+                        localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
+                    }
+                });
+            });
+        });
+    }
+
+    function renderTabelaSemParcelas() {
+        const tbody = document.getElementById('tbody-sem-parcelas');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+        linhas = linhas.filter((linha, idx) => {
+            if (idx === linhas.length - 1) return true;
+            return Object.values(linha).some(v => v && v !== '');
+        });
+        if (!linhas.length || Object.values(linhas[linhas.length-1] || {}).some(v => v && v !== '')) {
+            linhas.push({});
+        }
+        linhas.forEach((linha, idx) => {
+            tbody.innerHTML += criarLinhaSemParcela(linha);
+        });
+        localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
+        atualizarListenersSemParcelas();
+    }
+
+    function criarLinhaSemParcela(dados = {}) {
+        return `<tr>
+            <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
+            <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
+            <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
+            <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
+            <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
+        </tr>`;
+    }
+
+    // --- DÍVIDAS CONSOLIDADAS ---
+    function atualizarListenersDividasConsolidadas() {
+        const tbody = document.getElementById('tbody-dividas-consolidadas');
+        const trs = tbody.querySelectorAll('tr');
+        trs.forEach((tr, idx) => {
+            const selects = tr.querySelectorAll('select');
+            const inputs = tr.querySelectorAll('input');
+            if (selects[0]) {
+                selects[0].addEventListener('change', function() {
+                    const linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+                    if (!linhas[idx]) linhas[idx] = {};
+                    linhas[idx].credor = this.value;
+                    localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
+                    renderTabelaDividasConsolidadas();
+                });
+            }
+            inputs.forEach((input, i) => {
+                input.addEventListener('input', function() {
+                    const linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+                    if (!linhas[idx]) linhas[idx] = {};
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campo = campos[i];
+                    if (campo) {
+                        linhas[idx][campo] = this.value;
+                        if (campo === 'valorContratado' || campo === 'valorPago') {
+                            const valorContratado = parseFloat(linhas[idx].valorContratado) || 0;
+                            const valorPago = parseFloat(linhas[idx].valorPago) || 0;
+                            linhas[idx].saldoDevedor = (valorContratado - valorPago).toFixed(2);
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            if (saldoInput) {
+                                saldoInput.value = linhas[idx].saldoDevedor;
+                            }
+                        }
+                        localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
+                    }
+                });
+            });
+        });
+    }
+
+    function renderTabelaDividasConsolidadas() {
+        const tbody = document.getElementById('tbody-dividas-consolidadas');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+        linhas = linhas.filter((linha, idx) => {
+            if (idx === linhas.length - 1) return true;
+            return Object.values(linha).some(v => v && v !== '');
+        });
+        if (!linhas.length || Object.values(linhas[linhas.length-1] || {}).some(v => v && v !== '')) {
+            linhas.push({});
+        }
+        linhas.forEach((linha, idx) => {
+            tbody.innerHTML += criarLinhaDividaConsolidada(linha);
+        });
+        localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
+        atualizarListenersDividasConsolidadas();
+    }
+
+    function criarLinhaDividaConsolidada(dados = {}) {
         return `<tr>
             <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
             <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
