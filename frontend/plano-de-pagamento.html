@@ -11,7 +11,16 @@
         h1 { color: #2d5c2f; margin-bottom: 30px; }
         table { font-size: 0.88rem; }
         th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; }
-        .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
+        .table-bordered th, .table-bordered td {
+            border-width: 1px !important;
+            border-style: solid !important;
+            border-color: #333 !important;
+        }
+        .table th, .table td {
+            border-width: 1px !important;
+            border-style: solid !important;
+            border-color: #333 !important;
+        }
         .total-row { font-weight: bold; background: #f0f0f0; }
         .subtotal-row { font-weight: bold; background: #e0e0e0; }
         .input-sm { max-width: 80px; }
@@ -140,7 +149,6 @@
                         <th>Renda Comprometida</th>
                         <th>Margem</th>
                         <th>Qtde. de Parcelas</th>
-                        <th>Taxa de Juros Mensal (%)</th>
                     </tr>
                     <tr>
                         <td style="position: relative;">
@@ -148,19 +156,22 @@
                             <span style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%);">%</span>
                         </td>
                         <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
-                        <td style="display:flex; align-items:center; gap:8px;">
-                            <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2">
-                        </td>
                         <td>
-                            <input type="number" step="0.01" min="0" max="100" id="taxaJurosMensal" class="form-control input-sm" value="1" style="padding-right: 20px;">
+                            <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2">
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
-                            <div style="display:flex; flex-direction:column; align-items:flex-start; margin-top:8px;">
-                                <label for="condicaoEspecial" style="font-weight:bold;">Condição especial de parcelamento? (Até 120x)</label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="condicaoEspecial" style="width: 48px; height: 24px;">
+                            <div class="row" style="margin-top:8px;">
+                                <div class="col-md-6" style="display:flex; flex-direction:column; align-items:flex-start;">
+                                    <label for="condicaoEspecial" style="font-weight:bold;">Condição especial de parcelamento? (Até 120x)</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="condicaoEspecial" style="width: 48px; height: 24px;">
+                                    </div>
+                                </div>
+                                <div class="col-md-6" style="display:flex; flex-direction:column; align-items:flex-start;">
+                                    <label for="taxaJurosMensalResidual" style="font-weight:bold;">Taxa de Juros Mensal da Parcela Residual (%)</label>
+                                    <input type="number" step="0.01" min="0" max="100" id="taxaJurosMensalResidual" class="form-control input-sm" value="1" style="width: 100%; max-width: 220px;">
                                 </div>
                             </div>
                         </td>
@@ -503,7 +514,7 @@ function calcularDividas() {
         
         // Calcular e atualizar parcela residual
         let parcelaResidual = 0;
-        const taxaJurosMensal = parseFloat(document.getElementById('taxaJurosMensal').value) / 100 || 0; // Converte para decimal
+        const taxaJurosMensal = parseFloat(document.getElementById('taxaJurosMensalResidual').value) / 100 || 0; // Converte para decimal
         
         if (qtdeParcelas <= 60) { // Só calcula residual se estiver dentro do limite padrão
             if (taxaJurosMensal === 0) {
@@ -814,7 +825,7 @@ function carregarDadosImpressao() {
 }
 
 // Adicionar event listener para o novo campo de taxa de juros
-document.getElementById('taxaJurosMensal').addEventListener('input', function() {
+document.getElementById('taxaJurosMensalResidual').addEventListener('input', function() {
     if (parseFloat(this.value) > 100) {
         this.value = 100;
     }
