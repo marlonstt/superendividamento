@@ -11,7 +11,7 @@
             background-size: cover;
         }
         .container { max-width: 1600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        h1 { color: #2d5c2f; margin-bottom: 30px; }
+        h1 { color: #2d5c2f; margin-bottom: 20px; }
         table { font-size: 0.88rem; }
         th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; text-align: center; }
         .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
@@ -85,10 +85,11 @@
     </style>
 </head>
 <body>
-    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:12px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
-        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:70px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
-        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 5px; padding-bottom: 5px;">
-            <div id="custom-navbar" style="height: 60px; position:static;box-shadow:none;margin-bottom:0;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2; margin-right:4px;">
+    <!--Barra de navegação superior-->
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:4px;">
+            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2;">
                 <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
                 <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
                 <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
@@ -253,40 +254,29 @@
         </div>
         <div class="row mt-4 table-section">
             <div class="col-12 scroll-x">
-                <table class="table table-bordered mb-0">
-                    <tr class="table-title bg-light-cyan">
-                        <td colspan="5">RENDIMENTOS</td>
-                    </tr>
-                    <tr class="bg-light-gray">
-                        <th>Fonte Pagadora</th>
-                        <th>Valor Líquido</th>
-                        <th>Informação</th>
-                        <th>Data do Dado</th>
-                    </tr>
-                    <tr>
-                        <td><input class="form-control" type="text" id="rendimento-1-fonte-pagadora"></td>
-                        <td><input class="form-control" type="text" id="rendimento-1-valor-liquido"></td>
-                        <td><input class="form-control" type="text" id="rendimento-1-informacao"></td>
-                        <td><input class="form-control" type="text" id="rendimento-1-data-dado"></td>
-                    </tr>
-                    <tr>
-                        <td><input class="form-control" type="text" id="rendimento-2-fonte-pagadora"></td>
-                        <td><input class="form-control" type="text" id="rendimento-2-valor-liquido"></td>
-                        <td><input class="form-control" type="text" id="rendimento-2-informacao"></td>
-                        <td><input class="form-control" type="text" id="rendimento-2-data-dado"></td>
-                    </tr>
-                    <tr>
-                        <td><input class="form-control" type="text" id="rendimento-3-fonte-pagadora"></td>
-                        <td><input class="form-control" type="text" id="rendimento-3-valor-liquido"></td>
-                        <td><input class="form-control" type="text" id="rendimento-3-informacao"></td>
-                        <td><input class="form-control" type="text" id="rendimento-3-data-dado"></td>
-                    </tr>
-                    <tr class="total-row">
-                        <td>Total</td>
-                        <td><input class="form-control" type="text" id="rendimento-total-valor-liquido"></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                <table class="table table-bordered mb-0" id="tabela-rendimentos">
+                    <thead>
+                        <tr class="table-title bg-light-cyan">
+                            <td colspan="5">RENDIMENTOS</td>
+                        </tr>
+                        <tr class="bg-light-gray">
+                            <th>Fonte Pagadora</th>
+                            <th>Valor Líquido</th>
+                            <th>Informação</th>
+                            <th>Data do Dado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-rendimentos">
+                        <!-- Linhas geradas dinamicamente -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td>Total</td>
+                            <td><input class="form-control" type="text" id="rendimento-total-valor-liquido" readonly></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -318,6 +308,42 @@
                 if (this.id) localStorage.setItem(this.id, this.value);
             });
         });
+
+        // Preencher automaticamente a tabela de RENDIMENTOS com dados das receitas do index.html (dinâmico)
+        const receitasMap = [
+            { fonte: 'Salários ganhos/líquidos', id: 'receita-salarios' },
+            { fonte: 'Ganho mínimo como autônomo', id: 'receita-ganho-minimo' },
+            { fonte: 'Aposentadoria', id: 'receita-aposentadoria' },
+            { fonte: 'Pensão Previdenciária (pensão por morte)', id: 'receita-pensao-previdenciaria' },
+            { fonte: 'Aluguel', id: 'receita-aluguel' },
+            { fonte: 'Pensão Alimentícia (se descontada em folha de pagamento)', id: 'receita-pensao-alimenticia' },
+            { fonte: 'Renda temporária', id: 'receita-renda-temporaria' },
+            { fonte: 'Auxílio por incapacidade', id: 'receita-auxilio-por-incapacidade' },
+            { fonte: 'Auxilio acidente', id: 'receita-auxilio-acidente' },
+            { fonte: 'Auxílio reclusão', id: 'receita-auxilio-reclusao' },
+            { fonte: 'Salário Maternidade', id: 'receita-salario-maternidade' },
+            { fonte: 'Participações nos lucros ou comissões', id: 'receita-participacoes-nos-lucros-ou-comissoes' },
+            { fonte: '13º salário', id: 'receita-13-salario' },
+            { fonte: 'Outros', id: 'receita-outros' }
+        ];
+        let totalRendimentos = 0;
+        let linhasRendimentos = '';
+        receitasMap.forEach(item => {
+            const valor = localStorage.getItem(item.id);
+            const evento = localStorage.getItem(item.id + '-evento') || '';
+            const dataEvento = localStorage.getItem(item.id + '-evento-data') || '';
+            if (valor && !isNaN(parseFloat(valor)) && parseFloat(valor) > 0) {
+                linhasRendimentos += `<tr>` +
+                    `<td><input class='form-control' type='text' value='${item.fonte}' readonly></td>` +
+                    `<td><input class='form-control' type='text' value='${valor}' readonly></td>` +
+                    `<td><input class='form-control' type='text' value='${evento}' readonly></td>` +
+                    `<td><input class='form-control' type='text' value='${dataEvento}' readonly></td>` +
+                `</tr>`;
+                totalRendimentos += parseFloat(valor);
+            }
+        });
+        document.getElementById('tbody-rendimentos').innerHTML = linhasRendimentos;
+        document.getElementById('rendimento-total-valor-liquido').value = totalRendimentos > 0 ? totalRendimentos.toFixed(2) : '';
 
         // Ativa o botão da página atual
         const page = window.location.pathname.split('/').pop();

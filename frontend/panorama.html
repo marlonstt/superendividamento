@@ -81,6 +81,7 @@
         .retangulo-valor-porcento-vermelho-claro4 { color: #ffcdd2; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-laranja-claro4 { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-amarelo-claro4 { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
+        h1 { color: #2d5c2f; margin-bottom: 20px; }
         #custom-navbar {
             position: sticky;
             top: 0;
@@ -126,10 +127,11 @@
     </style>
 </head>
 <body>
-    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:12px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
-        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:70px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
-        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 5px; padding-bottom: 5px;">
-            <div id="custom-navbar" style="height: 60px; position:static;box-shadow:none;margin-bottom:0;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2; margin-right:4px;">
+    <!--Barra de navegação superior-->
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:4px;">
+            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2;">
                 <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
                 <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
                 <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
@@ -189,14 +191,29 @@
             <div class="retangulo-label"><span id="valor-livre-emergencial">R$ 0,00</span> : LIVRE PARA OUTRAS DESPESAS (EXISTENCIAIS E FORA DO PLANO)</div>
         </div>
         <div class="retangulo-obs">
-            <b>Para preenchimento deste formulário:</b><br>
-            1. Digitar percentual proposto de limite a comprometer e número dos autos. As demais células estão bloqueadas.<br>
-            2. Na aba "rendimentos" cada linha é uma fonte de pagamento de um mês normal/típico (INSS, Empregadores, previdência complementar, se recebe aluguéis de algum imóvel ou outro tipo de rendimento)<br>
-            3. Na aba "panorama mensal_consig" preencher nome de credor e valor de cada lançamento a ser somado<br>
-            4. Na aba "panorama mensal_não_consig" preencher nome de credor e de cada parcela da dívida não consignada<br>
-            5. Na aba "dívidas sem parcelas mensais" aquelas dívidas com parcela única, saldo de cheque especial, cartão e outros contratos com parcelas mensais, mas que precisam entrar na renegociação<br>
-            6. Atenção, aqui não são alimentados dados sobre as despesas existenciais, apenas dados de dívidas<br>
-            7. Este documento é parte do atendimento do setor de Cidadania, da Rede Temática Superendividamento do Poder Judiciário Catarinense (CEJ). Não faz juízos de valor, apenas procura aparilhar visualmente as contas do processo para o caso. Parte de informações indicadas pelos autos, podendo ser atualizado pelas partes e demais interessados, inclusive para fins de mediação e instrução.<br>
+            <b>Como usar esta aplicação:</b><br>
+            1. <b>Inicie pela página <u>Dados Socioeconômicos</u></b>:<br>
+            &nbsp;&nbsp;- Preencha todas as receitas (rendas) e despesas do consumidor ou família.<br>
+            &nbsp;&nbsp;- Para cada receita, você pode relatar um evento (campo texto) e a data/hora será salva automaticamente.<br>
+            &nbsp;&nbsp;- O valor mensal após despesas existenciais será calculado automaticamente.<br>
+            <br>
+            2. <b>Vá para a página <u>Geral</u></b>:<br>
+            &nbsp;&nbsp;- Preencha as dívidas nas tabelas: CONSIGNADOS, NÃO CONSIGNADOS, SEM PARCELAS e DÍVIDAS CONSOLIDADAS.<br>
+            &nbsp;&nbsp;- A tabela <b>Rendimentos</b> será preenchida automaticamente com as receitas cadastradas na primeira página, incluindo evento e data.<br>
+            <br>
+            3. <b>Vá para a página <u>Plano de Pagamento</u></b>:<br>
+            &nbsp;&nbsp;- Escolha o número de parcelas e ajuste a porcentagem da renda a ser utilizada para o parcelamento das dívidas.<br>
+            &nbsp;&nbsp;- O sistema calcula automaticamente o valor das parcelas, o comprometimento da renda e o valor livre mensal.<br>
+            <br>
+            4. <b>Por fim, acesse a página <u>Panorama</u></b>:<br>
+            &nbsp;&nbsp;- Esta página é apenas informativa e exibe um resumo visual de todos os dados preenchidos nas etapas anteriores.<br>
+            <br>
+            <a href="https://www.cnj.jus.br/wp-content/uploads/2022/08/cartilha-superendividamento.pdf" target="_blank" style="font-weight:bold; color:#007a00; text-decoration:underline;">Veja a Cartilha Superendividamento</a>
+            <br>
+            <b>Observações importantes:</b><br>
+            - O uso correto da aplicação depende do preenchimento sequencial das páginas.<br>
+            - As tabelas de dívidas devem ser preenchidas conforme a natureza de cada dívida.<br>
+            - Os dados são salvos localmente no navegador (localStorage).<br>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -268,37 +285,39 @@
         const pctNaoConsignadas = valorRendimentos > 0 ? (valorNaoConsignadas / valorRendimentos) * 100 : 0;
         document.getElementById('pct-nao-consignadas').textContent = pctNaoConsignadas.toFixed(2) + '%';
 
-        // 5. Comprometido
-        let pctComprometida = getValueFromLocalStorage('plano-pct-limite', 0);
-        let margem = valorRendimentos * (pctComprometida / 100);
-        let valorLivreMensal = valorRendimentos - (valorConsignadas + valorNaoConsignadas);
-        
-        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensal);
-        const pctComprometidoTotal = valorRendimentos > 0 ? ((valorConsignadas + valorNaoConsignadas) / valorRendimentos) * 100 : 0;
-        document.getElementById('pct-comprometido').textContent = `${pctComprometidoTotal.toFixed(2)}% : RENDA COMPROMETIDA EM PARCELAS`;
+        // 5. Comprometido (corrigido)
+        // Buscar o total da coluna "Valor da Parcela" do plano de pagamento
+        let valorTotalParcelasPlano = parseFloat(localStorage.getItem('plano-valor-total-parcela')) || 0;
+        // Buscar a receita mensal após despesas (valor-final)
+        let receitaAposDespesas = valorRendimentos;
+        // Calcular porcentagem comprometida
+        let pctComprometidaCorreta = receitaAposDespesas > 0 ? (valorTotalParcelasPlano / receitaAposDespesas) * 100 : 0;
+        document.getElementById('pct-comprometido').textContent = `${pctComprometidaCorreta.toFixed(2)}% : RENDA COMPROMETIDA EM PARCELAS`;
+        // Calcular valor livre mensal correto
+        let valorLivreMensalCorreto = receitaAposDespesas - valorTotalParcelasPlano;
+        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensalCorreto);
 
-        // 6. Outras Dívidas
-        let valorSemParcelas = 0;
-        for (let i = 1; i <= 1; i++) {
-            const saldoDevedor = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
-            if (saldoDevedor) {
-                const valor = parseFloat(saldoDevedor.replace(/\./g, '').replace(',', '.'));
-                if (!isNaN(valor)) valorSemParcelas += valor;
+        // 6. Outras Dívidas (corrigido para saldo devedor das sem parcelas)
+        let linhasSemParcelas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+        let totalSaldoDevedorSemParcelas = 0;
+        linhasSemParcelas.forEach(linha => {
+            if (linha.credor && linha.credor !== '') {
+                totalSaldoDevedorSemParcelas += parseFloat(linha.saldoDevedor) || 0;
             }
-        }
-
-        let valorParcelamento60 = valorSemParcelas / 60;
-        let valorTotalParcelas = valorConsignadas + valorNaoConsignadas;
-        let valorLivreMensalConsolidado = valorRendimentos - valorTotalParcelas;
-        let pctComprometidoTotal2 = valorRendimentos > 0 ? (valorTotalParcelas / valorRendimentos) * 100 : 0;
-
-        document.getElementById('valor-sem-parcelas').textContent = formatBRL(valorSemParcelas);
+        });
+        let valorParcelamento60 = totalSaldoDevedorSemParcelas / 60;
+        document.getElementById('valor-sem-parcelas').textContent = formatBRL(totalSaldoDevedorSemParcelas);
         document.getElementById('valor-parcelamento-60').textContent = formatBRL(valorParcelamento60);
-        document.getElementById('valor-total-parcelas').textContent = '-' + formatBRL(valorTotalParcelas);
-        document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidado);
-        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal2.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
 
-        // 7. Emergencial
+        // Restante mantido
+        let valorTotalParcelasPlano2 = parseFloat(localStorage.getItem('plano-valor-total-parcela')) || 0;
+        let valorLivreMensalConsolidadoCorreto = valorRendimentos - valorTotalParcelasPlano2;
+        let pctComprometidoTotalCorreto = valorRendimentos > 0 ? (valorTotalParcelasPlano2 / valorRendimentos) * 100 : 0;
+        document.getElementById('valor-total-parcelas').textContent = '-' + formatBRL(valorTotalParcelasPlano2);
+        document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidadoCorreto);
+        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotalCorreto.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
+
+        // 7. Emergencial (mantido)
         let pctLimite = getValueFromLocalStorage('plano-pct-limite', 30); // Default para 30%
         let valorRendaSemConsignados = valorRendimentos;
         let valorConsignacaoEmergencial = -(pctLimite / 100) * valorRendaSemConsignados;

@@ -11,7 +11,7 @@
             background-size: cover;
         }
         .container { max-width: 1400px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        h1 { color: #2d5c2f; margin-bottom: 30px; }
+        h1 { color: #2d5c2f; margin-bottom: 20px; }
         table { font-size: 0.88rem; }
         th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; }
         .table-bordered th, .table-bordered td {
@@ -115,6 +115,13 @@
                 text-align: left !important;
             }
             #dados-impressao { display: block !important; }
+            #secao-dividas {
+                break-before: page;
+                display: block;
+            }
+            .no-print {
+                display: none !important;
+            }
         }
         @page { size: A4 landscape; }
         .form-control.input-sm, .form-control.input-md, .form-control.input-lg, .form-control.input-xs {
@@ -125,10 +132,11 @@
     </style>
 </head>
 <body>
-    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:12px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
-        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:70px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
-        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 5px; padding-bottom: 5px;">
-            <div id="custom-navbar" style="height: 60px; position:static;box-shadow:none;margin-bottom:0;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2; margin-right:4px;">
+    <!--Barra de navegação superior-->
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:4px;">
+            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2;">
                 <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
                 <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
                 <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
@@ -136,11 +144,12 @@
             </div>
         </div>
     </div>
+    <div id="secao-plano">
     <div class="container"; style="background: #ffffff00;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1%; margin-top: 1%;">
             <h1>Plano de Pagamento</h1>
             <div style="display:flex; gap:10px;">
-                <button type="button" class="btn btn-success mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="window.print()">Imprimir</button>
+                <button type="button" class="btn btn-success mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="imprimirComTabelaCompleta()">Imprimir</button>
                 <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
             </div>
         </div>
@@ -172,9 +181,11 @@
                             <td colspan="4">
                                 <div class="row" style="margin-top:8px;">
                                     <div class="col-md-6" style="display:flex; flex-direction:column; align-items:flex-start;">
-                                        <label for="condicaoEspecial" style="font-weight:bold;">Condição especial de parcelamento? (Até 120x)</label>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="condicaoEspecial" style="width: 48px; height: 24px;">
+                                        <div class="no-print">
+                                            <label for="condicaoEspecial" style="font-weight:bold;">Condição especial de parcelamento? (Até 120x)</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="condicaoEspecial" style="width: 48px; height: 24px;">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6" style="display:flex; flex-direction:column; align-items:flex-start;">
@@ -193,42 +204,57 @@
                     </div>
                 </div>
             </div>
-            <!-- Tabela de Distribuição das Dívidas -->
+
+            <!-- Início da seção de dívidas totais e tabelas -->
+            <div id="secao-dividas">
             <div class="row mb-4">
                 <div class="col-12 scroll-x">
-                    <table class="table table-bordered mb-0" id="tabela-dividas">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Credor</th>
-                                <th>Informação</th>
-                                <th>Valor total pago</th>
-                                <th>% do saldo pago</th>
-                                <th class="bg-medium-gray">Saldo Devedor</th>
-                                <th>% Dívida</th>
-                                <th class="bg-medium-gray">Valor da Parcela</th>
-                                <th>Parcela Residual</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dividas-body">
-                            <!-- Linhas geradas por JS -->
-                        </tbody>
-                        <tfoot>
-                            <tr class="subtotal-row">
-                                <td colspan="2">Total/Subtotal</td>
-                                <td id="total-valor-pago">R$ 0,00</td>
-                                <td></td>
-                                <td id="total-saldo-devedor" class="bg-medium-gray">R$ 0,00</td>
-                                <td id="total-pct-divida">100%</td>
-                                <td id="total-valor-parcela" class="bg-medium-gray">R$ 0,00</td>
-                                <td id="total-parcela-residual">R$ 0,00</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <h2 style="color: #163618; margin-bottom: 0; text-align: center; padding-bottom: 5px; padding-top: 2px;">
+                        Dívidas totais
+                    </h2>
+                        <table class="table table-bordered mb-0" id="tabela-dividas">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Credor</th>
+                                    <th>Informação</th>
+                                    <th>Valor total pago</th>
+                                    <th>% do saldo pago</th>
+                                    <th class="bg-medium-gray">Saldo Devedor</th>
+                                    <th>% Dívida</th>
+                                    <th class="bg-medium-gray">Valor da Parcela</th>
+                                    <th>Parcela Residual</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dividas-body">
+                                <!-- Linhas geradas por JS -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="subtotal-row">
+                                    <td colspan="2">Total/Subtotal</td>
+                                    <td id="total-valor-pago">R$ 0,00</td>
+                                    <td></td>
+                                    <td id="total-saldo-devedor" class="bg-medium-gray">R$ 0,00</td>
+                                    <td id="total-pct-divida">100%</td>
+                                    <td id="total-valor-parcela" class="bg-medium-gray">R$ 0,00</td>
+                                    <td id="total-parcela-residual">R$ 0,00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                 </div>
             </div>
             <!-- Tabela de Plano de Pagamento Proposto -->
             <div class="row mb-4">
                 <div class="col-12 scroll-x">
+                    <div id="secao-parcelas">
+                    <h2 style="color: #163618; margin-bottom: 0; text-align: center; padding-bottom: 10px; padding-top: 2px;">
+                        Plano de pagamento - Parcelas
+                    </h2>
+                    <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px;gap:10px;">
+                        <label for="data-primeira-parcela" style="font-weight:bold;">Primeira parcela vencimento:</label>
+                        <input type="date" id="data-primeira-parcela" class="form-control" style="max-width:180px;">
+                    </div>
+                    <div id="alerta-data-primeira-parcela" class="no-print" style="color:#d00; font-size:0.98em; font-weight:bold; text-align:right; margin-bottom:8px; display:none;"></div>
+                    <div id="parcelas-pagination" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:8px;"></div>
                     <table class="table table-bordered mb-0" id="tabela-parcelas">
                         <thead class="table-light" id="parcelas-head">
                             <!-- Cabeçalho gerado por JS -->
@@ -240,10 +266,14 @@
                             <!-- Rodapé gerado por JS -->
                         </tfoot>
                     </table>
+                    </div>
                 </div>
+            </div>
             </div>
         </form>
     </div>
+    </div>
+
     <script>
     const bancos = [
         'Itaú', 'Bradesco', 'BMG RMG', 'Agibank', 'Banco do Brasil', 'Santander', 'Mercantil do Brasil', 'Sicob'
@@ -413,19 +443,14 @@
             // Calcular e atualizar parcela residual
             let parcelaResidual = 0;
             const taxaJurosMensal = parseFloat(document.getElementById('taxaJurosMensalResidual').value) / 100 || 0; // Converte para decimal
-            
-            if (qtdeParcelas <= 60) { // Só calcula residual se estiver dentro do limite padrão
-                if (taxaJurosMensal === 0) {
-                    parcelaResidual = valorParcela;
-                } else {
-                    // Aplica os juros sobre o valor da parcela
-                    parcelaResidual = valorParcela * (1 + taxaJurosMensal);
-                }
+            // Corrigido: calcular sempre, independente do número de parcelas
+            if (taxaJurosMensal === 0) {
+                parcelaResidual = valorParcela;
+            } else {
+                parcelaResidual = valorParcela * (1 + taxaJurosMensal);
             }
-            
             row.querySelector('.parcela-residual').textContent = formatBRL(parcelaResidual);
             totalParcelaResidual += parcelaResidual;
-            
             totalValorParcela += valorParcela;
         });
 
@@ -474,6 +499,11 @@
         if (!alertMsg) alertaDiv.style.display = 'none'; else alertaDiv.style.display = '';
     }
 
+    // Variáveis de paginação
+    let parcelasPaginaAtual = 1;
+    const parcelasPorPagina = 60;
+    let totalPaginasParcelas = 1;
+
     function renderParcelasTable(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal) {
         const head = document.getElementById('parcelas-head');
         const body = document.getElementById('parcelas-body');
@@ -497,44 +527,35 @@
         ths += '<th>Total</th></tr>';
         head.innerHTML = ths;
 
-        // Build body rows
+        // Paginação
+        totalPaginasParcelas = Math.ceil(qtdeParcelas / parcelasPorPagina) || 1;
+        if (parcelasPaginaAtual > totalPaginasParcelas) parcelasPaginaAtual = totalPaginasParcelas;
+        if (parcelasPaginaAtual < 1) parcelasPaginaAtual = 1;
+        const inicio = (parcelasPaginaAtual - 1) * parcelasPorPagina + 1;
+        const fim = Math.min(parcelasPaginaAtual * parcelasPorPagina, qtdeParcelas);
+
+        // Build body rows paginados
         if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
-            // Primeiro mês como exemplo para pegar o valor total mensal
-            let tds = `<td>Mês 1</td>`;
             let somaLinha = 0;
-
-            rows.forEach(row => {
-                const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
-                const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
-                const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
-                tds += `<td>${formatBRL(valorParcela)}</td>`;
-                somaLinha += valorParcela;
-            });
-
-            // Salvar o valor total mensal no localStorage (soma de todas as parcelas de um mês)
-            somaLinha = +(somaLinha).toFixed(2);
-            localStorage.setItem('plano-valor-total-parcela', somaLinha.toString());
-
-            tds += `<td>${formatBRL(somaLinha)}</td>`;
-            body.innerHTML += `<tr>${tds}</tr>`;
-
-            // Gerar as linhas restantes
-            for (let mes = 2; mes <= qtdeParcelas; mes++) {
-                tds = `<td>Mês ${mes}</td>`;
+            for (let mes = inicio; mes <= fim; mes++) {
+                let tds = `<td>Mês ${mes}</td>`;
+                somaLinha = 0;
                 rows.forEach(row => {
                     const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                     const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
                     const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
                     tds += `<td>${formatBRL(valorParcela)}</td>`;
+                    somaLinha += valorParcela;
                 });
-                tds += `<td>${formatBRL(somaLinha)}</td>`;
+                if (mes === 1) {
+                    localStorage.setItem('plano-valor-total-parcela', somaLinha.toString());
+                }
+                tds += `<td class="bg-medium-gray">${formatBRL(somaLinha)}</td>`;
                 body.innerHTML += `<tr>${tds}</tr>`;
             }
-
             // Build footer (totals)
             let tfs = '<tr><td>Total</td>';
             let totalGeral = 0;
-
             rows.forEach(row => {
                 const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                 const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
@@ -542,14 +563,31 @@
                 tfs += `<td>${formatBRL(totalColuna)}</td>`;
                 totalGeral += totalColuna;
             });
-
             totalGeral = +(totalGeral).toFixed(2);
-            tfs += `<td>${formatBRL(totalGeral)}</td></tr>`;
+            tfs += `<td class="bg-medium-gray">${formatBRL(totalGeral)}</td></tr>`;
             foot.innerHTML = tfs;
         } else {
             // Se não houver parcelas, zerar o valor no localStorage
             localStorage.setItem('plano-valor-total-parcela', '0');
         }
+        renderParcelasPagination();
+    }
+
+    function renderParcelasPagination() {
+        const pagDiv = document.getElementById('parcelas-pagination');
+        pagDiv.innerHTML = '';
+        if (totalPaginasParcelas <= 1) return;
+        // Botões de navegação (apenas Anterior e Próxima)
+        pagDiv.innerHTML = `
+            <button class="btn btn-outline-success btn-sm" ${parcelasPaginaAtual === 1 ? 'disabled' : ''} onclick="mudarPaginaParcelas(${parcelasPaginaAtual - 1})">&lsaquo; Anterior</button>
+            <span style="font-weight:bold;">Página ${parcelasPaginaAtual} de ${totalPaginasParcelas}</span>
+            <button class="btn btn-outline-success btn-sm" ${parcelasPaginaAtual === totalPaginasParcelas ? 'disabled' : ''} onclick="mudarPaginaParcelas(${parcelasPaginaAtual + 1})">Próxima &rsaquo;</button>
+        `;
+    }
+
+    function mudarPaginaParcelas(pagina) {
+        parcelasPaginaAtual = pagina;
+        calcularDividas();
     }
 
     function calcularParcelas() {
@@ -669,6 +707,37 @@
 
         // Forçar atualização dos cálculos
         calcularDividas();
+
+        // Preencher o campo de data da primeira parcela com a data atual + 1 mês
+        const inputData = document.getElementById('data-primeira-parcela');
+        const alertaData = document.getElementById('alerta-data-primeira-parcela');
+        if (inputData) {
+            let hoje = new Date();
+            hoje.setMonth(hoje.getMonth() + 1);
+            // Corrige para o último dia do mês se o mês seguinte não tiver o mesmo dia
+            if (hoje.getDate() !== (new Date()).getDate()) {
+                hoje.setDate(0);
+            }
+            const padrao = hoje.toISOString().split('T')[0];
+            inputData.value = padrao;
+            // Função para verificar diferença de dias
+            function verificarDataPrimeiraParcela() {
+                const dataSelecionada = new Date(inputData.value);
+                const hojeBase = new Date();
+                hojeBase.setHours(0,0,0,0);
+                const diffMs = dataSelecionada - hojeBase;
+                const diffDias = Math.floor(diffMs / (1000*60*60*24));
+                if (diffDias > 180) {
+                    alertaData.style.display = '';
+                    alertaData.textContent = 'A data selecionada excede a 180 dias.';
+                } else {
+                    alertaData.style.display = 'none';
+                }
+            }
+            inputData.addEventListener('change', verificarDataPrimeiraParcela);
+            inputData.addEventListener('input', verificarDataPrimeiraParcela);
+            verificarDataPrimeiraParcela();
+        }
     });
 
     // Atualizar quando o valor mudar em outra página
@@ -729,6 +798,92 @@
         }
         calcularDividas();
     });
+
+    // Função auxiliar para renderizar todas as parcelas (sem paginação)
+    function renderParcelasTableCompleta(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal) {
+        const head = document.getElementById('parcelas-head');
+        const body = document.getElementById('parcelas-body');
+        const foot = document.getElementById('parcelas-foot');
+        head.innerHTML = '';
+        body.innerHTML = '';
+        foot.innerHTML = '';
+
+        // Get all rows from the first table
+        const rows = Array.from(document.querySelectorAll('#dividas-body tr'));
+        if (rows.length === 0) return;
+
+        // Build header
+        let ths = '<tr><th>Mês</th>';
+        rows.forEach(row => {
+            const credor = row.cells[0].textContent.trim();
+            if (credor) {
+                ths += `<th>${credor}</th>`;
+            }
+        });
+        ths += '<th>Total</th></tr>';
+        head.innerHTML = ths;
+
+        // Renderizar todas as linhas
+        if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
+            let somaLinha = 0;
+            for (let mes = 1; mes <= qtdeParcelas; mes++) {
+                let tds = `<td>Mês ${mes}</td>`;
+                somaLinha = 0;
+                rows.forEach(row => {
+                    const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                    const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
+                    const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
+                    tds += `<td>${formatBRL(valorParcela)}</td>`;
+                    somaLinha += valorParcela;
+                });
+                if (mes === 1) {
+                    localStorage.setItem('plano-valor-total-parcela', somaLinha.toString());
+                }
+                tds += `<td class="bg-medium-gray">${formatBRL(somaLinha)}</td>`;
+                body.innerHTML += `<tr>${tds}</tr>`;
+            }
+            // Build footer (totals)
+            let tfs = '<tr><td>Total</td>';
+            let totalGeral = 0;
+            rows.forEach(row => {
+                const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
+                const totalColuna = +(pctDivida * valorParcelaTotal * qtdeParcelas).toFixed(2);
+                tfs += `<td>${formatBRL(totalColuna)}</td>`;
+                totalGeral += totalColuna;
+            });
+            totalGeral = +(totalGeral).toFixed(2);
+            tfs += `<td class="bg-medium-gray">${formatBRL(totalGeral)}</td></tr>`;
+            foot.innerHTML = tfs;
+        } else {
+            // Se não houver parcelas, zerar o valor no localStorage
+            localStorage.setItem('plano-valor-total-parcela', '0');
+        }
+    }
+
+    // Substituir o onclick do botão de imprimir para expandir a tabela antes de imprimir
+    function imprimirComTabelaCompleta() {
+        // Salvar estado atual
+        const paginaOriginal = parcelasPaginaAtual;
+        // Renderizar tabela completa
+        const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
+        const receitaTotal = parseFloat(localStorage.getItem('valor-final')) || 0;
+        const pctComprometida = parseFloat(document.getElementById('comprometida').value) || 0;
+        const margem = receitaTotal * (pctComprometida / 100);
+        const rows = Array.from(document.querySelectorAll('#dividas-body tr'));
+        let totalSaldoDevedor = 0;
+        rows.forEach(row => {
+            totalSaldoDevedor += parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+        });
+        const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
+        renderParcelasTableCompleta(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal);
+        setTimeout(() => {
+            window.print();
+            // Restaurar paginação após impressão
+            parcelasPaginaAtual = paginaOriginal;
+            calcularDividas();
+        }, 100);
+    }
     </script>
 </body>
 </html>
