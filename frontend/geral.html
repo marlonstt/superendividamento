@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geral - Superendividamento</title>
+    <title>Geral - Dívidas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f4f4f4; }
+        body {
+            background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
+            background-size: cover;
+        }
         .container { max-width: 1600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
         h1 { color: #2d5c2f; margin-bottom: 30px; }
         table { font-size: 0.88rem; }
@@ -82,15 +85,20 @@
     </style>
 </head>
 <body>
-    <div id="custom-navbar">
-        <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
-        <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
-        <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
-        <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:12px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:70px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 5px; padding-bottom: 5px;">
+            <div id="custom-navbar" style="height: 60px; position:static;box-shadow:none;margin-bottom:0;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2; margin-right:4px;">
+                <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+                <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
+                <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+                <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+            </div>
+        </div>
     </div>
-    <div class="container">
+    <div class="container"; style="background: #ffffff00;">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
-            <h1 style="color: #2d5c2f; margin-bottom: 0;">Geral - Superendividamento</h1>
+            <h1 style="color: #2d5c2f; margin-bottom: 0;">Geral - Dívidas</h1>
             <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
         </div>
         <div class="row mb-2">
@@ -110,7 +118,7 @@
             <table class="table table-bordered mb-0" id="tabela-consignados">
                 <thead>
                     <tr class="table-title bg-light-black">
-                        <td colspan="10">DÍVIDA</td>
+                        <h2 style="color: #000000; margin-bottom: 0; text-align: center; padding-bottom: 10px; padding-top: 20px;">Dívidas</h2>
                     </tr>
                     <tr class="table-title bg-light-black">
                         <td colspan="10">CONSIGNADOS</td>
@@ -166,11 +174,11 @@
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="2">Total</td>
-                        <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
+                        <td id="total-nao-consignados-valor-contratado"></td>
+                        <td id="total-nao-consignados-valor-pago"></td>
+                        <td id="total-nao-consignados-saldo-devedor"></td>
                         <td></td>
-                        <td><input class="form-control" type="text" id="nao-consignadas-saldo" oninput="localStorage.setItem('nao-consignadas-saldo', this.value)"></td>
-                        <td></td>
-                        <td><input class="form-control" type="text" id="nao-consignadas-parcela" oninput="localStorage.setItem('nao-consignadas-parcela', this.value)"></td>
+                        <td id="total-nao-consignados-parcela-mensal"></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -199,11 +207,11 @@
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="2">Total</td>
-                        <td><input class="form-control" type="text" id="sem-parcelas-saldo" oninput="localStorage.setItem('sem-parcelas-saldo', this.value)"></td>
+                        <td id="total-sem-parcelas-valor-contratado"></td>
+                        <td id="total-sem-parcelas-valor-pago"></td>
+                        <td id="total-sem-parcelas-saldo-devedor"></td>
                         <td></td>
-                        <td><input class="form-control" type="text"></td>
-                        <td></td>
-                        <td><input class="form-control" type="text"></td>
+                        <td id="total-sem-parcelas-parcela-mensal"></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -232,11 +240,11 @@
                 <tfoot>
                     <tr class="total-row">
                         <td colspan="2">Total</td>
-                        <td><input class="form-control" type="text"></td>
+                        <td id="total-dividas-consolidadas-valor-contratado"></td>
+                        <td id="total-dividas-consolidadas-valor-pago"></td>
+                        <td id="total-dividas-consolidadas-saldo-devedor"></td>
                         <td></td>
-                        <td><input class="form-control" type="text"></td>
-                        <td></td>
-                        <td><input class="form-control" type="text"></td>
+                        <td id="total-dividas-consolidadas-parcela-mensal"></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -508,7 +516,6 @@
         trs.forEach((tr, idx) => {
             const selects = tr.querySelectorAll('select');
             const inputs = tr.querySelectorAll('input');
-            // Listener para dropdown do credor
             if (selects[0]) {
                 selects[0].addEventListener('change', function() {
                     const linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
@@ -518,7 +525,6 @@
                     renderTabelaNaoConsignados();
                 });
             }
-            // Listeners para inputs
             inputs.forEach((input, i) => {
                 input.addEventListener('input', function() {
                     const linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
@@ -527,7 +533,6 @@
                     const campo = campos[i];
                     if (campo) {
                         linhas[idx][campo] = this.value;
-                        // Se for valor contratado ou valor pago, recalcular saldo devedor
                         if (campo === 'valorContratado' || campo === 'valorPago') {
                             const valorContratado = parseFloat(linhas[idx].valorContratado) || 0;
                             const valorPago = parseFloat(linhas[idx].valorPago) || 0;
@@ -538,10 +543,33 @@
                             }
                         }
                         localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
+                        atualizarTotaisNaoConsignados();
                     }
                 });
             });
         });
+    }
+
+    function atualizarTotaisNaoConsignados() {
+        let linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+        let totalValorContratado = 0, totalValorPago = 0, totalSaldoDevedor = 0, totalParcelaMensal = 0;
+        linhas.forEach(linha => {
+            if (linha.credor && linha.credor !== '') {
+                totalValorContratado += parseFloat(linha.valorContratado) || 0;
+                totalValorPago += parseFloat(linha.valorPago) || 0;
+                totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+                totalParcelaMensal += parseFloat(linha.parcelaMensal) || 0;
+            }
+        });
+        // Exibir os totais no rodapé da tabela NAO CONSIGNADOS
+        if(document.getElementById('total-nao-consignados-valor-contratado'))
+            document.getElementById('total-nao-consignados-valor-contratado').textContent = totalValorContratado ? totalValorContratado.toFixed(2) : '';
+        if(document.getElementById('total-nao-consignados-valor-pago'))
+            document.getElementById('total-nao-consignados-valor-pago').textContent = totalValorPago ? totalValorPago.toFixed(2) : '';
+        if(document.getElementById('total-nao-consignados-saldo-devedor'))
+            document.getElementById('total-nao-consignados-saldo-devedor').textContent = totalSaldoDevedor ? totalSaldoDevedor.toFixed(2) : '';
+        if(document.getElementById('total-nao-consignados-parcela-mensal'))
+            document.getElementById('total-nao-consignados-parcela-mensal').textContent = totalParcelaMensal ? totalParcelaMensal.toFixed(2) : '';
     }
 
     function renderTabelaNaoConsignados() {
@@ -563,6 +591,7 @@
         });
         localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
         atualizarListenersNaoConsignados();
+        atualizarTotaisNaoConsignados();
     }
 
     function criarLinhaNaoConsignado(dados = {}) {
@@ -613,10 +642,32 @@
                             }
                         }
                         localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
+                        atualizarTotaisSemParcelas();
                     }
                 });
             });
         });
+    }
+
+    function atualizarTotaisSemParcelas() {
+        let linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+        let totalValorContratado = 0, totalValorPago = 0, totalSaldoDevedor = 0, totalParcelaMensal = 0;
+        linhas.forEach(linha => {
+            if (linha.credor && linha.credor !== '') {
+                totalValorContratado += parseFloat(linha.valorContratado) || 0;
+                totalValorPago += parseFloat(linha.valorPago) || 0;
+                totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+                totalParcelaMensal += parseFloat(linha.parcelaMensal) || 0;
+            }
+        });
+        if(document.getElementById('total-sem-parcelas-valor-contratado'))
+            document.getElementById('total-sem-parcelas-valor-contratado').textContent = totalValorContratado ? totalValorContratado.toFixed(2) : '';
+        if(document.getElementById('total-sem-parcelas-valor-pago'))
+            document.getElementById('total-sem-parcelas-valor-pago').textContent = totalValorPago ? totalValorPago.toFixed(2) : '';
+        if(document.getElementById('total-sem-parcelas-saldo-devedor'))
+            document.getElementById('total-sem-parcelas-saldo-devedor').textContent = totalSaldoDevedor ? totalSaldoDevedor.toFixed(2) : '';
+        if(document.getElementById('total-sem-parcelas-parcela-mensal'))
+            document.getElementById('total-sem-parcelas-parcela-mensal').textContent = totalParcelaMensal ? totalParcelaMensal.toFixed(2) : '';
     }
 
     function renderTabelaSemParcelas() {
@@ -636,6 +687,7 @@
         });
         localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
         atualizarListenersSemParcelas();
+        atualizarTotaisSemParcelas();
     }
 
     function criarLinhaSemParcela(dados = {}) {
@@ -686,10 +738,32 @@
                             }
                         }
                         localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
+                        atualizarTotaisDividasConsolidadas();
                     }
                 });
             });
         });
+    }
+
+    function atualizarTotaisDividasConsolidadas() {
+        let linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+        let totalValorContratado = 0, totalValorPago = 0, totalSaldoDevedor = 0, totalParcelaMensal = 0;
+        linhas.forEach(linha => {
+            if (linha.credor && linha.credor !== '') {
+                totalValorContratado += parseFloat(linha.valorContratado) || 0;
+                totalValorPago += parseFloat(linha.valorPago) || 0;
+                totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+                totalParcelaMensal += parseFloat(linha.parcelaMensal) || 0;
+            }
+        });
+        if(document.getElementById('total-dividas-consolidadas-valor-contratado'))
+            document.getElementById('total-dividas-consolidadas-valor-contratado').textContent = totalValorContratado ? totalValorContratado.toFixed(2) : '';
+        if(document.getElementById('total-dividas-consolidadas-valor-pago'))
+            document.getElementById('total-dividas-consolidadas-valor-pago').textContent = totalValorPago ? totalValorPago.toFixed(2) : '';
+        if(document.getElementById('total-dividas-consolidadas-saldo-devedor'))
+            document.getElementById('total-dividas-consolidadas-saldo-devedor').textContent = totalSaldoDevedor ? totalSaldoDevedor.toFixed(2) : '';
+        if(document.getElementById('total-dividas-consolidadas-parcela-mensal'))
+            document.getElementById('total-dividas-consolidadas-parcela-mensal').textContent = totalParcelaMensal ? totalParcelaMensal.toFixed(2) : '';
     }
 
     function renderTabelaDividasConsolidadas() {
@@ -709,6 +783,7 @@
         });
         localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
         atualizarListenersDividasConsolidadas();
+        atualizarTotaisDividasConsolidadas();
     }
 
     function criarLinhaDividaConsolidada(dados = {}) {
