@@ -544,12 +544,36 @@
         const inicio = (parcelasPaginaAtual - 1) * parcelasPorPagina + 1;
         const fim = Math.min(parcelasPaginaAtual * parcelasPorPagina, qtdeParcelas);
 
+        // Obter data da primeira parcela
+        let dataPrimeiraParcela = document.getElementById('data-primeira-parcela').value;
+        let dataBase = null;
+        if (dataPrimeiraParcela) {
+            const partes = dataPrimeiraParcela.split('-');
+            dataBase = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+        }
+
         // Build body rows paginados
         if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
             let somaLinha = 0;
             for (let mes = inicio; mes <= fim; mes++) {
-                let tds = `<td>Mês ${mes}</td>`;
+                let tds = '';
                 somaLinha = 0;
+                // Calcular data do vencimento
+                let labelMes = `Mês ${mes}`;
+                if (dataBase) {
+                    let dataVenc = new Date(dataBase.getTime());
+                    dataVenc.setMonth(dataVenc.getMonth() + (mes - 1));
+                    // Corrigir para o último dia do mês se necessário
+                    const diaBase = dataBase.getDate();
+                    if (dataVenc.getDate() !== diaBase) {
+                        dataVenc.setDate(0);
+                    }
+                    const dia = String(dataVenc.getDate()).padStart(2, '0');
+                    const mesNum = String(dataVenc.getMonth() + 1).padStart(2, '0');
+                    const ano = dataVenc.getFullYear();
+                    labelMes += ` - ${dia}/${mesNum}/${ano}`;
+                }
+                tds += `<td>${labelMes}</td>`;
                 rows.forEach(row => {
                     const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                     const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
@@ -722,14 +746,20 @@
         const inputData = document.getElementById('data-primeira-parcela');
         const alertaData = document.getElementById('alerta-data-primeira-parcela');
         if (inputData) {
-            let hoje = new Date();
-            hoje.setMonth(hoje.getMonth() + 1);
-            // Corrige para o último dia do mês se o mês seguinte não tiver o mesmo dia
-            if (hoje.getDate() !== (new Date()).getDate()) {
-                hoje.setDate(0);
+            // Restaurar data salva ou definir padrão
+            let dataSalva = localStorage.getItem('plano-data-primeira-parcela');
+            if (dataSalva) {
+                inputData.value = dataSalva;
+            } else {
+                let hoje = new Date();
+                hoje.setMonth(hoje.getMonth() + 1);
+                // Corrige para o último dia do mês se o mês seguinte não tiver o mesmo dia
+                if (hoje.getDate() !== (new Date()).getDate()) {
+                    hoje.setDate(0);
+                }
+                const padrao = hoje.toISOString().split('T')[0];
+                inputData.value = padrao;
             }
-            const padrao = hoje.toISOString().split('T')[0];
-            inputData.value = padrao;
             // Função para verificar diferença de dias
             function verificarDataPrimeiraParcela() {
                 const dataSelecionada = new Date(inputData.value);
@@ -747,6 +777,16 @@
             inputData.addEventListener('change', verificarDataPrimeiraParcela);
             inputData.addEventListener('input', verificarDataPrimeiraParcela);
             verificarDataPrimeiraParcela();
+            // Atualizar tabela de parcelas ao mudar a data
+            inputData.addEventListener('change', calcularDividas);
+            inputData.addEventListener('input', calcularDividas);
+            // Salvar data no localStorage ao mudar
+            inputData.addEventListener('change', function() {
+                localStorage.setItem('plano-data-primeira-parcela', inputData.value);
+            });
+            inputData.addEventListener('input', function() {
+                localStorage.setItem('plano-data-primeira-parcela', inputData.value);
+            });
         }
     });
 
@@ -788,6 +828,7 @@
             localStorage.removeItem('plano-pct-limite');
             localStorage.removeItem('plano-qtde-parcelas');
             localStorage.removeItem('plano-condicao-especial');
+            localStorage.removeItem('plano-data-primeira-parcela');
             
             // Recarregar a página
             location.reload();
@@ -833,12 +874,36 @@
         ths += '<th>Total</th></tr>';
         head.innerHTML = ths;
 
+        // Obter data da primeira parcela
+        let dataPrimeiraParcela = document.getElementById('data-primeira-parcela').value;
+        let dataBase = null;
+        if (dataPrimeiraParcela) {
+            const partes = dataPrimeiraParcela.split('-');
+            dataBase = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
+        }
+
         // Renderizar todas as linhas
         if (qtdeParcelas > 0 && totalSaldoDevedor > 0) {
             let somaLinha = 0;
             for (let mes = 1; mes <= qtdeParcelas; mes++) {
-                let tds = `<td>Mês ${mes}</td>`;
+                let tds = '';
                 somaLinha = 0;
+                // Calcular data do vencimento
+                let labelMes = `Mês ${mes}`;
+                if (dataBase) {
+                    let dataVenc = new Date(dataBase.getTime());
+                    dataVenc.setMonth(dataVenc.getMonth() + (mes - 1));
+                    // Corrigir para o último dia do mês se necessário
+                    const diaBase = dataBase.getDate();
+                    if (dataVenc.getDate() !== diaBase) {
+                        dataVenc.setDate(0);
+                    }
+                    const dia = String(dataVenc.getDate()).padStart(2, '0');
+                    const mesNum = String(dataVenc.getMonth() + 1).padStart(2, '0');
+                    const ano = dataVenc.getFullYear();
+                    labelMes += ` - ${dia}/${mesNum}/${ano}`;
+                }
+                tds += `<td>${labelMes}</td>`;
                 rows.forEach(row => {
                     const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                     const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
