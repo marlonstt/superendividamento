@@ -655,27 +655,27 @@
     }
 
     // Eventos
-    renderDividasTable();
-    calcularDividas();
-    ['receitaTotal','comprometida','qtdeParcelas'].forEach(id => {
-        document.getElementById(id).addEventListener('input', calcularDividas);
-    });
-    document.getElementById('dividas-body').addEventListener('input', calcularDividas);
-    document.getElementById('dividas-body').addEventListener('change', calcularDividas);
-
-    // Ativa o botão da página atual
-    const page = window.location.pathname.split('/').pop();
-    if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
-    if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
-    if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
-    if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
-
     document.addEventListener('DOMContentLoaded', function() {
+        // Restaurar data salva ou definir padrão ANTES de qualquer cálculo
+        const inputData = document.getElementById('data-primeira-parcela');
+        if (inputData) {
+            let dataSalva = localStorage.getItem('plano-data-primeira-parcela');
+            if (dataSalva) {
+                inputData.value = dataSalva;
+            } else {
+                let hoje = new Date();
+                hoje.setMonth(hoje.getMonth() + 1);
+                if (hoje.getDate() !== (new Date()).getDate()) {
+                    hoje.setDate(0);
+                }
+                const padrao = hoje.toISOString().split('T')[0];
+                inputData.value = padrao;
+            }
+        }
         atualizarReceitaTotal();
         // Carregar dados salvos
         carregarDadosImpressao();
         renderDividasTable();
-        
         // Event listeners para campos de entrada
         document.getElementById('comprometida').addEventListener('input', function() {
             if (parseFloat(this.value) > 100) {
@@ -743,23 +743,8 @@
         calcularDividas();
 
         // Preencher o campo de data da primeira parcela com a data atual + 1 mês
-        const inputData = document.getElementById('data-primeira-parcela');
         const alertaData = document.getElementById('alerta-data-primeira-parcela');
         if (inputData) {
-            // Restaurar data salva ou definir padrão
-            let dataSalva = localStorage.getItem('plano-data-primeira-parcela');
-            if (dataSalva) {
-                inputData.value = dataSalva;
-            } else {
-                let hoje = new Date();
-                hoje.setMonth(hoje.getMonth() + 1);
-                // Corrige para o último dia do mês se o mês seguinte não tiver o mesmo dia
-                if (hoje.getDate() !== (new Date()).getDate()) {
-                    hoje.setDate(0);
-                }
-                const padrao = hoje.toISOString().split('T')[0];
-                inputData.value = padrao;
-            }
             // Função para verificar diferença de dias
             function verificarDataPrimeiraParcela() {
                 const dataSelecionada = new Date(inputData.value);
@@ -799,39 +784,46 @@
     });
 
     function limparCampos() {
-        if (confirm('Tem certeza que deseja limpar todos os dados?')) {
-            // Limpar dados dos consignados
-            localStorage.removeItem('linhas-consignados');
-            
-            // Limpar dados dos não consignados
-            for (let i = 1; i <= 2; i++) {
-                ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
-                    localStorage.removeItem(`nao-consignado-${i}-${field}`);
-                });
+        if (confirm('Tem certeza que deseja limpar apenas os parâmetros do plano?')) {
+            // Resetar apenas os campos da própria página
+            // Data do calendário para o mês seguinte à data atual
+            const inputData = document.getElementById('data-primeira-parcela');
+            if (inputData) {
+                let hoje = new Date();
+                hoje.setMonth(hoje.getMonth() + 1);
+                if (hoje.getDate() !== (new Date()).getDate()) {
+                    hoje.setDate(0);
+                }
+                const padrao = hoje.toISOString().split('T')[0];
+                inputData.value = padrao;
+                localStorage.setItem('plano-data-primeira-parcela', padrao);
             }
-            
-            // Limpar dados sem parcelas
-            for (let i = 1; i <= 1; i++) {
-                ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
-                    localStorage.removeItem(`sem-parcela-${i}-${field}`);
-                });
+            // % da renda comprometida para 30
+            const comprometida = document.getElementById('comprometida');
+            if (comprometida) {
+                comprometida.value = 30;
+                localStorage.setItem('plano-pct-limite', '30');
             }
-            
-            // Limpar dívidas consolidadas
-            for (let i = 1; i <= 2; i++) {
-                ['credores', 'contratos', 'valor-contratado', 'valor-pago', 'saldo-devedor', 'juros', 'parcela-mensal', 'parcelas-contratadas', 'parcelas-restantes'].forEach(field => {
-                    localStorage.removeItem(`divida-consolidada-${i}-${field}`);
-                });
+            // Número de parcelas para 60
+            const qtdeParcelas = document.getElementById('qtdeParcelas');
+            if (qtdeParcelas) {
+                qtdeParcelas.value = 60;
+                localStorage.setItem('plano-qtde-parcelas', '60');
+                qtdeParcelas.max = 60;
             }
-            
-            // Limpar configurações do plano
-            localStorage.removeItem('plano-pct-limite');
-            localStorage.removeItem('plano-qtde-parcelas');
-            localStorage.removeItem('plano-condicao-especial');
-            localStorage.removeItem('plano-data-primeira-parcela');
-            
-            // Recarregar a página
-            location.reload();
+            // Condição especial de parcelamento para false (máximo 60)
+            const condicaoEspecial = document.getElementById('condicaoEspecial');
+            if (condicaoEspecial) {
+                condicaoEspecial.checked = false;
+                localStorage.setItem('plano-condicao-especial', 'false');
+            }
+            // Taxa de Juros Mensal da Parcela Residual (%) para 1
+            const taxaJuros = document.getElementById('taxaJurosMensalResidual');
+            if (taxaJuros) {
+                taxaJuros.value = 1;
+            }
+            // Recalcular tudo
+            calcularDividas();
         }
     }
 
