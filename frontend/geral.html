@@ -126,7 +126,7 @@
                     </tr>
                     <tr class="bg-light-gray">
                         <th>Credores</th>
-                        <th>Contratos</th>
+                        <th>Contrato</th>
                         <th>Valor contratado</th>
                         <th>Valor pago</th>
                         <th>Saldo devedor</th>
@@ -450,8 +450,15 @@
             // Listener para dropdown do credor
             if (selects[0]) {
                 selects[0].addEventListener('change', function() {
-                    const linhas = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
+                    let linhas = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
+                    if (this.value === '') {
+                        // Se selecionar 'Selecione', remove a linha
+                        linhas.splice(idx, 1);
+                        localStorage.setItem('linhas-consignados', JSON.stringify(linhas));
+                        renderTabelaConsignados();
+                        return;
+                    }
                     linhas[idx].credor = this.value;
                     localStorage.setItem('linhas-consignados', JSON.stringify(linhas));
                     renderTabelaConsignados();
@@ -544,8 +551,14 @@
             const inputs = tr.querySelectorAll('input');
             if (selects[0]) {
                 selects[0].addEventListener('change', function() {
-                    const linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+                    let linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
+                    if (this.value === '') {
+                        linhas.splice(idx, 1);
+                        localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
+                        renderTabelaNaoConsignados();
+                        return;
+                    }
                     linhas[idx].credor = this.value;
                     localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
                     renderTabelaNaoConsignados();
@@ -643,8 +656,14 @@
             const inputs = tr.querySelectorAll('input');
             if (selects[0]) {
                 selects[0].addEventListener('change', function() {
-                    const linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+                    let linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
+                    if (this.value === '') {
+                        linhas.splice(idx, 1);
+                        localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
+                        renderTabelaSemParcelas();
+                        return;
+                    }
                     linhas[idx].credor = this.value;
                     localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
                     renderTabelaSemParcelas();
@@ -739,8 +758,14 @@
             const inputs = tr.querySelectorAll('input');
             if (selects[0]) {
                 selects[0].addEventListener('change', function() {
-                    const linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
+                    let linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
+                    if (this.value === '') {
+                        linhas.splice(idx, 1);
+                        localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
+                        renderTabelaDividasConsolidadas();
+                        return;
+                    }
                     linhas[idx].credor = this.value;
                     localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
                     renderTabelaDividasConsolidadas();

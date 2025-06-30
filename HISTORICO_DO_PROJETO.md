@@ -1,5 +1,9 @@
 # Histórico do Projeto: Superendividamento
 
+## Novidades / Alterações Recentes
+
+- **[2024-06-XX] Remoção de linhas nas tabelas dinâmicas de dívidas**: Agora, ao selecionar a opção "Selecione" no dropdown dos credores em qualquer uma das tabelas dinâmicas de dívidas na página `geral.html` (Consignados, Não Consignados, Sem Parcelas, Dívidas Consolidadas), a linha correspondente é removida da tabela e todos os seus valores são apagados. O funcionamento de crescimento automático das tabelas (sempre mantendo uma linha vazia para inserção) permanece inalterado. Esta melhoria facilita a exclusão de lançamentos indesejados de forma intuitiva e rápida.
+
 ## Estrutura Atual do Projeto
 
 ```

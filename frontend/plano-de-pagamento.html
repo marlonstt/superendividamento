@@ -216,7 +216,8 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Credor</th>
-                                    <th>Informação</th>
+                                    <th>Contrato</th>
+                                    <th>Valor Contratado</th>
                                     <th>Valor total pago</th>
                                     <th>% do saldo pago</th>
                                     <th class="bg-medium-gray">Saldo Devedor</th>
@@ -231,6 +232,7 @@
                             <tfoot>
                                 <tr class="subtotal-row">
                                     <td colspan="2">Total/Subtotal</td>
+                                    <td id="total-valor-contratado"></td>
                                     <td id="total-valor-pago">R$ 0,00</td>
                                     <td></td>
                                     <td id="total-saldo-devedor" class="bg-medium-gray">R$ 0,00</td>
@@ -306,6 +308,7 @@
             linhas.forEach((linha) => {
                 if ((linha.credor && linha.credor !== '') || (linha.saldoDevedor && linha.saldoDevedor !== '') || (linha.contratos && linha.contratos !== '')) {
                     linhasPreenchidas++;
+                    const valorContratado = parseFloat(linha.valorContratado) || 0;
                     const valorPago = parseFloat(linha.valorPago) || 0;
                     const saldoDevedor = parseFloat(linha.saldoDevedor) || 0;
                     const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
@@ -313,6 +316,7 @@
                         <tr>
                             <td>${linha.credor || ''}</td>
                             <td>${linha.contratos || ''}</td>
+                            <td>${valorContratado ? formatBRL(valorContratado) : ''}</td>
                             <td>${formatBRL(valorPago)}</td>
                             <td>${pctPago}%</td>
                             <td>${formatBRL(saldoDevedor)}</td>
@@ -337,40 +341,46 @@
         let totalValorPago = 0;
         let totalSaldoDevedor = 0;
         let totalParcelaResidual = 0;
+        let totalValorContratado = 0;
 
         // Somar valores dos consignados
         const linhasConsignados = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
         linhasConsignados.forEach(linha => {
             totalValorPago += parseFloat(linha.valorPago) || 0;
             totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+            totalValorContratado += parseFloat(linha.valorContratado) || 0;
         });
         // Somar valores dos não consignados
         const linhasNaoConsignados = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
         linhasNaoConsignados.forEach(linha => {
             totalValorPago += parseFloat(linha.valorPago) || 0;
             totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+            totalValorContratado += parseFloat(linha.valorContratado) || 0;
         });
         // Somar valores sem parcelas
         const linhasSemParcelas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
         linhasSemParcelas.forEach(linha => {
             totalValorPago += parseFloat(linha.valorPago) || 0;
             totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+            totalValorContratado += parseFloat(linha.valorContratado) || 0;
         });
         // Somar dívidas consolidadas
         const linhasDividasConsolidadas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
         linhasDividasConsolidadas.forEach(linha => {
             totalValorPago += parseFloat(linha.valorPago) || 0;
             totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
+            totalValorContratado += parseFloat(linha.valorContratado) || 0;
         });
 
+        document.getElementById('total-valor-contratado').textContent = totalValorContratado ? formatBRL(totalValorContratado) : '';
         document.getElementById('total-valor-pago').textContent = formatBRL(totalValorPago);
         document.getElementById('total-saldo-devedor').textContent = formatBRL(totalSaldoDevedor);
 
         // Atualizar percentuais e valores das parcelas
         const rows = document.querySelectorAll('#dividas-body tr');
         rows.forEach(row => {
-            const saldoDevedorCell = row.cells[4];
-            const saldoDevedor = parseFloat(saldoDevedorCell.textContent.replace(/[^\\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const saldoDevedorCell = row.cells[5];
+            const saldoDevedor = parseFloat(saldoDevedorCell.textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
             const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
             row.querySelector('.pct-divida').textContent = pctDivida.toFixed(2) + '%';
         });
@@ -411,8 +421,8 @@
         let totalParcelaResidual = 0;
 
         rows.forEach(row => {
-            const valorPago = parseFloat(row.cells[2].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
-            const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const valorPago = parseFloat(row.cells[3].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
             totalValorPago += valorPago;
             totalSaldoDevedor += saldoDevedor;
         });
@@ -425,7 +435,7 @@
 
         // Atualizar cada linha
         rows.forEach(row => {
-            const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
             const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
             const valorParcela = (pctDivida * valorParcelaTotal) / 100;
             
@@ -541,7 +551,7 @@
                 let tds = `<td>Mês ${mes}</td>`;
                 somaLinha = 0;
                 rows.forEach(row => {
-                    const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                    const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                     const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
                     const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
                     tds += `<td>${formatBRL(valorParcela)}</td>`;
@@ -557,7 +567,7 @@
             let tfs = '<tr><td>Total</td>';
             let totalGeral = 0;
             rows.forEach(row => {
-                const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                 const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
                 const totalColuna = +(pctDivida * valorParcelaTotal * qtdeParcelas).toFixed(2);
                 tfs += `<td>${formatBRL(totalColuna)}</td>`;
@@ -599,7 +609,7 @@
 
         // Primeiro loop: calcular o total do saldo devedor
         rows.forEach(row => {
-            const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
             totalSaldoDevedor += saldoDevedor;
         });
 
@@ -608,7 +618,7 @@
 
         // Segundo loop: atualizar cada linha
         rows.forEach(row => {
-            const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
             const pctDivida = totalSaldoDevedor > 0 ? (saldoDevedor / totalSaldoDevedor * 100) : 0;
             const valorParcela = (pctDivida * valorParcelaTotal) / 100;
             
@@ -830,7 +840,7 @@
                 let tds = `<td>Mês ${mes}</td>`;
                 somaLinha = 0;
                 rows.forEach(row => {
-                    const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                    const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                     const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
                     const valorParcela = +(pctDivida * valorParcelaTotal).toFixed(2);
                     tds += `<td>${formatBRL(valorParcela)}</td>`;
@@ -846,7 +856,7 @@
             let tfs = '<tr><td>Total</td>';
             let totalGeral = 0;
             rows.forEach(row => {
-                const saldoDevedor = parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+                const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
                 const pctDivida = totalSaldoDevedor > 0 ? saldoDevedor / totalSaldoDevedor : 0;
                 const totalColuna = +(pctDivida * valorParcelaTotal * qtdeParcelas).toFixed(2);
                 tfs += `<td>${formatBRL(totalColuna)}</td>`;
@@ -873,7 +883,7 @@
         const rows = Array.from(document.querySelectorAll('#dividas-body tr'));
         let totalSaldoDevedor = 0;
         rows.forEach(row => {
-            totalSaldoDevedor += parseFloat(row.cells[4].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+            totalSaldoDevedor += parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
         });
         const valorParcelaTotal = qtdeParcelas > 0 ? totalSaldoDevedor / qtdeParcelas : 0;
         renderParcelasTableCompleta(qtdeParcelas, receitaTotal, pctComprometida, margem, totalSaldoDevedor, valorParcelaTotal);
