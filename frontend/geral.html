@@ -389,12 +389,29 @@
         });
         // Limpar linhas dinâmicas de consignados
         localStorage.removeItem('linhas-consignados');
-        // Limpar completamente o localStorage
-        localStorage.clear();
-        // Renderizar a tabela de consignados vazia
+        localStorage.removeItem('linhas-nao-consignados');
+        localStorage.removeItem('linhas-sem-parcelas');
+        localStorage.removeItem('linhas-dividas-consolidadas');
+        // Limpar apenas os campos de input relacionados à geral.html
+        const geralKeys = [
+            'nome-consumidor',
+            'numero-processo',
+            // Adicione aqui outros IDs de campos exclusivos da geral.html, se houver
+        ];
+        geralKeys.forEach(key => localStorage.removeItem(key));
+        // Renderizar as tabelas vazias
         renderTabelaConsignados();
+        renderTabelaNaoConsignados();
+        renderTabelaSemParcelas();
+        renderTabelaDividasConsolidadas();
         // Atualizar totais
         atualizarTotaisConsignados();
+        atualizarTotaisNaoConsignados();
+        atualizarTotaisSemParcelas();
+        atualizarTotaisDividasConsolidadas();
+        // Limpar rendimentos da tabela
+        document.getElementById('tbody-rendimentos').innerHTML = '';
+        document.getElementById('rendimento-total-valor-liquido').value = '';
     }
 
     function atualizarSaldoDevedor(prefix) {
