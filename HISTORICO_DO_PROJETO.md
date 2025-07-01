@@ -2,6 +2,7 @@
 
 ## Novidades / Alterações Recentes
 
+- **[2024-06-XX] Botão Limpar agora limpa apenas dados da página atual:** Em todas as páginas que possuem o botão "Limpar", ele foi ajustado para remover apenas os dados inseridos na própria página, sem apagar informações de outras páginas (por exemplo, o botão Limpar de geral.html não apaga dados de index.html, e vice-versa). Isso garante que dados cadastrados em uma página não sejam perdidos ao limpar os dados de outra página.
 - **[2024-06-XX] Remoção de linhas nas tabelas dinâmicas de dívidas**: Agora, ao selecionar a opção "Selecione" no dropdown dos credores em qualquer uma das tabelas dinâmicas de dívidas na página `geral.html` (Consignados, Não Consignados, Sem Parcelas, Dívidas Consolidadas), a linha correspondente é removida da tabela e todos os seus valores são apagados. O funcionamento de crescimento automático das tabelas (sempre mantendo uma linha vazia para inserção) permanece inalterado. Esta melhoria facilita a exclusão de lançamentos indesejados de forma intuitiva e rápida.
 
 ## Estrutura Atual do Projeto
