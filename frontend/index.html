@@ -16,6 +16,7 @@
         th, td { padding: 0.3em 0.5em !important; }
         .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
         .total-row { font-weight: bold; background: #f0f0f0; }
+        .total-row.dark-theme { background: #23272b !important; color: #fff !important; }
         .existencial { color: #d00; font-weight: bold; }
         .valor-final { color: #007a00; font-weight: bold; font-size: 1.2em; border: 2px solid #007a00; padding: 4px 12px; border-radius: 6px; background: #eaffea; }
         .obs { font-size: 0.95em; color: #444; margin-top: 10px; }
@@ -62,25 +63,182 @@
             font-size: 0.92em;
             padding: 2px 6px;
         }
+        #dark-theme-style {
+            display: none;
+        }
+        body.dark-theme {
+            background: url('SuperEndBackgroundTransparente-Dark.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+            color: #fff !important;
+        }
+        html.dark-theme { background: #181a1b !important; }
+        .container.dark-theme, .row.dark-theme, [class^="col-"] .dark-theme, h1.dark-theme, h2.dark-theme, h3.dark-theme, h4.dark-theme, h5.dark-theme, h6.dark-theme {
+            background: transparent !important;
+        }
+        h1.dark-theme, h2.dark-theme, h3.dark-theme, h4.dark-theme, h5.dark-theme, h6.dark-theme {
+            color: #fff !important;
+            background: transparent !important;
+        }
+        #custom-navbar.dark-theme {
+            background: rgba(35,39,43,0.95) !important;
+            box-shadow: 0 2px 8px #0008;
+        }
+        .nav-btn.dark-theme { color: #baffba !important; background: transparent !important; }
+        .nav-btn.dark-theme.active, .nav-btn.dark-theme:focus, .nav-btn.dark-theme:active, .nav-btn.dark-theme:hover { background: #2e3b2e !important; color: #baffba !important; border-bottom: 3px solid #baffba !important; }
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        th.dark-theme, td.dark-theme {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        thead.dark-theme, .table-light.dark-theme, .table-title.dark-theme { background: #23272b !important; color: #fff !important; }
+        input.dark-theme, select.dark-theme, textarea.dark-theme {
+            background: #23272b !important;
+            color: #fff !important;
+            border: 1px solid #444 !important;
+        }
+        input.dark-theme::placeholder, select.dark-theme::placeholder, textarea.dark-theme::placeholder {
+            color: #bbb !important;
+        }
+        .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info {
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn.dark-theme, .btn-success.dark-theme, .btn-warning.dark-theme, .btn-primary.dark-theme, .btn-danger.dark-theme, .btn-info.dark-theme {
+            background: #333 !important;
+            color: #fff !important;
+            border: 1px solid #555 !important;
+        }
+        .btn.dark-theme:hover, .btn-success.dark-theme:hover, .btn-warning.dark-theme:hover, .btn-primary.dark-theme:hover, .btn-danger.dark-theme:hover, .btn-info.dark-theme:hover {
+            background: #444 !important;
+            color: #baffba !important;
+        }
+        .form-switch .form-check-input.dark-theme {
+            background-color: #23272b !important;
+            border-color: #baffba !important;
+        }
+        .form-switch .form-check-input.dark-theme:checked {
+            background-color: #baffba !important;
+            border-color: #baffba !important;
+        }
+        .valor-final.dark-theme { color: #baffba !important; border-color: #baffba !important; background: #23272b !important; }
+        .obs.dark-theme { color: #bbb !important; }
+        .limpar-btn, .imprimir-btn {
+            border: 1.5px solid #baffba !important;
+            color: #2d5c2f !important;
+            background: #baffba !important;
+            font-weight: bold;
+            transition: border 0.2s;
+        }
+        .dark-theme .limpar-btn, .dark-theme .imprimir-btn {
+            border: 1.5px solid #baffba !important;
+            color: #baffba !important;
+            background: transparent !important;
+        }
+        body.dark-theme #btn-theme-toggle { background: rgba(35,39,43,0.32) !important; color: #fff !important; }
+        html.dark-theme .container, body.dark-theme .container { background: rgba(35,39,43,0.32) !important; color: #fff !important; box-shadow: 0 2px 8px #0008; }
+        html.dark-theme #btn-theme-toggle, body.dark-theme #btn-theme-toggle { background: rgba(35,39,43,0.32) !important; color: #fff !important; }
+        html.dark-theme table, body.dark-theme table { background: rgba(35,39,43,0.32) !important; }
+        html.dark-theme th, body.dark-theme th, html.dark-theme td, body.dark-theme td { background: rgba(35,39,43,0.12) !important; color: #fff !important; }
+        @media print {
+            #custom-navbar,
+            .navbar,
+            #theme-toggle,
+            #btn-theme-toggle,
+            #limpar-btn,
+            .limpar-btn,
+            #imprimir-btn,
+            .imprimir-btn {
+                display: none !important;
+            }
+        }
     </style>
+    <style>
+        table.dark-theme tr {
+            background: transparent !important;
+        }
+        table.dark-theme th, table.dark-theme td {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        table.dark-theme thead, table.dark-theme tfoot {
+            background: transparent !important;
+            color: #fff !important;
+        }
+        table.dark-theme .total-row.dark-theme td,
+        table.dark-theme .total-row.dark-theme {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+    </style>
+    <style>
+        table.table.table-bordered.dark-theme,
+        table.table.dark-theme,
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        table.table.table-bordered.dark-theme th,
+        table.table.table-bordered.dark-theme td,
+        table.table.dark-theme th,
+        table.table.dark-theme td,
+        table.dark-theme th,
+        table.dark-theme td {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme tr,
+        table.table.dark-theme tr,
+        table.dark-theme tr {
+            background: transparent !important;
+        }
+        table.table.table-bordered.dark-theme thead,
+        table.table.table-bordered.dark-theme tfoot,
+        table.table.dark-theme thead,
+        table.table.dark-theme tfoot,
+        table.dark-theme thead,
+        table.dark-theme tfoot {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme .total-row,
+        table.table.table-bordered.dark-theme .total-row td,
+        table.table.dark-theme .total-row,
+        table.table.dark-theme .total-row td,
+        table.dark-theme .total-row,
+        table.dark-theme .total-row td {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+    </style>
+    <script>
+        try {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+                document.body.classList.add('dark-theme');
+            }
+        } catch(e){}
+    </script>
 </head>
 <body>
     <!--Barra de navegação superior-->
-    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
-        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
-        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:4px;">
-            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2;">
-                <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
-                <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
-                <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
-                <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img id="logo-superend" src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:50px;">
+            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;border-radius:16px;padding:6px 8px; margin-left:2;">
+                <button onclick="navegarComTema('index.html')" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+                <button onclick="navegarComTema('geral.html')" class="nav-btn" id="btn-geral">Geral</button>
+                <button onclick="navegarComTema('plano-de-pagamento.html')" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+                <button onclick="navegarComTema('panorama.html')" class="nav-btn" id="btn-panorama">Panorama</button>
             </div>
         </div>
     </div>
     <div class="container"; style="background: #ffffff00;">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
             <h1>Dados Socioeconômicos do Consumidor</h1>
-            <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
+            <button type="button" class="btn btn-warning mb-3 limpar-btn" onclick="limparCampos()">Limpar</button>
         </div>
         <form id="socForm">
             <div class="row g-4">
@@ -150,6 +308,10 @@
             </div>
         </form>
     </div>
+    <!-- Botão de tema pequeno e redondo -->
+    <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:10px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
+      🌙
+    </button>
     <script>
         function formatBRL(value) {
             return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -192,7 +354,11 @@
             
             // Ativa o botão da página atual
             const page = window.location.pathname.split('/').pop();
-            if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
+            document.getElementById('btn-dados').classList.remove('active');
+            document.getElementById('btn-geral').classList.remove('active');
+            document.getElementById('btn-plano').classList.remove('active');
+            document.getElementById('btn-panorama').classList.remove('active');
+            if(page.includes('index')) document.getElementById('btn-dados').classList.add('active');
             if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
             if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
             if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
@@ -226,6 +392,73 @@
                 input.value = localStorage.getItem(input.id);
             }
         });
+        // Alternância de tema claro/escuro
+        const themeToggleBtn = document.getElementById('btn-theme-toggle');
+        function setTheme(dark) {
+            if (dark) {
+                document.body.classList.add('dark-theme');
+                document.querySelectorAll('.container').forEach(el => el.classList.add('dark-theme'));
+                document.querySelectorAll('.container, #custom-navbar, .nav-btn, table, th, td, thead, .table-light, .table-title, input, select, textarea, .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info, .form-check-input, .valor-final, .obs, h1, h2, h3, h4, h5, h6').forEach(el => el.classList.add('dark-theme'));
+                document.querySelectorAll('tfoot, tfoot tr, tfoot .total-row').forEach(el => el.classList.add('dark-theme'));
+                themeToggleBtn.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+                // Força dark-theme em todos os th e td das tabelas
+                document.querySelectorAll('table').forEach(table => {
+                    table.querySelectorAll('th, td').forEach(cell => cell.classList.add('dark-theme'));
+                });
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.querySelectorAll('.container').forEach(el => el.classList.remove('dark-theme'));
+                document.querySelectorAll('.container, #custom-navbar, .nav-btn, table, th, td, thead, .table-light, .table-title, input, select, textarea, .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info, .form-check-input, .valor-final, .obs, h1, h2, h3, h4, h5, h6').forEach(el => el.classList.remove('dark-theme'));
+                document.querySelectorAll('tfoot, tfoot tr, tfoot .total-row').forEach(el => el.classList.remove('dark-theme'));
+                themeToggleBtn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+                // Remove dark-theme de todos os th e td das tabelas
+                document.querySelectorAll('table').forEach(table => {
+                    table.querySelectorAll('th, td').forEach(cell => cell.classList.remove('dark-theme'));
+                });
+            }
+        }
+        themeToggleBtn.addEventListener('click', function() {
+            const dark = !document.documentElement.classList.contains('dark-theme');
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+            location.reload();
+        });
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const saved = localStorage.getItem('theme');
+                setTheme(saved === 'dark');
+            }, 0);
+        });
+        function trocarLogoPorTema(dark) {
+            var logo = document.getElementById('logo-superend');
+            if (!logo) return;
+            logo.src = dark ? 'logo-superendividamento-Dark.png' : 'logo-superendividamento.png';
+        }
+        function trocarBgPorTema(dark) {
+            document.body.style.backgroundImage = dark ? "url('SuperEndBackgroundTransparente-Dark.png')" : "url('SuperEndBackgroundTransparente.png')";
+        }
+        // Adapte a função setTheme existente:
+        const oldSetTheme = setTheme;
+        setTheme = function(dark) {
+            oldSetTheme(dark);
+            trocarLogoPorTema(dark);
+            trocarBgPorTema(dark);
+        }
+        // Troca a logo e o fundo ao carregar a página
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const saved = localStorage.getItem('theme');
+                trocarLogoPorTema(saved === 'dark');
+                trocarBgPorTema(saved === 'dark');
+            }, 0);
+        });
+        // Adicionar função global:
+        function navegarComTema(destino) {
+            const dark = document.documentElement.classList.contains('dark-theme');
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+            window.location.href = destino;
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

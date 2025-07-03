@@ -10,37 +10,18 @@
             background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
             background-size: cover;
         }
-        .container { max-width: 1400px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        .container { max-width: 1200px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
         h1 { color: #2d5c2f; margin-bottom: 20px; }
         table { font-size: 0.88rem; }
-        th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; }
-        .table-bordered th, .table-bordered td {
-            border-width: 1px !important;
-            border-style: solid !important;
-            border-color: #333 !important;
-        }
-        .table th, .table td {
-            border-width: 1px !important;
-            border-style: solid !important;
-            border-color: #333 !important;
-        }
+        th, td { padding: 0.3em 0.5em !important; }
+        .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
         .total-row { font-weight: bold; background: #f0f0f0; }
-        .subtotal-row { font-weight: bold; background: #e0e0e0; }
-        .input-sm { max-width: 80px; }
-        .input-xs { max-width: 60px; }
-        .input-md { max-width: 120px; }
-        .input-lg { max-width: 180px; }
-        .bg-light-green { background: #eaffea; }
-        .bg-light-blue { background: #eaf4ff; }
-        .bg-light-yellow { background: #fffbe6; }
-        .text-green { color: #007a00; }
-        .text-blue { color: #0057b7; }
-        .text-red { color: #d00; }
-        .scroll-x { overflow-x: auto; }
-        .bg-medium-gray { background: #dee2e6 !important; }
+        .total-row.dark-theme { background: #23272b !important; color: #fff !important; }
+        .existencial { color: #d00; font-weight: bold; }
+        .valor-final { color: #007a00; font-weight: bold; font-size: 1.2em; border: 2px solid #007a00; padding: 4px 12px; border-radius: 6px; background: #eaffea; }
+        .obs { font-size: 0.95em; color: #444; margin-top: 10px; }
         @media (max-width: 900px) {
             .row { flex-direction: column; }
-            .container { padding: 10px; }
         }
         #custom-navbar {
             position: sticky;
@@ -77,74 +58,303 @@
             border-bottom: 3px solid #007a00;
             outline: none;
         }
-        @media print {
-            #custom-navbar, .btn, .mb-3, .form-check, .form-switch {
-                display: none !important;
-            }
-            body, .container {
-                background: #fff !important;
-                color: #000 !important;
-                box-shadow: none !important;
-            }
-            table, .table, .table-bordered, th, td {
-                border: 1px solid #333 !important;
-                border-collapse: collapse !important;
-            }
-            th, td, .table th, .table td, .table-bordered th, .table-bordered td {
-                color: #000 !important;
-                background: #fff !important;
-                border: 1px solid #333 !important;
-            }
-            table {
-                page-break-inside: avoid;
-            }
-            input, select, textarea {
-                border: none !important;
-                background: transparent !important;
-                color: #000 !important;
-                box-shadow: none !important;
-                outline: none !important;
-                pointer-events: none !important;
-                appearance: none !important;
-                -webkit-appearance: none !important;
-                font-size: inherit !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: auto !important;
-                min-width: 0 !important;
-                max-width: 100% !important;
-                height: auto !important;
-            }
-            input[type="number"], input[type="text"] {
-                text-align: left !important;
-            }
-            #dados-impressao { display: block !important; }
-            #secao-dividas {
-                break-before: page;
-                display: block;
-            }
-            .no-print {
-                display: none !important;
-            }
-        }
-        @page { size: A4 landscape; }
         .form-control.input-sm, .form-control.input-md, .form-control.input-lg, .form-control.input-xs {
             min-height: 28px;
             font-size: 0.92em;
             padding: 2px 6px;
         }
+        #dark-theme-style {
+            display: none;
+        }
+        body.dark-theme {
+            background: url('SuperEndBackgroundTransparente-Dark.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+            color: #fff !important;
+        }
+        html.dark-theme { background: #181a1b !important; }
+        .container.dark-theme, .row.dark-theme, [class^="col-"] .dark-theme, h1.dark-theme, h2.dark-theme, h3.dark-theme, h4.dark-theme, h5.dark-theme, h6.dark-theme {
+            background: transparent !important;
+        }
+        h1.dark-theme, h2.dark-theme, h3.dark-theme, h4.dark-theme, h5.dark-theme, h6.dark-theme {
+            color: #fff !important;
+            background: transparent !important;
+        }
+        #custom-navbar.dark-theme {
+            background: rgba(35,39,43,0.95) !important;
+            box-shadow: 0 2px 8px #0008;
+        }
+        .nav-btn.dark-theme { color: #baffba !important; background: transparent !important; }
+        .nav-btn.dark-theme.active, .nav-btn.dark-theme:focus, .nav-btn.dark-theme:active, .nav-btn.dark-theme:hover { background: #2e3b2e !important; color: #baffba !important; border-bottom: 3px solid #baffba !important; }
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        th.dark-theme, td.dark-theme {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        thead.dark-theme, .table-light.dark-theme, .table-title.dark-theme { background: #23272b !important; color: #fff !important; }
+        input.dark-theme, select.dark-theme, textarea.dark-theme {
+            background: #23272b !important;
+            color: #fff !important;
+            border: 1px solid #444 !important;
+        }
+        input.dark-theme::placeholder, select.dark-theme::placeholder, textarea.dark-theme::placeholder {
+            color: #bbb !important;
+        }
+        .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info {
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn.dark-theme, .btn-success.dark-theme, .btn-warning.dark-theme, .btn-primary.dark-theme, .btn-danger.dark-theme, .btn-info.dark-theme {
+            background: #333 !important;
+            color: #fff !important;
+            border: 1px solid #555 !important;
+        }
+        .btn.dark-theme:hover, .btn-success.dark-theme:hover, .btn-warning.dark-theme:hover, .btn-primary.dark-theme:hover, .btn-danger.dark-theme:hover, .btn-info.dark-theme:hover {
+            background: #444 !important;
+            color: #baffba !important;
+        }
+        .form-switch .form-check-input.dark-theme {
+            background-color: #23272b !important;
+            border-color: #baffba !important;
+        }
+        .form-switch .form-check-input.dark-theme:checked {
+            background-color: #baffba !important;
+            border-color: #baffba !important;
+        }
+        .valor-final.dark-theme { color: #baffba !important; border-color: #baffba !important; background: #23272b !important; }
+        .obs.dark-theme { color: #bbb !important; }
+        .limpar-btn, .imprimir-btn {
+            border: 1.5px solid #baffba !important;
+            color: #2d5c2f !important;
+            background: #baffba !important;
+            font-weight: bold;
+            transition: border 0.2s;
+        }
+        .dark-theme .limpar-btn, .dark-theme .imprimir-btn {
+            border: 1.5px solid #baffba !important;
+            color: #baffba !important;
+            background: transparent !important;
+        }
+        #receitaTotal.dark-theme {
+            background: #23272b !important;
+            color: #fff !important;
+            border: 1px solid #444 !important;
+        }
+        /* Switch visual (light e dark) */
+        .form-switch .form-check-input {
+            width: 48px;
+            height: 24px;
+            background-color: #e9ecef;
+            border: 1.5px solid #baffba;
+            border-radius: 24px;
+            position: relative;
+            transition: background 0.2s, border 0.2s;
+        }
+        .form-switch .form-check-input:checked {
+            background-color: #baffba;
+            border-color: #2d5c2f;
+        }
+        .form-switch .form-check-input::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 3px #0003;
+            transition: left 0.2s;
+        }
+        .form-switch .form-check-input:checked::after {
+            left: 24px;
+            background: #fff;
+        }
+        .form-switch .form-check-input.dark-theme {
+            background-color: #23272b !important;
+            border-color: #baffba !important;
+        }
+        .form-switch .form-check-input.dark-theme:checked {
+            background-color: #baffba !important;
+            border-color: #baffba !important;
+        }
+        .form-switch .form-check-input.dark-theme::after,
+        .form-switch .form-check-input.dark-theme:checked::after {
+            background: #fff !important;
+            box-shadow: 0 1px 3px #0006;
+            border: 1px solid #baffba !important;
+        }
+        body.dark-theme #btn-theme-toggle { background: rgba(35,39,43,0.32) !important; color: #fff !important; }
+        html.dark-theme .container, body.dark-theme .container { background: rgba(35,39,43,0.32) !important; color: #fff !important; box-shadow: 0 2px 8px #0008; }
+        html.dark-theme #btn-theme-toggle, body.dark-theme #btn-theme-toggle { background: rgba(35,39,43,0.32) !important; color: #fff !important; }
+        html.dark-theme table, body.dark-theme table { background: rgba(35,39,43,0.32) !important; }
+        html.dark-theme th, body.dark-theme th, html.dark-theme td, body.dark-theme td { background: rgba(35,39,43,0.12) !important; color: #fff !important; }
+        @media print {
+            #custom-navbar,
+            .navbar,
+            #theme-toggle,
+            #btn-theme-toggle,
+            #limpar-btn,
+            .limpar-btn,
+            #imprimir-btn,
+            .imprimir-btn {
+                display: none !important;
+            }
+        }
+        html.dark-theme input[type="date"],
+        body.dark-theme input[type="date"] {
+            color-scheme: dark;
+            background: #23272b !important;
+            color: #fff !important;
+            border: 1px solid #444 !important;
+        }
+        html.dark-theme input[type="date"]::-webkit-calendar-picker-indicator,
+        body.dark-theme input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) grayscale(1) brightness(3) contrast(2);
+            opacity: 1;
+        }
+        html.dark-theme input[type="date"]::-ms-input-placeholder,
+        body.dark-theme input[type="date"]::-ms-input-placeholder {
+            color: #bbb !important;
+        }
+        html.dark-theme input[type="date"]::placeholder,
+        body.dark-theme input[type="date"]::placeholder {
+            color: #bbb !important;
+        }
+        html.dark-theme input[type="date"]::-moz-placeholder,
+        body.dark-theme input[type="date"]::-moz-placeholder {
+            color: #bbb !important;
+        }
+        html.dark-theme input[type="date"]::-webkit-input-placeholder,
+        body.dark-theme input[type="date"]::-webkit-input-placeholder {
+            color: #bbb !important;
+        }
+        /* Esconde o ícone nativo do input date no tema escuro */
+        html.dark-theme input[type="date"]::-webkit-calendar-picker-indicator,
+        body.dark-theme input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            display: none;
+        }
+        html.dark-theme input[type="date"]::-ms-input-placeholder,
+        body.dark-theme input[type="date"]::-ms-input-placeholder {
+            color: #bbb !important;
+        }
+        html.dark-theme input[type="date"]::placeholder,
+        body.dark-theme input[type="date"]::placeholder {
+            color: #bbb !important;
+        }
+        html.dark-theme input[type="date"]::-moz-placeholder,
+        body.dark-theme input[type="date"]::-moz-placeholder {
+            color: #bbb !important;
+        }
+        html.dark-theme input[type="date"]::-webkit-input-placeholder,
+        body.dark-theme input[type="date"]::-webkit-input-placeholder {
+            color: #bbb !important;
+        }
+        /* Wrapper para o input de data e o ícone customizado */
+        .date-wrapper {
+            position: relative;
+            display: inline-block;
+            width: fit-content;
+        }
+        .date-wrapper input[type="date"] {
+            padding-right: 36px !important;
+        }
+        .date-calendar-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 2;
+            display: none;
+        }
+        html.dark-theme .date-calendar-icon {
+            display: block;
+        }
     </style>
+    <style>
+        table.dark-theme tr {
+            background: transparent !important;
+        }
+        table.dark-theme th, table.dark-theme td {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        table.dark-theme thead, table.dark-theme tfoot {
+            background: transparent !important;
+            color: #fff !important;
+        }
+        table.dark-theme .total-row.dark-theme td,
+        table.dark-theme .total-row.dark-theme {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+    </style>
+    <style>
+        table.table.table-bordered.dark-theme,
+        table.table.dark-theme,
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        table.table.table-bordered.dark-theme th,
+        table.table.table-bordered.dark-theme td,
+        table.table.dark-theme th,
+        table.table.dark-theme td,
+        table.dark-theme th,
+        table.dark-theme td {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme tr,
+        table.table.dark-theme tr,
+        table.dark-theme tr {
+            background: transparent !important;
+        }
+        table.table.table-bordered.dark-theme thead,
+        table.table.table-bordered.dark-theme tfoot,
+        table.table.dark-theme thead,
+        table.table.dark-theme tfoot,
+        table.dark-theme thead,
+        table.dark-theme tfoot {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme .total-row,
+        table.table.table-bordered.dark-theme .total-row td,
+        table.table.dark-theme .total-row,
+        table.table.dark-theme .total-row td,
+        table.dark-theme .total-row,
+        table.dark-theme .total-row td {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+    </style>
+    <script>
+    try {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+            document.body.classList.add('dark-theme');
+        }
+    } catch(e){}
+    </script>
 </head>
 <body>
     <!--Barra de navegação superior-->
-    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px; background: #fff;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
-        <img src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
-        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:4px;">
-            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;background:linear-gradient(90deg, #e0ffe0 0%, #baffba 100%);border-radius:16px;padding:6px 8px; margin-left:2;">
-                <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
-                <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
-                <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
-                <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img id="logo-superend" src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:50px;">
+            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;border-radius:16px;padding:6px 8px; margin-left:2;">
+                <button onclick="navegarComTema('index.html')" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+                <button onclick="navegarComTema('geral.html')" class="nav-btn" id="btn-geral">Geral</button>
+                <button onclick="navegarComTema('plano-de-pagamento.html')" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+                <button onclick="navegarComTema('panorama.html')" class="nav-btn" id="btn-panorama">Panorama</button>
             </div>
         </div>
     </div>
@@ -153,8 +363,8 @@
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1%; margin-top: 1%;">
             <h1>Plano de Pagamento</h1>
             <div style="display:flex; gap:10px;">
-                <button type="button" class="btn btn-success mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="imprimirComTabelaCompleta()">Imprimir</button>
-                <button type="button" class="btn btn-warning mb-3" style="background:#baffba; color:#2d5c2f; border:none; font-weight:bold;" onclick="limparCampos()">Limpar</button>
+                <button type="button" class="imprimir-btn btn btn-success mb-3" onclick="imprimirComTabelaCompleta()">Imprimir</button>
+                <button type="button" class="limpar-btn btn btn-warning mb-3" onclick="limparCampos()">Limpar</button>
             </div>
         </div>
         <div id="dados-impressao" style="display:none; margin-bottom: 18px;">
@@ -167,18 +377,18 @@
                 <div class="col-lg-8">
                     <table class="table table-bordered mb-0">
                         <tr>
-                            <th>Renda Comprometida</th>
-                            <th>Margem</th>
-                            <th>Qtde. de Parcelas</th>
+                            <th style="width: 40px; min-width: 40px; max-width: 60px; font-size: 0.95em;">Renda Comprometida</th>
+                            <th style="width: 40px; min-width: 40px; max-width: 60px; font-size: 0.95em;">Margem</th>
+                            <th style="width: 40px; min-width: 40px; max-width: 60px; font-size: 0.95em;">Qtde. de Parcelas</th>
                         </tr>
                         <tr>
                             <td style="position: relative;">
-                                <input type="number" step="0.1" min="0" max="100" id="comprometida" class="form-control input-sm" value="30" style="padding-right: 20px;">
+                                <input type="number" step="0.1" min="0" max="100" id="comprometida" class="form-control input-sm" value="30" style="padding-right: 20px; width: 90px; min-width: 60px; max-width: 100px; font-size: 0.95em; height: 32px;">
                                 <span style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%);">%</span>
                             </td>
-                            <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly></td>
+                            <td><input type="text" id="margem" class="form-control input-md bg-light-green" readonly style="width: 90px; min-width: 60px; max-width: 100px; font-size: 0.95em; height: 32px;"></td>
                             <td>
-                                <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2">
+                                <input type="number" step="1" min="2" max="60" id="qtdeParcelas" class="form-control input-sm" value="2" style="width: 90px; min-width: 60px; max-width: 100px; font-size: 0.95em; height: 32px;">
                             </td>
                         </tr>
                         <tr>
@@ -194,7 +404,7 @@
                                     </div>
                                     <div class="col-md-6" style="display:flex; flex-direction:column; align-items:flex-start;">
                                         <label for="taxaJurosMensalResidual" style="font-weight:bold;">Taxa de Juros Mensal da Parcela Residual (%)</label>
-                                        <input type="number" step="0.01" min="0" max="100" id="taxaJurosMensalResidual" class="form-control input-sm" value="1" style="width: 100%; max-width: 220px;">
+                                        <input type="number" step="0.01" min="0" max="100" id="taxaJurosMensalResidual" class="form-control input-sm" value="1" style="width: 80px; min-width: 40px; max-width: 100px; font-size: 0.95em; height: 32px;">
                                     </div>
                                 </div>
                             </td>
@@ -203,8 +413,8 @@
                 </div>
                 <div class="col-lg-4 d-flex align-items-center">
                     <div class="ms-3">
-                        <label for="receitaTotal" class="form-label mb-0">Receita mensal após despesas (R$):</label>
-                        <span id="receitaTotal" class="form-control input-md" style="background:#e9ecef;display:block;min-height:38px;"></span>
+                        <label for="receitaTotal" class="form-label mb-0">Receita mensal livre:</label>
+                        <span id="receitaTotal" class="form-control input-md" style="background:#e9ecef;display:block;min-height:38px;max-width:120px;"></span>
                     </div>
                 </div>
             </div>
@@ -213,7 +423,9 @@
             <div id="secao-dividas">
             <div class="row mb-4">
                 <div class="col-12 scroll-x">
-                    <h2 style="color: #163618; margin-bottom: 0; text-align: center; padding-bottom: 5px; padding-top: 2px;">
+                    <h2 style="color: #2d5c2f; margin-bottom: 0; text-align: center; padding-bottom: 5px; padding-top: 2px;"
+                        class="titulo-transparente"
+                    >
                         Dívidas totais
                     </h2>
                         <table class="table table-bordered mb-0" id="tabela-dividas">
@@ -252,12 +464,17 @@
             <div class="row mb-4">
                 <div class="col-12 scroll-x">
                     <div id="secao-parcelas">
-                    <h2 style="color: #163618; margin-bottom: 0; text-align: center; padding-bottom: 10px; padding-top: 2px;">
+                    <h2 style="color: #2d5c2f; margin-bottom: 0; text-align: center; padding-bottom: 10px; padding-top: 2px;"
+                        class="titulo-transparente"
+                    >
                         Plano de pagamento - Parcelas
                     </h2>
                     <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px;gap:10px;">
                         <label for="data-primeira-parcela" style="font-weight:bold;">Primeira parcela vencimento:</label>
-                        <input type="date" id="data-primeira-parcela" class="form-control" style="max-width:180px;">
+                        <div class="date-wrapper" style="display:inline-block;">
+                            <input type="date" id="data-primeira-parcela" class="form-control" style="max-width:160px; min-width: 120px; width: 160px;">
+                            <svg class="date-calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        </div>
                     </div>
                     <div id="alerta-data-primeira-parcela" class="no-print" style="color:#d00; font-size:0.98em; font-weight:bold; text-align:right; margin-bottom:8px; display:none;"></div>
                     <div id="parcelas-pagination" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:8px;"></div>
@@ -279,6 +496,11 @@
         </form>
     </div>
     </div>
+
+    <!-- Botão de tema pequeno e redondo -->
+    <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:10px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
+      ��
+    </button>
 
     <script>
     const bancos = [
@@ -339,6 +561,15 @@
         processarLinhas(linhasDividasConsolidadas);
 
         atualizarTotais();
+
+        // Garante dark-theme na subtotal-row do tfoot
+        if (document.body.classList.contains('dark-theme')) {
+            document.querySelectorAll('#tabela-dividas tfoot .subtotal-row').forEach(el => el.classList.add('dark-theme'));
+            document.querySelectorAll('#tabela-dividas tfoot .subtotal-row td').forEach(el => el.classList.add('dark-theme'));
+        } else {
+            document.querySelectorAll('#tabela-dividas tfoot .subtotal-row').forEach(el => el.classList.remove('dark-theme'));
+            document.querySelectorAll('#tabela-dividas tfoot .subtotal-row td').forEach(el => el.classList.remove('dark-theme'));
+        }
     }
 
     function atualizarTotais() {
@@ -614,6 +845,11 @@
     function renderParcelasPagination() {
         const pagDiv = document.getElementById('parcelas-pagination');
         pagDiv.innerHTML = '';
+        // Recalcula o total de páginas com base no valor atual de parcelas
+        const qtdeParcelas = parseInt(document.getElementById('qtdeParcelas').value) || 0;
+        totalPaginasParcelas = Math.ceil(qtdeParcelas / parcelasPorPagina) || 1;
+        if (parcelasPaginaAtual > totalPaginasParcelas) parcelasPaginaAtual = totalPaginasParcelas;
+        if (parcelasPaginaAtual < 1) parcelasPaginaAtual = 1;
         if (totalPaginasParcelas <= 1) return;
         // Botões de navegação (apenas Anterior e Próxima)
         pagDiv.innerHTML = `
@@ -777,6 +1013,17 @@
                 localStorage.setItem('plano-data-primeira-parcela', inputData.value);
             });
         }
+
+        // Ativa o botão da página atual
+        const page = window.location.pathname.split('/').pop();
+        document.getElementById('btn-dados').classList.remove('active');
+        document.getElementById('btn-geral').classList.remove('active');
+        document.getElementById('btn-plano').classList.remove('active');
+        document.getElementById('btn-panorama').classList.remove('active');
+        if(page.includes('index')) document.getElementById('btn-dados').classList.add('active');
+        if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
+        if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
+        if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
     });
 
     // Atualizar quando o valor mudar em outra página
@@ -954,6 +1201,81 @@
             parcelasPaginaAtual = paginaOriginal;
             calcularDividas();
         }, 100);
+    }
+
+    // === DARK MODE (copiado/adaptado da index.html) ===
+    const themeToggleBtn = document.getElementById('btn-theme-toggle');
+    function setTheme(dark) {
+        if (dark) {
+            document.body.classList.add('dark-theme');
+            document.querySelectorAll('.container').forEach(el => el.classList.add('dark-theme'));
+            document.querySelectorAll('.container, #custom-navbar, .nav-btn, table, th, td, thead, .table-light, .table-title, input, select, textarea, .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info, .form-check-input, .valor-final, .obs, h1, h2, h3, h4, h5, h6, #receitaTotal').forEach(el => el.classList.add('dark-theme'));
+            document.querySelectorAll('tfoot, tfoot tr, tfoot .total-row').forEach(el => el.classList.add('dark-theme'));
+            themeToggleBtn.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+            document.querySelectorAll('table').forEach(table => {
+                table.querySelectorAll('th, td').forEach(cell => cell.classList.add('dark-theme'));
+            });
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.querySelectorAll('.container').forEach(el => el.classList.remove('dark-theme'));
+            document.querySelectorAll('.container, #custom-navbar, .nav-btn, table, th, td, thead, .table-light, .table-title, input, select, textarea, .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info, .form-check-input, .valor-final, .obs, h1, h2, h3, h4, h5, h6, #receitaTotal').forEach(el => el.classList.remove('dark-theme'));
+            document.querySelectorAll('tfoot, tfoot tr, tfoot .total-row').forEach(el => el.classList.remove('dark-theme'));
+            themeToggleBtn.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+            document.querySelectorAll('table').forEach(table => {
+                table.querySelectorAll('th, td').forEach(cell => cell.classList.remove('dark-theme'));
+            });
+        }
+    }
+    themeToggleBtn.addEventListener('click', function() {
+        const dark = !document.documentElement.classList.contains('dark-theme');
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        location.reload();
+    });
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const saved = localStorage.getItem('theme');
+            setTheme(saved === 'dark');
+        }, 0);
+    });
+    function trocarLogoPorTema(dark) {
+        var logo = document.getElementById('logo-superend');
+        if (!logo) return;
+        logo.src = dark ? 'logo-superendividamento-Dark.png' : 'logo-superendividamento.png';
+    }
+    function trocarBgPorTema(dark) {
+        document.body.style.backgroundImage = dark ? "url('SuperEndBackgroundTransparente-Dark.png')" : "url('SuperEndBackgroundTransparente.png')";
+    }
+    // Adapte a função setTheme existente:
+    const oldSetTheme = setTheme;
+    setTheme = function(dark) {
+        oldSetTheme(dark);
+        trocarLogoPorTema(dark);
+        trocarBgPorTema(dark);
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const saved = localStorage.getItem('theme');
+            trocarLogoPorTema(saved === 'dark');
+            trocarBgPorTema(saved === 'dark');
+        }, 0);
+    });
+
+    // Adicionar função global:
+    function navegarComTema(destino) {
+        const dark = document.documentElement.classList.contains('dark-theme');
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        window.location.href = destino;
+    }
+
+    // Torna o SVG clicável para abrir o calendário
+    const dateInput = document.getElementById('data-primeira-parcela');
+    const calendarIcon = document.querySelector('.date-calendar-icon');
+    if (dateInput && calendarIcon) {
+        calendarIcon.addEventListener('click', function() {
+            dateInput.showPicker ? dateInput.showPicker() : dateInput.focus();
+        });
     }
     </script>
 </body>
