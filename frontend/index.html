@@ -145,11 +145,19 @@
             .navbar,
             #theme-toggle,
             #btn-theme-toggle,
+            #btn-imprimir,
             #limpar-btn,
             .limpar-btn,
-            #imprimir-btn,
-            .imprimir-btn {
+            #logo-superend,
+            body > div[style*="position:sticky"],
+            #btn-theme-toggle {
                 display: none !important;
+            }
+            .container {
+                background: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
             }
         }
     </style>
@@ -236,9 +244,12 @@
         </div>
     </div>
     <div class="container"; style="background: #ffffff00;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
-            <h1>Dados Socioeconômicos do Consumidor</h1>
-            <button type="button" class="btn btn-warning mb-3 limpar-btn" onclick="limparCampos()">Limpar</button>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px; gap:16px;">
+            <h1 style="margin:0;">Dados Socioeconômicos do Consumidor</h1>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button type="button" class="imprimir-btn btn btn-success mb-3" id="btn-imprimir" onclick="window.print()">Imprimir</button>
+                <button type="button" class="limpar-btn btn btn-warning mb-3" id="limpar-btn" onclick="limparCampos()">Limpar</button>
+            </div>
         </div>
         <form id="socForm">
             <div class="row g-4">
@@ -309,7 +320,7 @@
         </form>
     </div>
     <!-- Botão de tema pequeno e redondo -->
-    <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:10px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
+    <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:13px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
       🌙
     </button>
     <script>
