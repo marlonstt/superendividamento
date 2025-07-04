@@ -6,8 +6,11 @@
     <title>Panorama Mensal Resumido - Superendividamento</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f4f4f4; }
-        .container { max-width: 1100px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        body {
+            background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container { max-width: 1200px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
         .titulo-topo { font-size: 1.1em; font-weight: bold; text-align: center; }
         .panorama-title { color: #0074d9; font-weight: bold; font-size: 1.3em; text-align: center; margin: 20px 0 30px 0; }
         .retangulo { border: 2px solid #bbb; border-radius: 10px; margin-bottom: 18px; background: #f8f9fa; padding: 18px 18px 10px 18px; position: relative; }
@@ -18,7 +21,7 @@
         .retangulo-valor-neg { color: #d00; }
         .retangulo-valor-pct { font-size: 1.2em; font-weight: bold; color: #0074d9; }
         .retangulo-label { font-size: 1em; color: #333; }
-        .retangulo-autos { position: absolute; right: 18px; top: 18px; background: #c6f5c6; border: 2px solid #7ed87e; border-radius: 6px; padding: 8px 18px; font-size: 1.1em; font-weight: bold; }
+        .retangulo-autos { position: absolute; right: 18px; top: 18px; background: #c6f5c6; border: 2px solid #7ed87e; border-radius: 6px; padding: 8px 18px; font-size: 1.1em; font-weight: bold; color: #fff; }
         .retangulo-obs { font-size: 0.95em; color: #444; margin-top: 10px; }
         .retangulo-icone-alarme { color: #ff9800; }
         .retangulo-icone-dinheiro { color: #007a00; }
@@ -78,6 +81,7 @@
         .retangulo-valor-porcento-vermelho-claro4 { color: #ffcdd2; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-laranja-claro4 { color: #ffe0b2; font-size: 1.1em; font-weight: bold; }
         .retangulo-valor-porcento-amarelo-claro4 { color: #fff9c4; font-size: 1.1em; font-weight: bold; }
+        h1 { color: #2d5c2f; margin-bottom: 20px; }
         #custom-navbar {
             position: sticky;
             top: 0;
@@ -120,25 +124,262 @@
             font-size: 0.92em;
             padding: 2px 6px;
         }
+        .limpar-btn, .imprimir-btn {
+            border: 1.5px solid #baffba !important;
+            color: #2d5c2f !important;
+            background: #baffba !important;
+            font-weight: bold;
+            transition: border 0.2s;
+        }
+        .imprimir-btn:hover, .imprimir-btn:focus, .imprimir-btn:active {
+            border: 1.5px solid #2d5c2f !important;
+            color: #2d5c2f !important;
+            background: #baffba !important;
+        }
+        .dark-theme .imprimir-btn,
+        .dark-theme .imprimir-btn.btn-success,
+        .dark-theme .btn.imprimir-btn,
+        .dark-theme .btn-success.imprimir-btn {
+            border: 1.5px solid #baffba !important;
+            color: #baffba !important;
+            background: transparent !important;
+        }
+        .dark-theme .imprimir-btn:hover,
+        .dark-theme .imprimir-btn:focus,
+        .dark-theme .imprimir-btn:active,
+        .dark-theme .imprimir-btn.btn-success:hover,
+        .dark-theme .imprimir-btn.btn-success:focus,
+        .dark-theme .imprimir-btn.btn-success:active {
+            border: 1.5px solid #baffba !important;
+            color: #baffba !important;
+            background: #23272b !important;
+        }
+        .container.dark-theme { background: rgba(35,39,43,0.65) !important; color: #fff !important; box-shadow: 0 2px 8px #0008; }
+        .retangulo.dark-theme { background: rgba(35,39,43,0.65) !important; border-color: #444 !important; }
+        .retangulo-verde.dark-theme { background: rgba(30,43,30,0.65) !important; border-color: #4caf50 !important; }
+        .retangulo-autos.dark-theme { background: rgba(35,39,43,0.65) !important; color: #fff !important; border-color: #4caf50 !important; }
+        /* === CSS DARK MODE E TABELAS (idêntico ao da index.html) === */
+        table.dark-theme tr {
+            background: transparent !important;
+        }
+        table.dark-theme th, table.dark-theme td {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        table.dark-theme thead, table.dark-theme tfoot {
+            background: transparent !important;
+            color: #fff !important;
+        }
+        table.dark-theme .total-row.dark-theme td,
+        table.dark-theme .total-row.dark-theme {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme,
+        table.table.dark-theme,
+        table.dark-theme {
+            background: rgba(35,39,43,0.65) !important;
+        }
+        table.table.table-bordered.dark-theme th,
+        table.table.table-bordered.dark-theme td,
+        table.table.dark-theme th,
+        table.table.dark-theme td,
+        table.dark-theme th,
+        table.dark-theme td {
+            background: rgba(35,39,43,0.15) !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme tr,
+        table.table.dark-theme tr,
+        table.dark-theme tr {
+            background: transparent !important;
+        }
+        table.table.table-bordered.dark-theme thead,
+        table.table.table-bordered.dark-theme tfoot,
+        table.table.dark-theme thead,
+        table.table.dark-theme tfoot,
+        table.dark-theme thead,
+        table.dark-theme tfoot {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+        table.table.table-bordered.dark-theme .total-row,
+        table.table.table-bordered.dark-theme .total-row td,
+        table.table.dark-theme .total-row,
+        table.table.dark-theme .total-row td,
+        table.dark-theme .total-row,
+        table.dark-theme .total-row td {
+            background: #23272b !important;
+            color: #fff !important;
+        }
+        .retangulo.dark-theme { background: rgba(35,39,43,0.65) !important; border-color: #444 !important; }
+        .retangulo-verde.dark-theme { background: rgba(30,43,30,0.65) !important; border-color: #4caf50 !important; }
+        .retangulo-autos.dark-theme { background: rgba(35,39,43,0.65) !important; color: #fff !important; border-color: #4caf50 !important; }
+        body.dark-theme, .container.dark-theme, .retangulo.dark-theme, .retangulo-verde.dark-theme, .retangulo-autos.dark-theme, .panorama-title.dark-theme, .retangulo-titulo.dark-theme, .retangulo-label.dark-theme, .retangulo-valor.dark-theme, .retangulo-valor-neg.dark-theme, .retangulo-valor-porcento.dark-theme, .retangulo-pct-limite.dark-theme, .retangulo-obs.dark-theme {
+          color: #fff !important;
+        }
+        body.dark-theme * { color: #fff !important; }
+        .retangulo-autos.dark-theme { background: rgba(35,39,43,0.65) !important; color: #fff !important; border-color: #4caf50 !important; }
+        body.dark-theme #btn-theme-toggle { background: rgba(35,39,43,0.32) !important; color: #fff !important; }
+        body.dark-theme .retangulo-autos {
+          background: rgba(35,39,43,0.65) !important;
+          color: #fff !important;
+          border-color: #4caf50 !important;
+        }
+        html.dark-theme .container, body.dark-theme .container { background: rgba(35,39,43,0.32) !important; color: #fff !important; box-shadow: 0 2px 8px #0008; }
+        html.dark-theme .retangulo, body.dark-theme .retangulo { background: rgba(35,39,43,0.32) !important; border-color: #444 !important; }
+        html.dark-theme .retangulo-verde, body.dark-theme .retangulo-verde { background: rgba(30,43,30,0.32) !important; border-color: #4caf50 !important; }
+        html.dark-theme .retangulo-autos, body.dark-theme .retangulo-autos { background: rgba(35,39,43,0.32) !important; color: #fff !important; border-color: #4caf50 !important; }
+        html.dark-theme #btn-theme-toggle, body.dark-theme #btn-theme-toggle { background: rgba(35,39,43,0.32) !important; color: #fff !important; }
+        html.dark-theme .panorama-title, body.dark-theme .panorama-title { color: #fff !important; background: rgba(35,39,43,0.32) !important; }
+        html.dark-theme .retangulo-titulo, body.dark-theme .retangulo-titulo,
+        html.dark-theme .retangulo-label, body.dark-theme .retangulo-label,
+        html.dark-theme .retangulo-valor, body.dark-theme .retangulo-valor,
+        html.dark-theme .retangulo-valor-neg, body.dark-theme .retangulo-valor-neg,
+        html.dark-theme .retangulo-valor-porcento, body.dark-theme .retangulo-valor-porcento,
+        html.dark-theme .retangulo-pct-limite, body.dark-theme .retangulo-pct-limite,
+        html.dark-theme .retangulo-obs, body.dark-theme .retangulo-obs {
+          color: #fff !important;
+        }
+        html.dark-theme *, body.dark-theme * { color: #fff !important; }
+        html.dark-theme table, body.dark-theme table { background: rgba(35,39,43,0.32) !important; }
+        html.dark-theme th, body.dark-theme th, html.dark-theme td, body.dark-theme td { background: rgba(35,39,43,0.12) !important; color: #fff !important; }
+        @media print {
+          #custom-navbar,
+          .navbar,
+          #theme-toggle,
+          #btn-theme-toggle,
+          #btn-imprimir,
+          #limpar-btn,
+          .limpar-btn {
+            display: none !important;
+          }
+          #logo-superend,
+          body > div[style*="position:sticky"],
+          #btn-theme-toggle {
+            display: none !important;
+          }
+          /* Esconde o fundo branco do container, mas mantém o conteúdo */
+          .container {
+            background: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            padding: 0 !important;
+          }
+        }
     </style>
+    <style id="dark-theme-style" disabled>
+      body.dark-theme {
+        background: url('SuperEndBackgroundTransparente-Dark.png') no-repeat center center fixed !important;
+        background-size: cover !important;
+        color: #fff !important;
+      }
+      html.dark-theme { background: #181a1b !important; }
+      .container.dark-theme { background: rgba(35,39,43,0.65) !important; color: #fff !important; box-shadow: 0 2px 8px #0008; }
+      h1.dark-theme, h2.dark-theme, h3.dark-theme, h4.dark-theme, h5.dark-theme, h6.dark-theme {
+        color: #fff !important;
+        background: transparent !important;
+      }
+      .retangulo.dark-theme {
+        background: rgba(35,39,43,0.65) !important;
+        border-color: #444 !important;
+      }
+      .retangulo-verde.dark-theme {
+        background: rgba(30,43,30,0.65) !important;
+        border-color: #4caf50 !important;
+      }
+      .retangulo-valor.dark-theme, .retangulo-valor-porcento.dark-theme, .retangulo-label.dark-theme, .retangulo-autos.dark-theme {
+        color: #baffba !important;
+      }
+      .retangulo-valor-neg.dark-theme {
+        color: #ff7b7b !important;
+      }
+      .retangulo-icone.dark-theme {
+        color: #baffba !important;
+      }
+      .retangulo-obs.dark-theme {
+        color: #b0b0b0 !important;
+      }
+      #custom-navbar.dark-theme {
+        background: rgba(35,39,43,0.95) !important; box-shadow: 0 2px 8px #0008;
+      }
+      .nav-btn.dark-theme { color: #baffba !important; background: transparent !important; }
+      .nav-btn.dark-theme.active, .nav-btn.dark-theme:focus, .nav-btn.dark-theme:active, .nav-btn.dark-theme:hover { background: #2e3b2e !important; color: #baffba !important; border-bottom: 3px solid #baffba !important; }
+      table.dark-theme, th.dark-theme, td.dark-theme { background: #23272b !important; color: #fff !important; border-color: #444 !important; }
+      thead.dark-theme, .table-light.dark-theme, .table-title.dark-theme { background: #23272b !important; color: #fff !important; }
+      input.dark-theme, select.dark-theme, textarea.dark-theme {
+        background: #23272b !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+      }
+      input.dark-theme::placeholder, select.dark-theme::placeholder, textarea.dark-theme::placeholder {
+        color: #bbb !important;
+      }
+      .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info {
+        transition: background 0.2s, color 0.2s;
+      }
+      .btn.dark-theme, .btn-success.dark-theme, .btn-warning.dark-theme, .btn-primary.dark-theme, .btn-danger.dark-theme, .btn-info.dark-theme {
+        background: #333 !important;
+        color: #fff !important;
+        border: 1px solid #555 !important;
+      }
+      .btn.dark-theme:hover, .btn-success.dark-theme:hover, .btn-warning.dark-theme:hover, .btn-primary.dark-theme:hover, .btn-danger.dark-theme:hover, .btn-info.dark-theme:hover {
+        background: #444 !important;
+        color: #baffba !important;
+      }
+      .form-switch .form-check-input.dark-theme {
+        background-color: #23272b !important;
+        border-color: #baffba !important;
+      }
+      .form-switch .form-check-input.dark-theme:checked {
+        background-color: #baffba !important;
+        border-color: #baffba !important;
+      }
+      .retangulo-autos.dark-theme { color: #fff !important; background: #23272b !important; }
+      .panorama-title.dark-theme {
+        color: #fff !important;
+        background: rgba(35,39,43,0.65) !important;
+      }
+    </style>
+    <script>
+      try {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark-theme');
+          document.body.classList.add('dark-theme');
+        }
+      } catch(e){}
+    </script>
 </head>
 <body>
-    <div id="custom-navbar">
-        <button onclick="window.location.href='index.html'" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
-        <button onclick="window.location.href='geral.html'" class="nav-btn" id="btn-geral">Geral</button>
-        <button onclick="window.location.href='plano-de-pagamento.html'" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
-        <button onclick="window.location.href='panorama.html'" class="nav-btn" id="btn-panorama">Panorama</button>
-    </div>
-    <div class="container">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px;">
-            <div class="panorama-title">PANORAMA MENSAL RESUMIDO</div>
+    <!--Barra de navegação superior-->
+    <div style="width:100%;display:flex;justify-content:flex-start;margin-top:4px;margin-bottom:10px;gap:0;flex-wrap:wrap;position:sticky;top:0;z-index:1001;box-shadow:0 2px 8px #0002;">
+        <img id="logo-superend" src="logo-superendividamento.png" alt="SUPERENDIVIDAMENTO" style="max-width:20%; min-width:5%; height:60px; display:block; box-shadow: 0 2px 8px #0001; border-radius: 12px; margin-left:4px; margin-right:0;" />
+        <div style="flex:1;justify-content:flex-start; width: 80%; padding-top: 1px; padding-bottom: 1px; margin-left:4px; margin-right:50px;">
+            <div id="custom-navbar" style="height: 55px; position:static;box-shadow:none;margin-bottom:2px;border-radius:16px;padding:6px 8px; margin-left:2;">
+                <button onclick="navegarComTema('index.html')" class="nav-btn" id="btn-dados">Dados Socioeconômicos</button>
+                <button onclick="navegarComTema('geral.html')" class="nav-btn" id="btn-geral">Geral</button>
+                <button onclick="navegarComTema('plano-de-pagamento.html')" class="nav-btn" id="btn-plano">Plano de Pagamento</button>
+                <button onclick="navegarComTema('panorama.html')" class="nav-btn" id="btn-panorama">Panorama</button>
+            </div>
         </div>
+    </div>
+    <div class="container"; style="background: #ffffff00;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px; gap:16px;">
+            <h2 style="color: #2d5c2f; margin:0; text-align:left; flex:1; background:transparent !important;">PANORAMA MENSAL RESUMIDO</h2>
+            <div style="display:flex; gap:10px; align-items:center; min-width:180px;">
+                <div class="retangulo-autos" style="margin-right: 50px; background: #02ee600c; color: #000000; position:static; min-width:160px; text-align:center;">N° Processo: <span id="valor-autos">-</span></div>
+                <button type="button" class="imprimir-btn btn btn-success mb-3" id="btn-imprimir" onclick="window.print()">Imprimir</button>
+            </div>
+        </div>
+        
         <!-- Retângulo 1: Total Rendimentos Mensais Líquidos -->
         <div class="retangulo">
             <div class="retangulo-icone retangulo-icone-dinheiro">💰</div>
             <div class="retangulo-titulo">TOTAL RENDIMENTOS MENSAIS LÍQUIDOS APÓS DESPESAS EXISTENCIAIS</div>
             <div class="retangulo-valor" id="valor-rendimentos">R$ 0,00</div>
-            <div class="retangulo-autos">Autos: <span id="valor-autos">-</span></div>
         </div>
         <!-- Retângulo 2: Consignadas -->
         <div class="retangulo">
@@ -181,16 +422,35 @@
             <div class="retangulo-label"><span id="valor-livre-emergencial">R$ 0,00</span> : LIVRE PARA OUTRAS DESPESAS (EXISTENCIAIS E FORA DO PLANO)</div>
         </div>
         <div class="retangulo-obs">
-            <b>Para preenchimento deste formulário:</b><br>
-            1. Digitar percentual proposto de limite a comprometer e número dos autos. As demais células estão bloqueadas.<br>
-            2. Na aba "rendimentos" cada linha é uma fonte de pagamento de um mês normal/típico (INSS, Empregadores, previdência complementar, se recebe aluguéis de algum imóvel ou outro tipo de rendimento)<br>
-            3. Na aba "panorama mensal_consig" preencher nome de credor e valor de cada lançamento a ser somado<br>
-            4. Na aba "panorama mensal_não_consig" preencher nome de credor e de cada parcela da dívida não consignada<br>
-            5. Na aba "dívidas sem parcelas mensais" aquelas dívidas com parcela única, saldo de cheque especial, cartão e outros contratos com parcelas mensais, mas que precisam entrar na renegociação<br>
-            6. Atenção, aqui não são alimentados dados sobre as despesas existenciais, apenas dados de dívidas<br>
-            7. Este documento é parte do atendimento do setor de Cidadania, da Rede Temática Superendividamento do Poder Judiciário Catarinense (CEJ). Não faz juízos de valor, apenas procura aparilhar visualmente as contas do processo para o caso. Parte de informações indicadas pelos autos, podendo ser atualizado pelas partes e demais interessados, inclusive para fins de mediação e instrução.<br>
+            <b>Como usar esta aplicação:</b><br>
+            1. <b>Inicie pela página <u>Dados Socioeconômicos</u></b>:<br>
+            &nbsp;&nbsp;- Preencha todas as receitas (rendas) e despesas do consumidor ou família.<br>
+            &nbsp;&nbsp;- Para cada receita, você pode relatar um evento (campo texto) e a data/hora será salva automaticamente.<br>
+            &nbsp;&nbsp;- O valor mensal após despesas existenciais será calculado automaticamente.<br>
+            <br>
+            2. <b>Vá para a página <u>Geral</u></b>:<br>
+            &nbsp;&nbsp;- Preencha as dívidas nas tabelas: CONSIGNADOS, NÃO CONSIGNADOS, SEM PARCELAS e DÍVIDAS CONSOLIDADAS.<br>
+            &nbsp;&nbsp;- A tabela <b>Rendimentos</b> será preenchida automaticamente com as receitas cadastradas na primeira página, incluindo evento e data.<br>
+            <br>
+            3. <b>Vá para a página <u>Plano de Pagamento</u></b>:<br>
+            &nbsp;&nbsp;- Escolha o número de parcelas e ajuste a porcentagem da renda a ser utilizada para o parcelamento das dívidas.<br>
+            &nbsp;&nbsp;- O sistema calcula automaticamente o valor das parcelas, o comprometimento da renda e o valor livre mensal.<br>
+            <br>
+            4. <b>Por fim, acesse a página <u>Panorama</u></b>:<br>
+            &nbsp;&nbsp;- Esta página é apenas informativa e exibe um resumo visual de todos os dados preenchidos nas etapas anteriores.<br>
+            <br>
+            <a href="https://www.cnj.jus.br/wp-content/uploads/2022/08/cartilha-superendividamento.pdf" target="_blank" style="font-weight:bold; color:#007a00; text-decoration:underline;">Veja a Cartilha Superendividamento</a>
+            <br>
+            <b>Observações importantes:</b><br>
+            - O uso correto da aplicação depende do preenchimento sequencial das páginas.<br>
+            - As tabelas de dívidas devem ser preenchidas conforme a natureza de cada dívida.<br>
+            - Os dados são salvos localmente no navegador (localStorage).<br>
         </div>
     </div>
+    <!-- Botão de tema pequeno e redondo -->
+    <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:13px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
+      🌙
+    </button>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     // Função para formatar valores em BRL
@@ -250,58 +510,49 @@
 
         // 4. Calcular soma das parcelas não consignadas
         let valorNaoConsignadas = 0;
-        let valorTotalParcelaPlano = getValorTotalParcelas(); // Busca o valor total das parcelas do plano
-        
-        // Usar o valor do plano de pagamento se disponível
-        if (valorTotalParcelaPlano > 0) {
-            valorNaoConsignadas = valorTotalParcelaPlano - valorConsignadas;
-        } else {
-            // Fallback para o cálculo antigo se não houver plano
-            for (let i = 1; i <= 2; i++) {
-                const parcelaMensal = localStorage.getItem(`nao-consignado-${i}-parcela-mensal`);
-                if (parcelaMensal) {
-                    const valor = parseFloat(parcelaMensal.replace(/\./g, '').replace(',', '.'));
-                    if (!isNaN(valor)) valorNaoConsignadas += valor;
-                }
-            }
-        }
-
+        const linhasNaoConsignados = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
+        linhasNaoConsignados.forEach(linha => {
+            const parcelaMensal = parseFloat(linha.parcelaMensal?.replace(/\./g, '').replace(',', '.')) || 0;
+            valorNaoConsignadas += parcelaMensal;
+        });
         // Atualizar valor e porcentagem das não consignadas
         document.getElementById('valor-nao-consignadas').textContent = '-' + formatBRL(valorNaoConsignadas);
         const pctNaoConsignadas = valorRendimentos > 0 ? (valorNaoConsignadas / valorRendimentos) * 100 : 0;
         document.getElementById('pct-nao-consignadas').textContent = pctNaoConsignadas.toFixed(2) + '%';
 
-        // 5. Comprometido
-        let pctComprometida = getValueFromLocalStorage('plano-pct-limite', 0);
-        let margem = valorRendimentos * (pctComprometida / 100);
-        let valorLivreMensal = valorRendimentos - (valorConsignadas + valorNaoConsignadas);
-        
-        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensal);
-        const pctComprometidoTotal = valorRendimentos > 0 ? ((valorConsignadas + valorNaoConsignadas) / valorRendimentos) * 100 : 0;
-        document.getElementById('pct-comprometido').textContent = `${pctComprometidoTotal.toFixed(2)}% : RENDA COMPROMETIDA EM PARCELAS`;
+        // 5. Comprometido (corrigido)
+        // Buscar o total da coluna "Valor da Parcela" do plano de pagamento
+        let valorTotalParcelasPlano = parseFloat(localStorage.getItem('plano-valor-total-parcela')) || 0;
+        // Buscar a receita mensal após despesas (valor-final)
+        let receitaAposDespesas = valorRendimentos;
+        // Calcular porcentagem comprometida
+        let pctComprometidaCorreta = receitaAposDespesas > 0 ? (valorTotalParcelasPlano / receitaAposDespesas) * 100 : 0;
+        document.getElementById('pct-comprometido').textContent = `${pctComprometidaCorreta.toFixed(2)}% : RENDA COMPROMETIDA EM PARCELAS`;
+        // Calcular valor livre mensal correto
+        let valorLivreMensalCorreto = receitaAposDespesas - valorTotalParcelasPlano;
+        document.getElementById('valor-livre-mensal').textContent = formatBRL(valorLivreMensalCorreto);
 
-        // 6. Outras Dívidas
-        let valorSemParcelas = 0;
-        for (let i = 1; i <= 1; i++) {
-            const saldoDevedor = localStorage.getItem(`sem-parcela-${i}-saldo-devedor`);
-            if (saldoDevedor) {
-                const valor = parseFloat(saldoDevedor.replace(/\./g, '').replace(',', '.'));
-                if (!isNaN(valor)) valorSemParcelas += valor;
+        // 6. Outras Dívidas (corrigido para saldo devedor das sem parcelas)
+        let linhasSemParcelas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
+        let totalSaldoDevedorSemParcelas = 0;
+        linhasSemParcelas.forEach(linha => {
+            if (linha.credor && linha.credor !== '') {
+                totalSaldoDevedorSemParcelas += parseFloat(linha.saldoDevedor) || 0;
             }
-        }
-
-        let valorParcelamento60 = valorSemParcelas / 60;
-        let valorTotalParcelas = valorConsignadas + valorNaoConsignadas;
-        let valorLivreMensalConsolidado = valorRendimentos - valorTotalParcelas;
-        let pctComprometidoTotal2 = valorRendimentos > 0 ? (valorTotalParcelas / valorRendimentos) * 100 : 0;
-
-        document.getElementById('valor-sem-parcelas').textContent = formatBRL(valorSemParcelas);
+        });
+        let valorParcelamento60 = totalSaldoDevedorSemParcelas / 60;
+        document.getElementById('valor-sem-parcelas').textContent = formatBRL(totalSaldoDevedorSemParcelas);
         document.getElementById('valor-parcelamento-60').textContent = formatBRL(valorParcelamento60);
-        document.getElementById('valor-total-parcelas').textContent = '-' + formatBRL(valorTotalParcelas);
-        document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidado);
-        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotal2.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
 
-        // 7. Emergencial
+        // Restante mantido
+        let valorTotalParcelasPlano2 = parseFloat(localStorage.getItem('plano-valor-total-parcela')) || 0;
+        let valorLivreMensalConsolidadoCorreto = valorRendimentos - valorTotalParcelasPlano2;
+        let pctComprometidoTotalCorreto = valorRendimentos > 0 ? (valorTotalParcelasPlano2 / valorRendimentos) * 100 : 0;
+        document.getElementById('valor-total-parcelas').textContent = '-' + formatBRL(valorTotalParcelasPlano2);
+        document.getElementById('valor-livre-mensal-consolidado').textContent = formatBRL(valorLivreMensalConsolidadoCorreto);
+        document.getElementById('pct-comprometido-total').textContent = pctComprometidoTotalCorreto.toFixed(2) + '% : RENDA COMPROMETIDA COM TODA DÍVIDA';
+
+        // 7. Emergencial (mantido)
         let pctLimite = getValueFromLocalStorage('plano-pct-limite', 30); // Default para 30%
         let valorRendaSemConsignados = valorRendimentos;
         let valorConsignacaoEmergencial = -(pctLimite / 100) * valorRendaSemConsignados;
@@ -323,10 +574,90 @@
 
     // Ativa o botão da página atual
     const page = window.location.pathname.split('/').pop();
-    if(page.includes('dados-socioeconomicos')) document.getElementById('btn-dados').classList.add('active');
+    document.getElementById('btn-dados').classList.remove('active');
+    document.getElementById('btn-geral').classList.remove('active');
+    document.getElementById('btn-plano').classList.remove('active');
+    document.getElementById('btn-panorama').classList.remove('active');
+    if(page.includes('index')) document.getElementById('btn-dados').classList.add('active');
     if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
     if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
     if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
+
+    // === DARK MODE (copiado/adaptado da index.html) ===
+    const themeToggleBtn = document.getElementById('btn-theme-toggle');
+    function setTheme(dark) {
+        if (dark) {
+            document.body.classList.add('dark-theme');
+            document.querySelectorAll('.container').forEach(el => el.classList.add('dark-theme'));
+            document.querySelectorAll('.container, #custom-navbar, .nav-btn, table, th, td, thead, .table-light, .table-title, input, select, textarea, .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info, .form-check-input, .valor-final, .obs, h1, h2, h3, h4, h5, h6').forEach(el => el.classList.add('dark-theme'));
+            document.querySelectorAll('tfoot, tfoot tr, tfoot .total-row').forEach(el => el.classList.add('dark-theme'));
+            themeToggleBtn.textContent = '\u2600\ufe0f';
+            localStorage.setItem('theme', 'dark');
+            // Força dark-theme em todos os th e td das tabelas
+            document.querySelectorAll('table').forEach(table => {
+                table.querySelectorAll('th, td').forEach(cell => cell.classList.add('dark-theme'));
+            });
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.querySelectorAll('.container').forEach(el => el.classList.remove('dark-theme'));
+            document.querySelectorAll('.container, #custom-navbar, .nav-btn, table, th, td, thead, .table-light, .table-title, input, select, textarea, .btn, .btn-success, .btn-warning, .btn-primary, .btn-danger, .btn-info, .form-check-input, .valor-final, .obs, h1, h2, h3, h4, h5, h6').forEach(el => el.classList.remove('dark-theme'));
+            document.querySelectorAll('tfoot, tfoot tr, tfoot .total-row').forEach(el => el.classList.remove('dark-theme'));
+            themeToggleBtn.textContent = '\ud83c\udf19';
+            localStorage.setItem('theme', 'light');
+            // Remove dark-theme de todos os th e td das tabelas
+            document.querySelectorAll('table').forEach(table => {
+                table.querySelectorAll('th, td').forEach(cell => cell.classList.remove('dark-theme'));
+            });
+        }
+    }
+    themeToggleBtn.addEventListener('click', function() {
+        const dark = !document.documentElement.classList.contains('dark-theme');
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        location.reload();
+    });
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const saved = localStorage.getItem('theme');
+            setTheme(saved === 'dark');
+            // Garante que todos os retângulos recebam a classe dark-theme se o tema for escuro
+            if (saved === 'dark') {
+                document.querySelectorAll('.retangulo').forEach(el => el.classList.add('dark-theme'));
+                document.querySelectorAll('.retangulo-verde').forEach(el => el.classList.add('dark-theme'));
+            } else {
+                document.querySelectorAll('.retangulo').forEach(el => el.classList.remove('dark-theme'));
+                document.querySelectorAll('.retangulo-verde').forEach(el => el.classList.remove('dark-theme'));
+            }
+        }, 0);
+    });
+    function trocarLogoPorTema(dark) {
+        var logo = document.getElementById('logo-superend');
+        if (!logo) return;
+        logo.src = dark ? 'logo-superendividamento-Dark.png' : 'logo-superendividamento.png';
+    }
+    function trocarBgPorTema(dark) {
+        document.body.style.backgroundImage = dark ? "url('SuperEndBackgroundTransparente-Dark.png')" : "url('SuperEndBackgroundTransparente.png')";
+    }
+    // Adapte a função setTheme existente:
+    const oldSetTheme = setTheme;
+    setTheme = function(dark) {
+        oldSetTheme(dark);
+        trocarLogoPorTema(dark);
+        trocarBgPorTema(dark);
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const saved = localStorage.getItem('theme');
+            trocarLogoPorTema(saved === 'dark');
+            trocarBgPorTema(saved === 'dark');
+        }, 0);
+    });
+
+    // Adicionar função global:
+    function navegarComTema(destino) {
+        const dark = document.documentElement.classList.contains('dark-theme');
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        window.location.href = destino;
+    }
     </script>
 </body>
 </html> 
