@@ -1565,6 +1565,12 @@
     }
 
     async function aplicarCorrecaoMonetaria() {
+        // Impedir múltiplas correções sem limpar o histórico
+        const historicoJaExiste = JSON.parse(localStorage.getItem('historico-correcoes') || '[]');
+        if (historicoJaExiste.length > 0) {
+            alert('Já existe uma correção monetária aplicada. Para aplicar uma nova correção, limpe o histórico primeiro.');
+            return;
+        }
         const indice = document.getElementById('indice-correcao').value;
         const dataBase = document.getElementById('data-base-correcao').value;
         const dataAtual = document.getElementById('data-atual-correcao').value;
@@ -1770,11 +1776,17 @@
                     if (linha.correcoesAplicadas) {
                         delete linha.correcoesAplicadas;
                     }
+                    delete linha.valorCorrigido;
                 });
                 localStorage.setItem(tabela, JSON.stringify(linhas));
             });
             
             alert('Histórico de correções limpo com sucesso.');
+            // Atualizar visualização das tabelas imediatamente
+            renderTabelaConsignados();
+            renderTabelaNaoConsignados();
+            renderTabelaSemParcelas();
+            renderTabelaDividasConsolidadas();
         }
     }
 

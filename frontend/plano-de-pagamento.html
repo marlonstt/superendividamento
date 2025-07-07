@@ -589,11 +589,14 @@
                     linhasPreenchidas++;
                     const valorContratado = parseFloat(linha.valorContratado) || 0;
                     const valorPago = parseFloat(linha.valorPago) || 0;
-                    // NOVA LÓGICA: saldoDevedor considera valorCorrigido se maior
+                    // NOVA LÓGICA: saldoDevedor considera valorCorrigido se existir e for diferente de zero
                     const saldoDevedor = (() => {
                         const sd = parseFloat(linha.saldoDevedor) || 0;
-                        const vc = parseFloat(linha.valorCorrigido) || 0;
-                        return (vc > sd) ? vc : sd;
+                        const vc = parseFloat(linha.valorCorrigido);
+                        if (!isNaN(vc) && vc !== 0) {
+                            return vc;
+                        }
+                        return sd;
                     })();
                     const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
                     tbody.innerHTML += `

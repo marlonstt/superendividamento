@@ -120,7 +120,11 @@ superendividamento/
 - O usuário seleciona o índice, a data base (contratação) e a data atual para aplicar a correção.
 - O sistema calcula o fator de correção acumulado para o período e aplica **diretamente sobre o saldo devedor** (valor contratado - valor pago) de cada dívida.
 - O valor corrigido é salvo na coluna "Valor Corrigido" de cada dívida, mantendo o saldo devedor original inalterado para referência.
+- O saldo devedor utilizado em Plano de Pagamento segue a seguinte regra:
+  - Se o "Valor Corrigido" existir e for diferente de zero, ele será usado como Saldo Devedor para o parcelamento, independentemente de ser maior ou menor que o saldo devedor original.
+  - Caso contrário, será usado o Saldo Devedor original cadastrado na página Geral.
 - O parcelamento das dívidas pode ser feito a partir do novo saldo atualizado (valor corrigido), caso este seja maior que o saldo devedor original.
+- O sistema permite que apenas uma correção monetária esteja ativa por vez. Para aplicar uma nova correção, é necessário limpar o histórico de correções antes.
 - O sistema evita aplicação duplicada da mesma correção e mantém um histórico das correções realizadas, permitindo consulta e limpeza do histórico.
 
 ## Observações
