@@ -104,8 +104,6 @@ superendividamento/
 
 ---
 
-**Este arquivo será atualizado a cada nova funcionalidade ou alteração relevante no projeto.**
-
 ## Funcionalidades principais
 
 - Cadastro e visualização de dívidas (consignados, não consignados, sem parcelas, dívidas consolidadas)
@@ -127,4 +125,84 @@ superendividamento/
 
 ## Observações
 - Ajustes visuais e de estilos não são detalhados neste histórico.
-- Para detalhes de layout, consulte os arquivos HTML e CSS correspondentes. 
+- Para detalhes de layout, consulte os arquivos HTML e CSS correspondentes.
+
+## Fluxo de Uso da Aplicação e Integração entre Páginas
+
+A aplicação é composta por quatro páginas principais, cada uma com funções específicas, mas todas integradas por meio do armazenamento local (localStorage) para garantir a continuidade e o compartilhamento dos dados do usuário.
+
+### 1. Página "index.html" (Dados Socioeconômicos)
+- **Função:** Cadastro das receitas e despesas do consumidor (ou grupo familiar).
+- **Dados inseridos:**
+  - Receitas (salários, aposentadoria, pensão, etc.)
+  - Despesas (aluguel, alimentação, energia, etc.)
+- **Resultado:**
+  - Calcula o valor mensal disponível após despesas existenciais (campo "valor-final").
+  - Salva todos os dados no localStorage para uso nas demais páginas.
+
+### 2. Página "geral.html" (Geral - Dívidas)
+- **Função:** Cadastro detalhado das dívidas do consumidor, separadas em categorias (consignados, não consignados, sem parcelas, dívidas consolidadas).
+- **Dados inseridos:**
+  - Para cada dívida: credor, contrato, valor contratado, valor pago, saldo devedor, valor corrigido, datas, juros, parcelas, etc.
+- **Integração:**
+  - Recupera o valor mensal disponível ("valor-final") da página index.html para exibir e usar em cálculos.
+  - Os dados das dívidas são salvos no localStorage e ficam disponíveis para a página de Plano de Pagamento.
+  - Permite aplicar correção monetária sobre o saldo devedor, salvando o valor corrigido para uso posterior.
+
+### 3. Página "plano-de-pagamento.html" (Plano de Pagamento)
+- **Função:** Geração do plano de pagamento parcelado das dívidas cadastradas.
+- **Dados utilizados:**
+  - Recupera todas as dívidas cadastradas na página geral.html (inclusive valores corrigidos pela correção monetária).
+  - Recupera o valor mensal disponível ("valor-final") da página index.html para calcular a margem de comprometimento.
+- **Processo:**
+  - Permite definir a porcentagem da renda comprometida, quantidade de parcelas e condição especial.
+  - Calcula o valor das parcelas, distribui proporcionalmente entre as dívidas e gera a tabela de parcelamento.
+  - O saldo devedor utilizado pode ser o valor corrigido, caso exista e seja maior que o saldo devedor original.
+
+### 4. Página "panorama.html" (Painel Informativo)
+- **Função:** Exibe um panorama consolidado dos dados do consumidor, receitas, despesas, dívidas e plano de pagamento.
+- **Dados utilizados:**
+  - Recupera todos os dados das páginas anteriores (index, geral, plano de pagamento) do localStorage.
+  - Apresenta gráficos, resumos e indicadores para facilitar a análise e tomada de decisão.
+
+---
+
+### Integração e Relacionamento entre as Páginas
+
+- **index.html → geral.html:**
+  - O valor mensal disponível (após despesas) é utilizado na página de dívidas para referência e cálculos.
+- **geral.html → plano-de-pagamento.html:**
+  - Todas as dívidas cadastradas (e seus valores corrigidos, se houver) são usadas para montar o plano de pagamento.
+- **index.html → plano-de-pagamento.html:**
+  - O valor mensal disponível é usado para calcular a margem de comprometimento e definir o limite de parcelas.
+- **Todas → panorama.html:**
+  - O panorama consolida e apresenta todos os dados inseridos e calculados nas páginas anteriores.
+
+**Observação:**
+- O localStorage é o mecanismo central de integração, permitindo que os dados fluam automaticamente entre as páginas sem necessidade de recadastro.
+- Alterações feitas em uma página (ex: atualização de receitas, inclusão de nova dívida, aplicação de correção monetária) são refletidas nas demais páginas ao navegar entre elas.
+- O fluxo recomendado é: preencher receitas/despesas na index → cadastrar dívidas na geral → montar o plano de pagamento → visualizar o panorama consolidado.
+
+## Fluxograma de Integração entre as Páginas
+
+```mermaid
+flowchart TD
+    A["index.html\n(Dados Socioeconômicos)"] -->|"valor-final, receitas, despesas"| B["geral.html\n(Dívidas)"]
+    A -->|"valor-final"| C["plano-de-pagamento.html\n(Plano de Pagamento)"]
+    B -->|"dívidas, valores corrigidos"| C
+    A -->|"dados consolidados"| D["panorama.html\n(Painel Informativo)"]
+    B -->|"dados consolidados"| D
+    C -->|"dados consolidados"| D
+
+    subgraph Usuário
+      A
+      B
+      C
+      D
+    end
+
+    style A fill:#baffba,stroke:#2d5c2f,stroke-width:2px
+    style B fill:#eaf4ff,stroke:#2d5c2f,stroke-width:2px
+    style C fill:#fff3e0,stroke:#2d5c2f,stroke-width:2px
+    style D fill:#e0f7fa,stroke:#2d5c2f,stroke-width:2px
+``` 
