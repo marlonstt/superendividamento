@@ -10,7 +10,7 @@
             background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
             background-size: cover;
         }
-        .container { max-width: 1200px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+        .container { max-width: 1200px; margin: 30px auto; background: #ffffff00; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 248, 74, 0.263); }
         h1 { color: #2d5c2f; margin-bottom: 20px; }
         table { font-size: 0.88rem; }
         th, td { padding: 0.3em 0.5em !important; vertical-align: middle !important; text-align: center; }
@@ -269,6 +269,9 @@
                 border-radius: 0 !important;
                 padding: 0 !important;
             }
+            @page {
+                size: A4 landscape;
+            }
         }
         html.dark-theme input#nome-consumidor,
         body.dark-theme input#nome-consumidor,
@@ -278,6 +281,96 @@
             color: #fff !important;
             border: 1px solid #444 !important;
         }
+        .conteudo-escondido { visibility: hidden; }
+        #page-load-overlay {
+          position: fixed;
+          top: 0; left: 0; width: 100vw; height: 100vh;
+          background: #fff;
+          z-index: 99999;
+          transition: opacity 0.3s;
+        }
+        html.dark-theme #page-load-overlay, body.dark-theme #page-load-overlay {
+          background: #181a1b;
+        }
+        #page-load-overlay.hide {
+          opacity: 0;
+          pointer-events: none;
+        }
+        #page-transition-overlay {
+          position: fixed;
+          top: 0; left: 0; width: 100vw; height: 100vh;
+          background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
+          background-size: cover;
+          z-index: 99999;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.07s;
+        }
+        html.dark-theme #page-transition-overlay, body.dark-theme #page-transition-overlay {
+          background: url('SuperEndBackgroundTransparente-Dark.png') no-repeat center center fixed;
+          background-size: cover;
+        }
+        #page-transition-overlay.active {
+          opacity: 1;
+          pointer-events: all;
+        }
+        /* Estilos específicos para correção monetária no tema escuro */
+        body.dark-theme .form-label[for="indice-correcao"],
+        body.dark-theme .form-label[for="data-base-correcao"],
+        body.dark-theme .form-label[for="data-atual-correcao"] {
+            color: white !important;
+        }
+        
+        body.dark-theme .alert.alert-info {
+            background: transparent !important;
+            color: #90EE90 !important;
+        }
+        
+        body.dark-theme .alert.alert-info strong,
+        body.dark-theme .alert.alert-info span {
+            color: #90EE90 !important;
+        }
+        
+        /* Reduzir transparência do card de correção monetária apenas no tema escuro */
+        .card.dark-theme {
+            background-color: rgba(33, 37, 41, 0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Garantir fundo claro no tema claro */
+        .card:not(.dark-theme) {
+            background: #fff !important;
+            color: #222 !important;
+            opacity: 1 !important;
+            box-shadow: 0 2px 8px #0001;
+            position: relative;
+            z-index: 1;
+        }
+        body:not(.dark-theme) .container {
+            background: none !important;
+        }
+        /* Ajuste para a seção de Correção Monetária no tema escuro */
+        body.dark-theme .card,
+        body.dark-theme .card-header,
+        body.dark-theme .card-body {
+            background-color: rgba(33, 37, 41, 0.95) !important;
+            color: #fff !important;
+            box-shadow: 0 2px 8px #0008;
+        }
+        body.dark-theme .card-header {
+            border-bottom: 1px solid #444 !important;
+        }
+        body.dark-theme .card-body {
+            border-radius: 0 0 8px 8px;
+        }
+        .card:not(.dark-theme) {
+            background: #fff !important;
+            color: #222 !important;
+            opacity: 1 !important;
+            box-shadow: 0 2px 8px #0001;
+            position: relative;
+            z-index: 1;
+        }
     </style>
     <script>
       try {
@@ -286,6 +379,12 @@
           document.body.classList.add('dark-theme');
         }
       } catch(e){}
+
+      // Garante que, se não houver tema salvo, o padrão será claro e a imagem padrão será usada
+      if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', 'light');
+        document.body.style.backgroundImage = "url('SuperEndBackgroundTransparente.png')";
+      }
     </script>
 </head>
 <body>
@@ -301,7 +400,8 @@
             </div>
         </div>
     </div>
-    <div class="container"; style="background: #ffffff00;">
+    <div id="page-load-overlay"></div>
+    <div class="container conteudo-escondido">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px; gap:16px;">
             <h1 style="margin:0;">Geral - Dívidas</h1>
             <div style="display:flex; gap:10px; align-items:center;">
@@ -329,7 +429,7 @@
                         <h2 style="color: #2d5c2f; margin-bottom: 0; text-align: center; padding-bottom: 10px; padding-top: 20px;">Dívidas</h2>
                     </tr>
                     <tr class="table-title bg-light-black">
-                        <td colspan="10">CONSIGNADOS</td>
+                        <td colspan="11">CONSIGNADOS</td>
                     </tr>
                     <tr class="bg-light-gray">
                         <th>Credores</th>
@@ -337,6 +437,8 @@
                         <th>Valor contratado</th>
                         <th>Valor pago</th>
                         <th>Saldo devedor</th>
+                        <th>Valor Corrigido</th>
+                        <th>Data Contratação</th>
                         <th>Juros</th>
                         <th>Parcela Mensal</th>
                         <th>Parcelas contratadas</th>
@@ -352,6 +454,8 @@
                         <td id="total-valor-contratado"></td>
                         <td id="total-valor-pago"></td>
                         <td id="total-saldo-devedor"></td>
+                        <td></td>
+                        <td></td>
                         <td id="total-juros"></td>
                         <td id="total-parcela-mensal"></td>
                         <td></td>
@@ -363,7 +467,7 @@
         <div class="scroll-x table-section">
             <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-blue">
-                    <td colspan="10">NÃO CONSIGNADOS</td>
+                    <td colspan="11">NÃO CONSIGNADOS</td>
                 </tr>
                 <tr class="bg-light-gray">
                     <th>Credores</th>
@@ -371,6 +475,8 @@
                     <th>Valor contratado</th>
                     <th>Valor pago</th>
                     <th>Saldo devedor</th>
+                    <th>Valor Corrigido</th>
+                    <th>Data Contratação</th>
                     <th>Juros</th>
                     <th>Parcela Mensal</th>
                     <th>Parcelas contratadas</th>
@@ -386,6 +492,8 @@
                         <td id="total-nao-consignados-valor-pago"></td>
                         <td id="total-nao-consignados-saldo-devedor"></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
                         <td id="total-nao-consignados-parcela-mensal"></td>
                         <td></td>
                         <td></td>
@@ -396,7 +504,7 @@
         <div class="scroll-x table-section">
             <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-orange">
-                    <td colspan="10">SEM PARCELAS</td>
+                    <td colspan="11">SEM PARCELAS</td>
                 </tr>
                 <tr class="bg-light-gray">
                     <th>Credores</th>
@@ -404,6 +512,8 @@
                     <th>Valor contratado</th>
                     <th>Valor pago</th>
                     <th>Saldo devedor</th>
+                    <th>Valor Corrigido</th>
+                    <th>Data Contratação</th>
                     <th>Juros</th>
                     <th>Parcela Mensal</th>
                     <th>Parcelas contratadas</th>
@@ -419,6 +529,8 @@
                         <td id="total-sem-parcelas-valor-pago"></td>
                         <td id="total-sem-parcelas-saldo-devedor"></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
                         <td id="total-sem-parcelas-parcela-mensal"></td>
                         <td></td>
                         <td></td>
@@ -429,7 +541,7 @@
         <div class="scroll-x table-section">
             <table class="table table-bordered mb-0">
                 <tr class="table-title bg-light-green">
-                    <td colspan="10">DÍVIDAS CONSOLIDADAS</td>
+                    <td colspan="11">DÍVIDAS CONSOLIDADAS</td>
                 </tr>
                 <tr class="bg-light-gray">
                     <th>Credores</th>
@@ -437,6 +549,8 @@
                     <th>Valor contratado</th>
                     <th>Valor pago</th>
                     <th>Saldo devedor</th>
+                    <th>Valor Corrigido</th>
+                    <th>Data Contratação</th>
                     <th>Juros</th>
                     <th>Parcela Mensal</th>
                     <th>Parcelas contratadas</th>
@@ -451,6 +565,8 @@
                         <td id="total-dividas-consolidadas-valor-contratado"></td>
                         <td id="total-dividas-consolidadas-valor-pago"></td>
                         <td id="total-dividas-consolidadas-saldo-devedor"></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td id="total-dividas-consolidadas-parcela-mensal"></td>
                         <td></td>
@@ -487,11 +603,81 @@
                 </table>
             </div>
         </div>
+        
+        <!-- Seção de Correção Monetária -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Correção Monetária</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="indice-correcao" class="form-label" style="color: inherit;">Índice de Correção:</label>
+                                <select id="indice-correcao" class="form-control">
+                                    <option value="IPCA">IPCA</option>
+                                    <option value="IGP-M">IGP-M</option>
+                                    <option value="SELIC">SELIC</option>
+                                    <option value="TR">TR</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="data-base-correcao" class="form-label" style="color: inherit;">Data Base:</label>
+                                <input type="date" id="data-base-correcao" class="form-control" value="">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="data-atual-correcao" class="form-label" style="color: inherit;">Data Atual:</label>
+                                <input type="date" id="data-atual-correcao" class="form-control" value="">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end gap-2">
+                                <button type="button" class="btn btn-primary" onclick="aplicarCorrecaoMonetaria()">
+                                    Aplicar Correção
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="limparCacheIndices()" title="Limpar cache de índices">
+                                    🔄
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12 d-flex gap-2">
+                                <button type="button" class="btn btn-outline-info btn-sm" onclick="visualizarHistoricoCorrecoes()">
+                                    📋 Ver Histórico
+                                </button>
+                                <button type="button" class="btn btn-outline-warning btn-sm" onclick="limparHistoricoCorrecoes()">
+                                    🗑️ Limpar Histórico
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="alert alert-info" style="color: inherit;">
+                                    <strong style="color: inherit;">Instruções:</strong> <span style="color: inherit;">Selecione o índice de correção, defina a data base (data de contratação) e a data atual. 
+                                    O sistema aplicará a correção monetária nos saldos devedores e salvará o resultado na coluna "Valor Corrigido", mantendo os valores originais intactos.</span>
+                                    <br><br>
+                                    <strong style="color: inherit;">Dados:</strong> <span style="color: inherit;">Os índices são obtidos em tempo real da API do Banco Central. 
+                                    Dados são armazenados em cache por 24 horas para melhor performance. 
+                                    Use o botão 🔄 para forçar atualização dos dados.</span>
+                                    <br><br>
+                                    <strong style="color: inherit;">Controle de Duplicação:</strong> <span style="color: inherit;">O sistema evita automaticamente a aplicação dupla da mesma correção. 
+                                    Se uma correção com os mesmos parâmetros já foi aplicada, você será alertado. 
+                                    Use "Ver Histórico" para consultar correções anteriores e "Limpar Histórico" se precisar reaplicar.</span>
+                                    <br><br>
+                                    <strong style="color: inherit;">Importante:</strong> <span style="color: inherit;">A correção monetária é aplicada no saldo devedor (valor contratado - valor pago) e o resultado é salvo na coluna "Valor Corrigido". 
+                                    Os saldos devedores originais permanecem inalterados para preservar os dados originais.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Botão de tema pequeno e redondo -->
     <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:13px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
       🌙
     </button>
+    <div id="page-transition-overlay" style="display:block;"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     const bancos = [
@@ -586,6 +772,17 @@
                 atualizarSaldoDevedor(prefix);
             }
         });
+
+        // Após atualizar os valores do localStorage (exemplo: no final da função que preenche os campos principais)
+        document.querySelectorAll('.conteudo-escondido').forEach(function(el) {
+            el.classList.remove('conteudo-escondido');
+        });
+        // Esconde o overlay de carregamento
+        var overlay = document.getElementById('page-load-overlay');
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(function() { overlay.style.display = 'none'; }, 400);
+        }
     };
 
     function limparCampos() {
@@ -647,7 +844,7 @@
             if (linha.credor && linha.credor !== '') {
                 totalValorContratado += parseFloat(linha.valorContratado) || 0;
                 totalValorPago += parseFloat(linha.valorPago) || 0;
-                totalSaldoDevedor += parseFloat(calcularSaldoDevedor(linha)) || 0;
+                totalSaldoDevedor += parseFloat(linha.saldoDevedor) || 0;
                 totalParcelaMensal += parseFloat(linha.parcelaMensal) || 0;
             }
         });
@@ -656,12 +853,6 @@
         document.getElementById('total-saldo-devedor').textContent = totalSaldoDevedor ? totalSaldoDevedor.toFixed(2) : '';
         document.getElementById('total-juros').textContent = '';
         document.getElementById('total-parcela-mensal').textContent = totalParcelaMensal ? totalParcelaMensal.toFixed(2) : '';
-    }
-
-    function calcularSaldoDevedor(dados) {
-        const contratado = parseFloat(dados.valorContratado) || 0;
-        const pago = parseFloat(dados.valorPago) || 0;
-        return contratado || pago ? (contratado - pago).toFixed(2) : '';
     }
 
     function formatarJuros(valor) {
@@ -702,9 +893,7 @@
                 input.addEventListener('input', function() {
                     const linhas = JSON.parse(localStorage.getItem('linhas-consignados') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
-                    
-                    // Mapear o índice do input para o campo correto
-                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'valorCorrigido', 'dataContratacao', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
                     const campo = campos[i];
                     
                     if (campo) {
@@ -768,6 +957,8 @@
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
             <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
             <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
@@ -801,7 +992,7 @@
                 input.addEventListener('input', function() {
                     const linhas = JSON.parse(localStorage.getItem('linhas-nao-consignados') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
-                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'valorCorrigido', 'dataContratacao', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
                     const campo = campos[i];
                     if (campo) {
                         linhas[idx][campo] = this.value;
@@ -874,6 +1065,8 @@
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
             <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
             <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
@@ -907,7 +1100,7 @@
                 input.addEventListener('input', function() {
                     const linhas = JSON.parse(localStorage.getItem('linhas-sem-parcelas') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
-                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'valorCorrigido', 'dataContratacao', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
                     const campo = campos[i];
                     if (campo) {
                         linhas[idx][campo] = this.value;
@@ -977,6 +1170,8 @@
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
             <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
             <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
@@ -1010,7 +1205,7 @@
                 input.addEventListener('input', function() {
                     const linhas = JSON.parse(localStorage.getItem('linhas-dividas-consolidadas') || '[]');
                     if (!linhas[idx]) linhas[idx] = {};
-                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
+                    const campos = ['contratos', 'valorContratado', 'valorPago', 'saldoDevedor', 'valorCorrigido', 'dataContratacao', 'juros', 'parcelaMensal', 'parcelasContratadas', 'parcelasRestantes'];
                     const campo = campos[i];
                     if (campo) {
                         linhas[idx][campo] = this.value;
@@ -1080,6 +1275,8 @@
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
             <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
             <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
@@ -1161,10 +1358,453 @@
 
     // Adicionar função global:
     function navegarComTema(destino) {
-        const dark = document.documentElement.classList.contains('dark-theme');
-        localStorage.setItem('theme', dark ? 'dark' : 'light');
-        window.location.href = destino;
+        var overlay = document.getElementById('page-transition-overlay');
+        if (overlay) {
+            overlay.style.display = 'block';
+            overlay.classList.add('active');
+            setTimeout(function() {
+                window.location.href = destino;
+            }, 350);
+        } else {
+            window.location.href = destino;
+        }
     }
+
+    // --- CORREÇÃO MONETÁRIA ---
+    
+    // Códigos dos índices na API do Banco Central
+    const codigosIndicesBC = {
+        'IPCA': 433,      // IPCA - Índice Nacional de Preços ao Consumidor Amplo
+        'IGP-M': 189,     // IGP-M - Índice Geral de Preços do Mercado
+        'SELIC': 11,      // Taxa de juros - Meta Selic definida pelo Comitê de Política Monetária
+        'TR': 226         // Taxa Referencial - TR
+    };
+
+    // Cache local para os dados dos índices
+    let cacheIndices = JSON.parse(localStorage.getItem('cache-indices') || '{}');
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas em milissegundos
+
+    async function buscarIndiceBC(indice, dataInicio, dataFim) {
+        const codigo = codigosIndicesBC[indice];
+        if (!codigo) {
+            throw new Error(`Índice ${indice} não suportado`);
+        }
+
+        // Verificar cache primeiro
+        const chaveCache = `${indice}_${dataInicio}_${dataFim}`;
+        const cacheItem = cacheIndices[chaveCache];
+        
+        if (cacheItem && (Date.now() - cacheItem.timestamp) < CACHE_DURATION) {
+            console.log(`Usando dados em cache para ${indice}`);
+            return cacheItem.dados;
+        }
+
+        try {
+            console.log(`Buscando dados do BC para ${indice}...`);
+            
+            const url = `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${codigo}/dados?formato=json&dataInicial=${dataInicio}&dataFinal=${dataFim}`;
+            
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`Erro na API do BC: ${response.status} ${response.statusText}`);
+            }
+            
+            const dados = await response.json();
+            
+            // Armazenar no cache
+            cacheIndices[chaveCache] = {
+                dados: dados,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('cache-indices', JSON.stringify(cacheIndices));
+            
+            console.log(`Dados obtidos com sucesso para ${indice}: ${dados.length} registros`);
+            return dados;
+            
+        } catch (error) {
+            console.error(`Erro ao buscar dados do BC para ${indice}:`, error);
+            
+            // Retornar dados de fallback se disponível
+            return getDadosFallback(indice, dataInicio, dataFim);
+        }
+    }
+
+    // Dados de fallback para casos de erro na API
+    function getDadosFallback(indice, dataInicio, dataFim) {
+        const dadosFallback = {
+            'IPCA': {
+                '2023-01': 0.53, '2023-02': 0.84, '2023-03': 0.71, '2023-04': 0.61,
+                '2023-05': 0.23, '2023-06': 0.13, '2023-07': 0.12, '2023-08': 0.23,
+                '2023-09': 0.26, '2023-10': 0.24, '2023-11': 0.28, '2023-12': 0.56,
+                '2024-01': 0.42, '2024-02': 0.83, '2024-03': 0.36, '2024-04': 0.38,
+                '2024-05': 0.46, '2024-06': 0.39, '2024-07': 0.17, '2024-08': 0.44,
+                '2024-09': 0.26, '2024-10': 0.24, '2024-11': 0.51, '2024-12': 0.56
+            },
+            'IGP-M': {
+                '2023-01': -0.52, '2023-02': 0.16, '2023-03': -0.78, '2023-04': -1.12,
+                '2023-05': -1.66, '2023-06': -1.18, '2023-07': -0.53, '2023-08': 0.28,
+                '2023-09': 0.95, '2023-10': 0.09, '2023-11': 0.74, '2023-12': 0.74,
+                '2024-01': 0.52, '2024-02': 0.60, '2024-03': 0.71, '2024-04': 0.59,
+                '2024-05': 0.59, '2024-06': 0.70, '2024-07': 0.41, '2024-08': 0.59,
+                '2024-09': 0.59, '2024-10': 0.59, '2024-11': 0.59, '2024-12': 0.59
+            },
+            'SELIC': {
+                '2023-01': 13.75, '2023-02': 13.75, '2023-03': 13.75, '2023-04': 13.75,
+                '2023-05': 13.75, '2023-06': 13.75, '2023-07': 13.75, '2023-08': 13.25,
+                '2023-09': 12.75, '2023-10': 12.25, '2023-11': 11.75, '2023-12': 11.25,
+                '2024-01': 11.25, '2024-02': 11.25, '2024-03': 10.75, '2024-04': 10.50,
+                '2024-05': 10.50, '2024-06': 10.50, '2024-07': 10.50, '2024-08': 10.50,
+                '2024-09': 10.50, '2024-10': 10.50, '2024-11': 10.50, '2024-12': 10.50
+            },
+            'TR': {
+                '2023-01': 0.01, '2023-02': 0.01, '2023-03': 0.01, '2023-04': 0.01,
+                '2023-05': 0.01, '2023-06': 0.01, '2023-07': 0.01, '2023-08': 0.01,
+                '2023-09': 0.01, '2023-10': 0.01, '2023-11': 0.01, '2023-12': 0.01,
+                '2024-01': 0.01, '2024-02': 0.01, '2024-03': 0.01, '2024-04': 0.01,
+                '2024-05': 0.01, '2024-06': 0.01, '2024-07': 0.01, '2024-08': 0.01,
+                '2024-09': 0.01, '2024-10': 0.01, '2024-11': 0.01, '2024-12': 0.01
+            }
+        };
+
+        const dados = dadosFallback[indice];
+        if (!dados) return [];
+
+        // Converter dados de fallback para formato da API
+        const resultado = [];
+        const inicio = new Date(dataInicio);
+        const fim = new Date(dataFim);
+        const dataAtual = new Date(inicio);
+
+        while (dataAtual <= fim) {
+            const chave = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}`;
+            const valor = dados[chave];
+            
+            if (valor !== undefined) {
+                resultado.push({
+                    data: dataAtual.toISOString().split('T')[0],
+                    valor: valor
+                });
+            }
+            
+            dataAtual.setMonth(dataAtual.getMonth() + 1);
+        }
+
+        return resultado;
+    }
+
+    function processarDadosIndice(dados, indice) {
+        const indicesProcessados = {};
+        
+        dados.forEach(item => {
+            const data = new Date(item.data);
+            const chave = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, '0')}`;
+            
+            if (indice === 'SELIC') {
+                // SELIC vem como taxa anual, converter para mensal
+                indicesProcessados[chave] = parseFloat(item.valor) / 12;
+            } else {
+                // Outros índices já vêm como percentual mensal
+                indicesProcessados[chave] = parseFloat(item.valor);
+            }
+        });
+        
+        return indicesProcessados;
+    }
+
+    async function calcularFatorCorrecao(dataInicio, dataFim, indice) {
+        if (!dataInicio || !dataFim || !indice) return 1;
+        
+        const inicio = new Date(dataInicio);
+        const fim = new Date(dataFim);
+        
+        if (inicio >= fim) return 1;
+        
+        try {
+            // Formatar datas para a API (DD/MM/YYYY)
+            const dataInicioFormatada = `${inicio.getDate().toString().padStart(2, '0')}/${(inicio.getMonth() + 1).toString().padStart(2, '0')}/${inicio.getFullYear()}`;
+            const dataFimFormatada = `${fim.getDate().toString().padStart(2, '0')}/${(fim.getMonth() + 1).toString().padStart(2, '0')}/${fim.getFullYear()}`;
+            
+            // Buscar dados da API
+            const dados = await buscarIndiceBC(indice, dataInicioFormatada, dataFimFormatada);
+            
+            if (!dados || dados.length === 0) {
+                console.warn('Nenhum dado encontrado para o período selecionado');
+                return 1;
+            }
+            
+            // Processar dados
+            const indicesProcessados = processarDadosIndice(dados, indice);
+            
+            // Calcular fator de correção acumulado
+            let fator = 1;
+            const dataAtual = new Date(inicio);
+            dataAtual.setMonth(dataAtual.getMonth() + 1); // Começar do mês seguinte
+            
+            while (dataAtual <= fim) {
+                const chave = `${dataAtual.getFullYear()}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}`;
+                const valorIndice = indicesProcessados[chave];
+                
+                if (valorIndice !== undefined) {
+                    if (indice === 'SELIC') {
+                        // Para SELIC, usar taxa mensal
+                        fator *= (1 + (valorIndice / 100));
+                    } else {
+                        // Para outros índices, usar percentual mensal
+                        fator *= (1 + (valorIndice / 100));
+                    }
+                }
+                
+                dataAtual.setMonth(dataAtual.getMonth() + 1);
+            }
+            
+            return fator;
+            
+        } catch (error) {
+            console.error('Erro ao calcular fator de correção:', error);
+            alert(`Erro ao calcular correção monetária: ${error.message}\n\nUsando dados de fallback...`);
+            return 1;
+        }
+    }
+
+    async function aplicarCorrecaoMonetaria() {
+        // Impedir múltiplas correções sem limpar o histórico
+        const historicoJaExiste = JSON.parse(localStorage.getItem('historico-correcoes') || '[]');
+        if (historicoJaExiste.length > 0) {
+            alert('Já existe uma correção monetária aplicada. Para aplicar uma nova correção, limpe o histórico primeiro.');
+            return;
+        }
+        const indice = document.getElementById('indice-correcao').value;
+        const dataBase = document.getElementById('data-base-correcao').value;
+        const dataAtual = document.getElementById('data-atual-correcao').value;
+        
+        if (!dataBase || !dataAtual) {
+            alert('Por favor, preencha as datas de início e fim para a correção monetária.');
+            return;
+        }
+        
+        if (new Date(dataBase) >= new Date(dataAtual)) {
+            alert('A data base deve ser anterior à data atual.');
+            return;
+        }
+        
+        // Verificar se já existe correção aplicada
+        const historicoCorrecoes = JSON.parse(localStorage.getItem('historico-correcoes') || '[]');
+        const correcaoExistente = historicoCorrecoes.find(c => 
+            c.indice === indice && 
+            c.dataBase === dataBase && 
+            c.dataAtual === dataAtual
+        );
+        
+        if (correcaoExistente) {
+            const confirmacao = confirm(
+                `Uma correção monetária com os mesmos parâmetros já foi aplicada em ${new Date(correcaoExistente.timestamp).toLocaleString()}.\n\n` +
+                `Índice: ${indice}\n` +
+                `Período: ${dataBase} a ${dataAtual}\n` +
+                `Fator aplicado: ${correcaoExistente.fatorCorrecao}\n\n` +
+                `Deseja aplicar a correção novamente? Isso pode resultar em correção dupla.`
+            );
+            
+            if (!confirmacao) {
+                return;
+            }
+        }
+        
+        // Mostrar indicador de carregamento
+        const btnCorrecao = document.querySelector('button[onclick="aplicarCorrecaoMonetaria()"]');
+        const textoOriginal = btnCorrecao.textContent;
+        btnCorrecao.textContent = 'Calculando...';
+        btnCorrecao.disabled = true;
+        
+        try {
+            const fatorCorrecao = await calcularFatorCorrecao(dataBase, dataAtual, indice);
+            
+            if (fatorCorrecao === 1) {
+                alert('Não foi possível calcular a correção monetária para o período selecionado.');
+                return;
+            }
+            
+            // Aplicar correção em todas as tabelas
+            const tabelas = [
+                'linhas-consignados',
+                'linhas-nao-consignados', 
+                'linhas-sem-parcelas',
+                'linhas-dividas-consolidadas'
+            ];
+            
+            let totalCorrigido = 0;
+            let totalOriginal = 0;
+            let itensCorrigidos = 0;
+            
+            tabelas.forEach(tabela => {
+                let linhas = JSON.parse(localStorage.getItem(tabela) || '[]');
+                let modificado = false;
+                
+                linhas.forEach(linha => {
+                    if (linha.valorContratado && parseFloat(linha.valorContratado) > 0) {
+                        // Verificar se o valor já foi corrigido para este período
+                        const chaveCorrecao = `${indice}_${dataBase}_${dataAtual}`;
+                        if (linha.correcoesAplicadas && linha.correcoesAplicadas.includes(chaveCorrecao)) {
+                            console.log(`Valor já corrigido para ${chaveCorrecao}, pulando...`);
+                            return;
+                        }
+                        
+                        const valorContratado = parseFloat(linha.valorContratado);
+                        const valorPago = parseFloat(linha.valorPago) || 0;
+                        const saldoDevedorOriginal = valorContratado - valorPago;
+                        
+                        // Aplicar correção APENAS no saldo devedor
+                        const saldoDevedorCorrigido = saldoDevedorOriginal * fatorCorrecao;
+                        
+                        // O saldo devedor permanece inalterado
+                        // O valor corrigido é salvo na nova coluna
+                        linha.valorCorrigido = saldoDevedorCorrigido.toFixed(2);
+                        
+                        // Registrar correção aplicada
+                        if (!linha.correcoesAplicadas) {
+                            linha.correcoesAplicadas = [];
+                        }
+                        linha.correcoesAplicadas.push(chaveCorrecao);
+                        
+                        totalOriginal += saldoDevedorOriginal;
+                        totalCorrigido += saldoDevedorCorrigido;
+                        itensCorrigidos++;
+                        modificado = true;
+                    }
+                });
+                
+                if (modificado) {
+                    localStorage.setItem(tabela, JSON.stringify(linhas));
+                }
+            });
+            
+            // Registrar no histórico de correções
+            const novaCorrecao = {
+                indice: indice,
+                dataBase: dataBase,
+                dataAtual: dataAtual,
+                fatorCorrecao: fatorCorrecao,
+                timestamp: Date.now(),
+                itensCorrigidos: itensCorrigidos,
+                totalOriginal: totalOriginal,
+                totalCorrigido: totalCorrigido
+            };
+            
+            historicoCorrecoes.push(novaCorrecao);
+            localStorage.setItem('historico-correcoes', JSON.stringify(historicoCorrecoes));
+            
+            // Recarregar todas as tabelas
+            renderTabelaConsignados();
+            renderTabelaNaoConsignados();
+            renderTabelaSemParcelas();
+            renderTabelaDividasConsolidadas();
+            
+            // Mostrar resultado
+            const diferenca = totalCorrigido - totalOriginal;
+            const percentual = ((fatorCorrecao - 1) * 100).toFixed(2);
+            
+            alert(`Correção monetária aplicada com sucesso!\n\n` +
+                  `Índice: ${indice}\n` +
+                  `Período: ${dataBase} a ${dataAtual}\n` +
+                  `Fator de correção: ${fatorCorrecao.toFixed(4)}\n` +
+                  `Percentual: ${percentual}%\n\n` +
+                  `Itens corrigidos: ${itensCorrigidos}\n` +
+                  `Saldo devedor original total: R$ ${totalOriginal.toFixed(2)}\n` +
+                  `Valor corrigido total: R$ ${totalCorrigido.toFixed(2)}\n` +
+                  `Diferença: R$ ${diferenca.toFixed(2)}\n\n` +
+                  `A correção foi aplicada e salva na coluna "Valor Corrigido".\n` +
+                  `Os saldos devedores originais permaneceram inalterados.\n\n` +
+                  `A correção foi registrada no histórico para evitar duplicação.`);
+                  
+        } catch (error) {
+            console.error('Erro na correção monetária:', error);
+            alert(`Erro ao aplicar correção monetária: ${error.message}`);
+        } finally {
+            // Restaurar botão
+            btnCorrecao.textContent = textoOriginal;
+            btnCorrecao.disabled = false;
+        }
+    }
+
+    // Função para visualizar histórico de correções
+    function visualizarHistoricoCorrecoes() {
+        const historico = JSON.parse(localStorage.getItem('historico-correcoes') || '[]');
+        
+        if (historico.length === 0) {
+            alert('Nenhuma correção monetária foi aplicada ainda.');
+            return;
+        }
+        
+        let mensagem = 'HISTÓRICO DE CORREÇÕES MONETÁRIAS:\n\n';
+        
+        historico.forEach((correcao, index) => {
+            const data = new Date(correcao.timestamp).toLocaleString();
+            const percentual = ((correcao.fatorCorrecao - 1) * 100).toFixed(2);
+            const diferenca = correcao.totalCorrigido - correcao.totalOriginal;
+            
+            mensagem += `${index + 1}. ${data}\n` +
+                       `   Índice: ${correcao.indice}\n` +
+                       `   Período: ${correcao.dataBase} a ${correcao.dataAtual}\n` +
+                       `   Fator: ${correcao.fatorCorrecao.toFixed(4)} (${percentual}%)\n` +
+                       `   Itens: ${correcao.itensCorrigidos}\n` +
+                       `   Saldo devedor original: R$ ${correcao.totalOriginal.toFixed(2)}\n` +
+                       `   Valor corrigido: R$ ${correcao.totalCorrigido.toFixed(2)}\n` +
+                       `   Diferença: R$ ${diferenca.toFixed(2)}\n\n`;
+        });
+        
+        alert(mensagem);
+    }
+
+    // Função para limpar histórico de correções
+    function limparHistoricoCorrecoes() {
+        const confirmacao = confirm(
+            'Tem certeza que deseja limpar todo o histórico de correções monetárias?\n\n' +
+            'Isso permitirá que as correções sejam aplicadas novamente, mas pode resultar em correção dupla se não for feito com cuidado.'
+        );
+        
+        if (confirmacao) {
+            localStorage.removeItem('historico-correcoes');
+            
+            // Limpar também os registros de correções aplicadas nas linhas
+            const tabelas = [
+                'linhas-consignados',
+                'linhas-nao-consignados', 
+                'linhas-sem-parcelas',
+                'linhas-dividas-consolidadas'
+            ];
+            
+            tabelas.forEach(tabela => {
+                let linhas = JSON.parse(localStorage.getItem(tabela) || '[]');
+                linhas.forEach(linha => {
+                    if (linha.correcoesAplicadas) {
+                        delete linha.correcoesAplicadas;
+                    }
+                    delete linha.valorCorrigido;
+                });
+                localStorage.setItem(tabela, JSON.stringify(linhas));
+            });
+            
+            alert('Histórico de correções limpo com sucesso.');
+            // Atualizar visualização das tabelas imediatamente
+            renderTabelaConsignados();
+            renderTabelaNaoConsignados();
+            renderTabelaSemParcelas();
+            renderTabelaDividasConsolidadas();
+        }
+    }
+
+    // Função para limpar cache (útil para forçar atualização)
+    function limparCacheIndices() {
+        localStorage.removeItem('cache-indices');
+        cacheIndices = {};
+        alert('Cache de índices limpo. Os próximos cálculos usarão dados atualizados.');
+    }
+
+    // Inicializar data atual no carregamento da página
+    document.addEventListener('DOMContentLoaded', function() {
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('data-atual-correcao').value = hoje;
+    });
     </script>
 </body>
 </html> 

@@ -10,8 +10,7 @@
             background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
             background-size: cover;
         }
-        .container { max-width: 1200px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        h1 { color: #2d5c2f; margin-bottom: 20px; }
+        .container { max-width: 1200px; margin: 30px auto; background: #ffffff00; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 248, 74, 0.263); }        h1 { color: #2d5c2f; margin-bottom: 20px; }
         table { font-size: 0.88rem; }
         th, td { padding: 0.3em 0.5em !important; }
         .table-bordered th, .table-bordered td { border: 1px solid #333 !important; }
@@ -210,6 +209,9 @@
                 border-radius: 0 !important;
                 padding: 0 !important;
             }
+            @page {
+                size: A4 landscape;
+            }
         }
         html.dark-theme input[type="date"],
         body.dark-theme input[type="date"] {
@@ -232,7 +234,7 @@
             color: #bbb !important;
         }
         html.dark-theme input[type="date"]::-moz-placeholder,
-        body.dark-theme input[type="date"]::-moz-placeholder {
+        html.dark-theme input[type="date"]::-moz-placeholder {
             color: #bbb !important;
         }
         html.dark-theme input[type="date"]::-webkit-input-placeholder,
@@ -285,6 +287,49 @@
         html.dark-theme .date-calendar-icon {
             display: block;
         }
+        .conteudo-escondido { visibility: hidden; }
+        #page-load-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff;
+            z-index: 99999;
+            transition: opacity 0.3s;
+        }
+        html.dark-theme #page-load-overlay, body.dark-theme #page-load-overlay {
+            background: #181a1b;
+        }
+        #page-load-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #page-transition-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('SuperEndBackgroundTransparente.png') no-repeat center center fixed;
+            background-size: cover;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.07s;
+        }
+        html.dark-theme #page-transition-overlay, body.dark-theme #page-transition-overlay {
+            background: url('SuperEndBackgroundTransparente-Dark.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+        #page-transition-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        /* Remover duplicatas e garantir destaque para .bg-medium-gray no tema escuro */
+        .bg-medium-gray {
+            background: #e0e0e07d !important;
+            color: #000000 !important;
+        }
+        body.dark-theme .bg-medium-gray {
+            background: #4d4d4d88 !important;
+            color: #fff !important;
+            font-weight: bold;
+        }
     </style>
     <style>
         table.dark-theme tr {
@@ -312,15 +357,6 @@
         table.table.dark-theme,
         table.dark-theme {
             background: rgba(35,39,43,0.65) !important;
-        }
-        table.table.table-bordered.dark-theme th,
-        table.table.table-bordered.dark-theme td,
-        table.table.dark-theme th,
-        table.table.dark-theme td,
-        table.dark-theme th,
-        table.dark-theme td {
-            background: rgba(35,39,43,0.15) !important;
-            color: #fff !important;
         }
         table.table.table-bordered.dark-theme tr,
         table.table.dark-theme tr,
@@ -354,6 +390,12 @@
         }
     } catch(e){}
     </script>
+    <script>
+    // Garante que, se não houver tema salvo, o padrão será claro
+    if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', 'light');
+    }
+    </script>
 </head>
 <body>
     <!--Barra de navegação superior-->
@@ -369,7 +411,7 @@
         </div>
     </div>
     <div id="secao-plano">
-    <div class="container"; style="background: #ffffff00;">
+    <div class="container conteudo-escondido">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:30px; gap:16px;">
             <h1 style="margin:0;">Plano de Pagamento</h1>
             <div style="display:flex; gap:10px; align-items:center;">
@@ -512,6 +554,10 @@
         🌙
     </button>
 
+    <div id="page-load-overlay"></div>
+
+    <div id="page-transition-overlay" style="display:block;"></div>
+
     <script>
     const bancos = [
         'Itaú', 'Bradesco', 'BMG RMG', 'Agibank', 'Banco do Brasil', 'Santander', 'Mercantil do Brasil', 'Sicob'
@@ -546,7 +592,15 @@
                     linhasPreenchidas++;
                     const valorContratado = parseFloat(linha.valorContratado) || 0;
                     const valorPago = parseFloat(linha.valorPago) || 0;
-                    const saldoDevedor = parseFloat(linha.saldoDevedor) || 0;
+                    // NOVA LÓGICA: saldoDevedor considera valorCorrigido se existir e for diferente de zero
+                    const saldoDevedor = (() => {
+                        const sd = parseFloat(linha.saldoDevedor) || 0;
+                        const vc = parseFloat(linha.valorCorrigido);
+                        if (!isNaN(vc) && vc !== 0) {
+                            return vc;
+                        }
+                        return sd;
+                    })();
                     const pctPago = saldoDevedor > 0 ? (valorPago / (valorPago + saldoDevedor) * 100).toFixed(2) : '0.00';
                     tbody.innerHTML += `
                         <tr>
@@ -833,7 +887,7 @@
                 body.innerHTML += `<tr>${tds}</tr>`;
             }
             // Build footer (totals)
-            let tfs = '<tr><td>Total</td>';
+            let tfs = `<tr><td>Total em ${qtdeParcelas}x</td>`;
             let totalGeral = 0;
             rows.forEach(row => {
                 const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
@@ -1034,6 +1088,9 @@
         if(page.includes('geral')) document.getElementById('btn-geral').classList.add('active');
         if(page.includes('plano-de-pagamento')) document.getElementById('btn-plano').classList.add('active');
         if(page.includes('panorama')) document.getElementById('btn-panorama').classList.add('active');
+
+        // Exibe o conteúdo após o carregamento dos dados principais
+        exibirConteudoPlano();
     });
 
     // Atualizar quando o valor mudar em outra página
@@ -1171,7 +1228,7 @@
                 body.innerHTML += `<tr>${tds}</tr>`;
             }
             // Build footer (totals)
-            let tfs = '<tr><td>Total</td>';
+            let tfs = `<tr><td>Total em ${qtdeParcelas}x</td>`;
             let totalGeral = 0;
             rows.forEach(row => {
                 const saldoDevedor = parseFloat(row.cells[5].textContent.replace(/[^\d,]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
@@ -1274,9 +1331,16 @@
 
     // Adicionar função global:
     function navegarComTema(destino) {
-        const dark = document.documentElement.classList.contains('dark-theme');
-        localStorage.setItem('theme', dark ? 'dark' : 'light');
-        window.location.href = destino;
+        var overlay = document.getElementById('page-transition-overlay');
+        if (overlay) {
+            overlay.style.display = 'block';
+            overlay.classList.add('active');
+            setTimeout(function() {
+                window.location.href = destino;
+            }, 350);
+        } else {
+            window.location.href = destino;
+        }
     }
 
     // Torna o SVG clicável para abrir o calendário
@@ -1286,6 +1350,24 @@
         calendarIcon.addEventListener('click', function() {
             dateInput.showPicker ? dateInput.showPicker() : dateInput.focus();
         });
+    }
+
+    // Exibe o conteúdo após o carregamento dos dados principais
+    function exibirConteudoPlano() {
+        document.querySelectorAll('.conteudo-escondido').forEach(function(el) {
+            el.classList.remove('conteudo-escondido');
+        });
+        // Esconde o overlay de carregamento
+        var overlay = document.getElementById('page-load-overlay');
+        if (overlay) {
+            overlay.classList.add('hide');
+            setTimeout(function() { overlay.style.display = 'none'; }, 400);
+        }
+        // Após atualizar os valores e remover .conteudo-escondido
+        if (overlay) {
+            overlay.classList.remove('active');
+            setTimeout(function() { overlay.style.display = 'none'; }, 400);
+        }
     }
     </script>
 </body>
