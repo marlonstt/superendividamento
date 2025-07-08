@@ -914,6 +914,25 @@
                         
                         localStorage.setItem('linhas-consignados', JSON.stringify(linhas));
                         atualizarTotaisConsignados();
+                        if (campo === 'juros') {
+                            // Atualizar apenas os campos de exibição na linha
+                            let valorCorrigido = parseFloat(linhas[idx].valorCorrigido);
+                            let saldoDevedor = parseFloat(linhas[idx].saldoDevedor) || 0;
+                            let juros = parseFloat(this.value) || 0;
+                            let valorCorrigidoExibicao = '';
+                            let saldoDevedorExibicao = '';
+                            if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+                                valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+                                saldoDevedorExibicao = saldoDevedor.toFixed(2);
+                            } else {
+                                saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+                                valorCorrigidoExibicao = '';
+                            }
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            const corrigidoInput = tr.querySelector('.valor-corrigido');
+                            if (saldoInput) saldoInput.value = saldoDevedorExibicao;
+                            if (corrigidoInput) corrigidoInput.value = valorCorrigidoExibicao;
+                        }
                     }
                 });
             });
@@ -951,15 +970,29 @@
     }
 
     function criarLinhaConsignado(dados = {}) {
+        // ... existing code ...
+        // Cálculo ajustado para exibição
+        let valorCorrigido = parseFloat(dados.valorCorrigido);
+        let saldoDevedor = parseFloat(dados.saldoDevedor) || 0;
+        let juros = parseFloat(dados.juros) || 0;
+        let valorCorrigidoExibicao = '';
+        let saldoDevedorExibicao = '';
+        if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+            valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+            saldoDevedorExibicao = saldoDevedor.toFixed(2);
+        } else {
+            saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+            valorCorrigidoExibicao = '';
+        }
         return `<tr>
             <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
             <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
-            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
-            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${saldoDevedorExibicao}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${valorCorrigidoExibicao}" readonly></td>
             <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
-            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control juros-input" type="number" step="0.01" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
@@ -1007,6 +1040,25 @@
                         }
                         localStorage.setItem('linhas-nao-consignados', JSON.stringify(linhas));
                         atualizarTotaisNaoConsignados();
+                        if (campo === 'juros') {
+                            // Atualizar apenas os campos de exibição na linha
+                            let valorCorrigido = parseFloat(linhas[idx].valorCorrigido);
+                            let saldoDevedor = parseFloat(linhas[idx].saldoDevedor) || 0;
+                            let juros = parseFloat(this.value) || 0;
+                            let valorCorrigidoExibicao = '';
+                            let saldoDevedorExibicao = '';
+                            if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+                                valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+                                saldoDevedorExibicao = saldoDevedor.toFixed(2);
+                            } else {
+                                saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+                                valorCorrigidoExibicao = '';
+                            }
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            const corrigidoInput = tr.querySelector('.valor-corrigido');
+                            if (saldoInput) saldoInput.value = saldoDevedorExibicao;
+                            if (corrigidoInput) corrigidoInput.value = valorCorrigidoExibicao;
+                        }
                     }
                 });
             });
@@ -1059,15 +1111,27 @@
     }
 
     function criarLinhaNaoConsignado(dados = {}) {
+        let valorCorrigido = parseFloat(dados.valorCorrigido);
+        let saldoDevedor = parseFloat(dados.saldoDevedor) || 0;
+        let juros = parseFloat(dados.juros) || 0;
+        let valorCorrigidoExibicao = '';
+        let saldoDevedorExibicao = '';
+        if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+            valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+            saldoDevedorExibicao = saldoDevedor.toFixed(2);
+        } else {
+            saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+            valorCorrigidoExibicao = '';
+        }
         return `<tr>
             <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
             <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
-            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
-            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${saldoDevedorExibicao}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${valorCorrigidoExibicao}" readonly></td>
             <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
-            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control juros-input" type="number" step="0.01" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
@@ -1115,6 +1179,25 @@
                         }
                         localStorage.setItem('linhas-sem-parcelas', JSON.stringify(linhas));
                         atualizarTotaisSemParcelas();
+                        if (campo === 'juros') {
+                            // Atualizar apenas os campos de exibição na linha
+                            let valorCorrigido = parseFloat(linhas[idx].valorCorrigido);
+                            let saldoDevedor = parseFloat(linhas[idx].saldoDevedor) || 0;
+                            let juros = parseFloat(this.value) || 0;
+                            let valorCorrigidoExibicao = '';
+                            let saldoDevedorExibicao = '';
+                            if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+                                valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+                                saldoDevedorExibicao = saldoDevedor.toFixed(2);
+                            } else {
+                                saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+                                valorCorrigidoExibicao = '';
+                            }
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            const corrigidoInput = tr.querySelector('.valor-corrigido');
+                            if (saldoInput) saldoInput.value = saldoDevedorExibicao;
+                            if (corrigidoInput) corrigidoInput.value = valorCorrigidoExibicao;
+                        }
                     }
                 });
             });
@@ -1164,15 +1247,27 @@
     }
 
     function criarLinhaSemParcela(dados = {}) {
+        let valorCorrigido = parseFloat(dados.valorCorrigido);
+        let saldoDevedor = parseFloat(dados.saldoDevedor) || 0;
+        let juros = parseFloat(dados.juros) || 0;
+        let valorCorrigidoExibicao = '';
+        let saldoDevedorExibicao = '';
+        if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+            valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+            saldoDevedorExibicao = saldoDevedor.toFixed(2);
+        } else {
+            saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+            valorCorrigidoExibicao = '';
+        }
         return `<tr>
             <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
             <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
-            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
-            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${saldoDevedorExibicao}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${valorCorrigidoExibicao}" readonly></td>
             <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
-            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control juros-input" type="number" step="0.01" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
@@ -1220,6 +1315,25 @@
                         }
                         localStorage.setItem('linhas-dividas-consolidadas', JSON.stringify(linhas));
                         atualizarTotaisDividasConsolidadas();
+                        if (campo === 'juros') {
+                            // Atualizar apenas os campos de exibição na linha
+                            let valorCorrigido = parseFloat(linhas[idx].valorCorrigido);
+                            let saldoDevedor = parseFloat(linhas[idx].saldoDevedor) || 0;
+                            let juros = parseFloat(this.value) || 0;
+                            let valorCorrigidoExibicao = '';
+                            let saldoDevedorExibicao = '';
+                            if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+                                valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+                                saldoDevedorExibicao = saldoDevedor.toFixed(2);
+                            } else {
+                                saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+                                valorCorrigidoExibicao = '';
+                            }
+                            const saldoInput = tr.querySelector('.saldo-devedor');
+                            const corrigidoInput = tr.querySelector('.valor-corrigido');
+                            if (saldoInput) saldoInput.value = saldoDevedorExibicao;
+                            if (corrigidoInput) corrigidoInput.value = valorCorrigidoExibicao;
+                        }
                     }
                 });
             });
@@ -1269,15 +1383,27 @@
     }
 
     function criarLinhaDividaConsolidada(dados = {}) {
+        let valorCorrigido = parseFloat(dados.valorCorrigido);
+        let saldoDevedor = parseFloat(dados.saldoDevedor) || 0;
+        let juros = parseFloat(dados.juros) || 0;
+        let valorCorrigidoExibicao = '';
+        let saldoDevedorExibicao = '';
+        if (!isNaN(valorCorrigido) && valorCorrigido !== 0) {
+            valorCorrigidoExibicao = (valorCorrigido + valorCorrigido * (juros / 100)).toFixed(2);
+            saldoDevedorExibicao = saldoDevedor.toFixed(2);
+        } else {
+            saldoDevedorExibicao = (saldoDevedor + saldoDevedor * (juros / 100)).toFixed(2);
+            valorCorrigidoExibicao = '';
+        }
         return `<tr>
             <td><select class="form-select credor-select">${bancos.map(b => `<option value="${b}"${dados.credor === b ? ' selected' : ''}>${b ? b : 'Selecione'}</option>`).join('')}</select></td>
             <td><input class="form-control" type="text" value="${dados.contratos || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorContratado || ''}"></td>
             <td><input class="form-control" type="number" step="0.01" value="${dados.valorPago || ''}"></td>
-            <td><input class="form-control saldo-devedor" type="text" value="${dados.saldoDevedor || ''}" readonly></td>
-            <td><input class="form-control valor-corrigido" type="text" value="${dados.valorCorrigido || ''}" readonly></td>
+            <td><input class="form-control saldo-devedor" type="text" value="${saldoDevedorExibicao}" readonly></td>
+            <td><input class="form-control valor-corrigido" type="text" value="${valorCorrigidoExibicao}" readonly></td>
             <td><input class="form-control" type="date" value="${dados.dataContratacao || ''}"></td>
-            <td><input class="form-control juros-input" type="text" value="${dados.juros || ''}"></td>
+            <td><input class="form-control juros-input" type="number" step="0.01" value="${dados.juros || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelaMensal || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasContratadas || ''}"></td>
             <td><input class="form-control" type="text" value="${dados.parcelasRestantes || ''}"></td>
