@@ -829,9 +829,7 @@
         let ths = '<tr><th>Mês</th>';
         rows.forEach(row => {
             const credor = row.cells[0].textContent.trim();
-            if (credor) {
-                ths += `<th>${credor}</th>`;
-            }
+            ths += `<th>${credor || '&nbsp;'}</th>`;
         });
         ths += '<th>Total</th></tr>';
         head.innerHTML = ths;
@@ -1177,9 +1175,7 @@
         let ths = '<tr><th>Mês</th>';
         rows.forEach(row => {
             const credor = row.cells[0].textContent.trim();
-            if (credor) {
-                ths += `<th>${credor}</th>`;
-            }
+            ths += `<th>${credor || '&nbsp;'}</th>`;
         });
         ths += '<th>Total</th></tr>';
         head.innerHTML = ths;
