@@ -485,6 +485,12 @@
     <button id="btn-theme-toggle" type="button" title="Alternar tema" style="position:fixed;top:13px;right:8px;width:36px;height:36px;border-radius:50%;background:#e0ffe0;border:none;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;font-size:1.2em;z-index:2000;cursor:pointer;transition:background 0.2s;">
       🌙
     </button>
+    
+    <!-- Botão voltar ao topo -->
+    <button id="btn-voltar-topo" type="button" title="Voltar ao topo" style="position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:#007a00;border:none;box-shadow:0 4px 12px rgba(0,122,0,0.3);display:flex;align-items:center;justify-content:center;font-size:1.5em;z-index:2000;cursor:pointer;transition:all 0.3s;color:#fff;opacity:0;visibility:hidden;">
+      ↑
+    </button>
+    
     <div id="page-load-overlay"></div>
     <div id="page-transition-overlay" style="display:block;"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -711,6 +717,54 @@
         } else {
             window.location.href = destino;
         }
+    }
+    
+    // Controle do botão "voltar ao topo"
+    const btnVoltarTopo = document.getElementById('btn-voltar-topo');
+    
+    // Mostrar/ocultar botão baseado no scroll
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            btnVoltarTopo.style.opacity = '1';
+            btnVoltarTopo.style.visibility = 'visible';
+        } else {
+            btnVoltarTopo.style.opacity = '0';
+            btnVoltarTopo.style.visibility = 'hidden';
+        }
+    });
+    
+    // Funcionalidade do botão
+    btnVoltarTopo.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Aplicar tema ao botão
+    function aplicarTemaBotaoVoltarTopo(dark) {
+        if (dark) {
+            btnVoltarTopo.style.background = '#23272b';
+            btnVoltarTopo.style.color = '#baffba';
+            btnVoltarTopo.style.boxShadow = '0 4px 12px rgba(186,255,186,0.3)';
+        } else {
+            btnVoltarTopo.style.background = '#007a00';
+            btnVoltarTopo.style.color = '#fff';
+            btnVoltarTopo.style.boxShadow = '0 4px 12px rgba(0,122,0,0.3)';
+        }
+    }
+    
+    // Aplicar tema inicial
+    const savedTheme = localStorage.getItem('theme');
+    aplicarTemaBotaoVoltarTopo(savedTheme === 'dark');
+    
+    // Aplicar tema quando mudar
+    const oldSetThemeGlobal = window.setTheme;
+    if (oldSetThemeGlobal) {
+        window.setTheme = function(dark) {
+            oldSetThemeGlobal(dark);
+            aplicarTemaBotaoVoltarTopo(dark);
+        };
     }
     </script>
 </body>
